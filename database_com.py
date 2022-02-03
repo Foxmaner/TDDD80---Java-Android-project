@@ -13,6 +13,13 @@ association_table = db.Table('association',
                              db.Column('user_id', db.Integer, db.ForeignKey('User.id'), primary_key=True),
                              db.Column('user_id', db.Integer, db.ForeignKey('User.id'), primary_key=True)
                              )
+liked_posts_table = db.Table("liked_posts",
+                             db.Column("user_id", db.Integer, db.ForeignKey("User.id"), primary_key=True),
+                             db.Column("post_id", db.Integer, db.ForeignKey("Post.id"), primary_key=True))
+
+liked_comments_table = db.Table("liked_comments",
+                                db.Column("user_id", db.Integer, db.ForeignKey("User.id"), primary_key=True),
+                                db.Column("comment_id", db.Integer, db.ForeignKey("Comment.id"), primary_key=True))
 
 
 class User(db.Model):
@@ -25,10 +32,12 @@ class User(db.Model):
     # Relations
     friends = db.relationship("User", secondary=association_table, backref="users")
     posts = db.relationship("Post", backref="user", lazy=True)
+    liked_posts = db.relationship("Post", secondary=liked_posts_table, back_populates="likes")
+    liked_comments = db.relationship("Comment", secondary=liked_comments_table, back_populates="likes")
 
     def to_dict(self):
-        return {"id": self.id, "username": self.username, "first_name": self.first_name, "last_name": self.last_name, "password": self.password,
-                "friends": self.friends, "posts": self.posts}
+        return {"id": self.id, "username": self.username, "first_name": self.first_name, "last_name": self.last_name,
+                "password": self.password, "friends": self.friends, "posts": self.posts}
 
 
 class Post(db.Model):
@@ -37,12 +46,13 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=False)
     title = db.Column(db.String(40), nullable=False)
     caption = db.Column(db.String(140), nullable=False)
-    likes = db.Column(db.Integer, nullable=False)
+    # Here we need a relationship! We need to know which user liked what post.
+    likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")
 
+    comments = db.relationship("Comment", backref="post", lazy=True)
+    # Inte nullable?
 
-    # Relationer and shit, måste fixa
-    comments = db.Column(db.String(40), nullable=False)
-    training_session = db.Column(db.String(40), nullable=False)
+    training_session = db.relationship("TrainingSession", uselist=False, backref="post")
 
     def to_dict(self):
         return {"id": self.id, "title": self.title, "caption": self.caption, "likes": self.likes,
@@ -53,10 +63,10 @@ class TrainingSession(db.Model):
     __tablename__ = "Training_session"
     id = db.Column(db.Integer, primary_key=True)
     time = db.Column(db.Float, nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
     speed_unit = db.Column(db.String(40), nullable=False)
     speed = db.Column(db.Float, nullable=False)
     exercise = db.Column(db.String(40), nullable=False)
-
 
     def to_dict(self):
         return {"id": self.id, "time": self.time, "speed_unit": self.speed_unit, "speed": self.speed,
@@ -66,13 +76,14 @@ class TrainingSession(db.Model):
 class Comment(db.Model):
     __tablename__ = "Comment"
     id = db.Column(db.Integer, primary_key=True)
-    related_post = db.Column(db.String(140), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
     text = db.Column(db.String(140), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
-    likes = db.Column(db.Integer, nullable=False)
+    # Many people can like a comment
+    likes = db.relationship("User", secondary=liked_comments_table, back_populates="liked_comments")
 
     def to_dict(self):
-        return {"id": self.id, "related_post": self.related_post, "text": self.text, "user_id": self.user_id,
+        return {"id": self.id, "post_id": self.post_id, "text": self.text, "user_id": self.user_id,
                 "likes": self.likes}
 
 

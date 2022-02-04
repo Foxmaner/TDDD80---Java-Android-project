@@ -1,5 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 
 app = Flask(__name__)
 
@@ -7,12 +8,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./our.db'
 db = SQLAlchemy(app)
 
-#Tables
+# Tables
 
-association_table = db.Table('association',
-                             db.Column('user_id', db.Integer, db.ForeignKey('User.id'), primary_key=True),
-                             db.Column('user_id', db.Integer, db.ForeignKey('User.id'), primary_key=True)
-                             )
+friend_to_friend = db.Table('friendship',
+                            db.Column('user_id', db.Integer, db.ForeignKey('User.id'), primary_key=True),
+                            db.Column('friend_id', db.Integer, db.ForeignKey('User.id'), primary_key=True)
+                            )
+
 liked_posts_table = db.Table("liked_posts",
                              db.Column("user_id", db.Integer, db.ForeignKey("User.id"), primary_key=True),
                              db.Column("post_id", db.Integer, db.ForeignKey("Post.id"), primary_key=True))
@@ -30,7 +32,9 @@ class User(db.Model):
     last_name = db.Column(db.String(40), nullable=False)
     password = db.Column(db.String(40), nullable=False)
     # Relations
-    friends = db.relationship("User", secondary=association_table, backref="users")
+    friends = db.relationship("User", secondary=friend_to_friend, primaryjoin=id == friend_to_friend.c.user_id,
+                              secondaryjoin=id == friend_to_friend.c.friend_id)
+
     posts = db.relationship("Post", backref="user", lazy=True)
     liked_posts = db.relationship("Post", secondary=liked_posts_table, back_populates="likes")
     liked_comments = db.relationship("Comment", secondary=liked_comments_table, back_populates="likes")
@@ -46,17 +50,17 @@ class Post(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=False)
     title = db.Column(db.String(40), nullable=False)
     caption = db.Column(db.String(140), nullable=False)
+    date_time = db.Column(db.DateTime, default=func.now(), nullable=False)
     # Here we need a relationship! We need to know which user liked what post.
     likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")
 
     comments = db.relationship("Comment", backref="post", lazy=True)
     # Inte nullable?
-
     training_session = db.relationship("TrainingSession", uselist=False, backref="post")
 
     def to_dict(self):
         return {"id": self.id, "title": self.title, "caption": self.caption, "likes": self.likes,
-                "comments": self.comments, "training_session": self.training_session}
+                "comments": self.comments, "training_session": self.training_session, "date_time": self.date_time}
 
 
 class TrainingSession(db.Model):
@@ -79,7 +83,7 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
     text = db.Column(db.String(140), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
-    # Many people can like a comment
+    # Many people can like a comment, and comments can have many likes.
     likes = db.relationship("User", secondary=liked_comments_table, back_populates="liked_comments")
 
     def to_dict(self):

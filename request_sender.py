@@ -34,3 +34,15 @@ print(are_friends_req.text)
 # Returns ALL (if any) of the latest posts from user with id: 1.
 get_posts_req = requests.get("http://localhost:5000/posts/1/-1")
 print(get_posts_req.text)
+
+# Returns a specific amount of friends to a user.
+get_posts_req = requests.get("http://localhost:5000/friends/1/1")
+print(get_posts_req.text)
+
+# Returns a specific amount of friends to a user.
+get_posts_req = requests.get("http://localhost:5000/friends/1/1")
+print(get_posts_req.text)
+
+# TODO Add a comment to a post
+
+# TODO Print all comments to a post with the route

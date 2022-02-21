@@ -1,10 +1,10 @@
 from flask import jsonify, request
-from flask import Flask
 from sqlalchemy import desc
 
-from database_com import app, db, User, Post
+from database_com import app, db, User, Post, Comment
 
 
+# ----- POST ----- #
 @app.route("/add", methods=["POST"])
 def add():
     """This function adds a new user."""
@@ -67,7 +67,61 @@ def add_post(user_id):
         return "", 400
 
 
-@app.route("/friends/<user_id>/<friend_id>", methods=["GET"])
+@app.route("/befriend/<friend_id>/<user_id>", methods=["POST"])
+def add_friend(friend_id, user_id):
+    """Befriends two existing users. """
+
+    # Try to convert to integer.
+    try:
+        friend_id = int(friend_id)
+        user_id = int(user_id)
+
+    except(ValueError, TypeError):
+        return "", 400
+
+    # Query the users.
+    friend = User.query.filter_by(id=friend_id).first()
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is not None and friend is not None:
+        user.friends.append(friend)
+        friend.friends.append(user)
+
+        db.session.commit()
+
+        # Don't return any json.
+        return "", 200
+
+    return "", 400
+
+
+@app.route("/comments/<post_id>", methods=["POST"])
+def add_comment(post_id):
+    # Try to convert to integer.
+    try:
+        post_id = int(post_id)
+    except(ValueError, TypeError):
+        return "", 400
+
+    post = Post.query.filter_by(id=post_id).first()
+
+    if post is not None:
+        post_data = request.get_json()
+        try:
+            # Create a comment
+            comment = Comment(post_id=post_id, text=post_data["text"], user_id=post_data["user_id"])
+            post.comments.append(comment)
+        except KeyError:
+            return "", 400
+
+    else:
+        return "", 400
+
+    return "", 200
+
+
+# ------- GET -------- #
+@app.route("/befriended/<user_id>/<friend_id>", methods=["GET"])
 def are_friends(user_id, friend_id):
     """ Returns true if the users are friends, false if not. """
 
@@ -91,50 +145,17 @@ def are_friends(user_id, friend_id):
     return "", 400
 
 
-@app.route("/befriend/<friend_id>/<user_id>", methods=["POST"])
-def add_friend(friend_id, user_id):
-    """Befriends two existing users. """
-
-    # Try to convert to integer.
-    try:
-        friend_id = int(friend_id)
-        user_id = int(user_id)
-
-    except(ValueError, TypeError):
-        return "", 400
-
-    # Query the users.
-    friend = User.query.filter_by(id=friend_id).first()
-    user = User.query.filter_by(id=user_id).first()
-    # FIXME Det här fungerar inte, friends innehåller inte rätt grejer.
-    if user is not None and friend is not None:
-        user.friends.append(friend)
-        friend.friends.append(user)
-
-        db.session.commit()
-
-        # Don't return any json.
-        return "", 200
-
-    return "", 400
-
-
 @app.route("/posts/<user_id>/<nr_of_posts>", methods=["GET"])
 def get_posts(user_id, nr_of_posts):
     """Fetch selected nr of posts. -1 = ALL"""
 
     try:
-        user_id = int(user_id)  # Fixade så att den hämtar från den faktiska usern och inte i hela Post tabellen.
+        user_id = int(user_id)
         nr_of_posts = int(nr_of_posts)
 
     except(ValueError, TypeError):
         return "", 400
 
-    ##
-    ##
-    ## Måste lägga in funktionalitet att bara skicka tillbaka posts från friends
-    ##
-    ##
     if nr_of_posts == -1:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
                  order_by(desc(Post.date_time)).all()]
@@ -147,9 +168,59 @@ def get_posts(user_id, nr_of_posts):
     return jsonify(posts), 200
 
 
-# @app.route("/comments/<Post_ID>", methods=["GET"])
-# def get_posts():
-#    return "", 200
+@app.route("/comments/<post_id>/<nr_of_comments>", methods=["GET"])
+def get_comments(post_id, nr_of_comments):
+    """Fetch selected nr of comments. -1 = ALL."""
+
+    try:
+        post_id = int(post_id)
+        nr_of_comments = int(nr_of_comments)
+
+    except(ValueError, TypeError):
+        return "", 400
+
+    post = Post.query.filter_by(id=post_id).first()
+
+    if post is not None:
+
+        if nr_of_comments == -1:
+            comments = [comment.to_dict() for comment in post.comments[:]]
+        elif nr_of_comments >= 0:
+            comments = [comment.to_dict() for comment in post.comments[:nr_of_comments]]
+        else:
+            return "", 400
+    else:
+        return "", 400
+
+    return jsonify(comments), 200
+
+
+@app.route("/friends/<user_id>/<nr_of_friends>", methods=["GET"])
+def get_friends(user_id, nr_of_friends):
+    """Fetch selected nr of friends. -1 = ALL."""
+    try:
+        user_id = int(user_id)
+        nr_of_friends = int(nr_of_friends)
+
+    except(ValueError, TypeError):
+        return "", 400
+
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is not None:
+
+        if nr_of_friends == -1:
+            print([friend.to_dict() for friend in user.friends])
+            friends = [friend.to_dict() for friend in user.friends]
+
+        elif nr_of_friends >= 0:
+            friends = [friend.to_dict() for friend in user.friends[:nr_of_friends]]
+        else:
+            return "", 400
+    else:
+        return "", 400
+
+    return jsonify(friends), 200
 
 
 if __name__ == "__main__":

@@ -158,10 +158,10 @@ def get_posts(user_id, nr_of_posts):
 
     if nr_of_posts == -1:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
-                 order_by(desc(Post.date_time)).all()]
+            order_by(desc(Post.date_time)).all()]
     elif nr_of_posts >= 0:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
-                 order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
+            order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
     else:
         return "", 400
 
@@ -221,6 +221,42 @@ def get_friends(user_id, nr_of_friends):
         return "", 400
 
     return jsonify(friends), 200
+
+
+@app.route('/del/usr/<user_id>', methods=["DELETE"])
+def remove_user(user_id):
+    user = User.query.filter_by(id=user_id)
+
+    if user.first() is not None:
+        user.delete()
+        db.session.commit()
+        return "", 200
+    else:
+        return "", 400
+
+@app.route('/del/post/<post_id>', methods=["DELETE"])
+def remove_post(post_id):
+    post = Post.query.filter_by(id=post_id)
+
+    if post.first() is not None:
+        post.delete()
+        db.session.commit()
+        return "", 200
+    else:
+        return "", 400
+
+@app.route('/del/comment/<comment_id>', methods=["DELETE"])
+def remove_comment(comment_id):
+    comment = Comment.query.filter_by(id=comment_id)
+
+    if comment.first() is not None:
+        comment.delete()
+        db.session.commit()
+        return "", 200
+    else:
+        return "", 400
+
+
 
 
 if __name__ == "__main__":

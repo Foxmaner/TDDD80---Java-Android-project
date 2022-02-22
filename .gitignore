@@ -1,5 +1,7 @@
 # Database #
 our.db
+
+venv/
 # Compiled source #
 ###################
 *.com

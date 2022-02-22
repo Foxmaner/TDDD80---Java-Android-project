@@ -43,6 +43,34 @@ print(get_posts_req.text)
 get_posts_req = requests.get("http://localhost:5000/friends/1/1")
 print(get_posts_req.text)
 
+# Removes first user "Liam"
+remove_usr_req = requests.delete("http://localhost:5000/del/usr/1")
+print(remove_usr_req.text)
+
+# Try to remove not valid user
+remove_usr_req = requests.delete("http://localhost:5000/del/usr/8")
+print(remove_usr_req.text)
+
+# Removes first post
+remove_post_req = requests.delete("http://localhost:5000/del/post/1")
+print(remove_post_req.text)
+
+# Try to remove not valid post
+remove_post_req = requests.delete("http://localhost:5000/del/post/8")
+print(remove_post_req.text)
+
+# Removes first comment
+remove_comment_req = requests.delete("http://localhost:5000/del/comment/1")
+print(remove_post_req.text)
+
+# Try to remove not valid comment
+remove_comment_req = requests.delete("http://localhost:5000/del/comment/8")
+print(remove_post_req.text)
+
+
+
+
+
 # TODO Add a comment to a post
 
 # TODO Print all comments to a post with the route

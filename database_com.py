@@ -1,12 +1,32 @@
+import os
+
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.sql import func
-
+# Create app
 app = Flask(__name__)
 
 # Connection
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./our.db'
+if 'NAMESPACE' in os.environ and os.environ['NAMESPACE'] == 'heroku':
+    db_uri = os.environ['DATABASE_URL']
+    address = "WE DO NOT HAVE A HEROKU YET"
+    debug_flag = False
+
+else:
+    # when running locally: use sqlite
+    address = "http://localhost:5000"
+    db_path = os.path.join(os.path.dirname(__file__), 'app.db')
+    db_uri = 'sqlite:///{}'.format(db_path)
+    debug_flag = True
+
+# Connection
+app.config['SQLALCHEMY_DATABASE_URL'] = db_uri
+# Supress warning
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+# Supress warning
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
 
 # Tables
 
@@ -41,7 +61,7 @@ class User(db.Model):
 
     def to_dict(self):
         return {"id": self.id, "username": self.username, "first_name": self.first_name, "last_name": self.last_name,
-                "password": self.password, "friends": [friend.to_dict_friends() for friend in self.friends],
+                "friends": [friend.to_dict_friends() for friend in self.friends],
                 "posts": [post.to_dict() for post in self.posts]}
 
     def to_dict_friends(self):
@@ -93,6 +113,12 @@ class Comment(db.Model):
     def to_dict(self):
         return {"id": self.id, "post_id": self.post_id, "text": self.text, "user_id": self.user_id,
                 "likes": self.likes}
+
+
+class TokenBlocklist(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    jti = db.Column(db.String(36), nullable=False, index=True)
+    created_at = db.Column(db.DateTime, nullable=False)
 
 
 @app.before_first_request

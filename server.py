@@ -1,10 +1,59 @@
 from flask import jsonify, request
 from sqlalchemy import desc
+from datetime import timedelta, datetime, timezone
 
-from database_com import app, db, User, Post, Comment
+from database_com import app, db, User, Post, Comment, TokenBlocklist
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
+from flask_bcrypt import Bcrypt
+
+bcrypt = Bcrypt(app)
+
+ACCESS_EXPIRES = timedelta(minutes=30)
+app.config["JWT_SECRET_KEY"] = "Sometimes I Pee Myself In Bed"
+app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
+jwt = JWTManager(app)
+
+
+# Callback function to check if a JWT exists in the database blocklist
+@jwt.token_in_blocklist_loader
+def check_if_token_revoked(_, jwt_payload: dict) -> bool:
+    jti = jwt_payload["jti"]
+    token = db.session.query(TokenBlocklist.id).filter_by(jti=jti).scalar()
+
+    return token is not None
 
 
 # ----- POST ----- #
+# Login
+@app.route("/user/login", methods=["POST"])
+def login():
+    post_input = request.get_json()
+
+    try:
+        password = post_input["password"]
+        username = post_input["username"]
+
+    except KeyError:
+        return "", 400
+
+    user = User.query.filter_by(username=username).first()
+
+    if user is not None:
+        # The user exists
+        db_pass = user.password
+
+        if bcrypt.check_password_hash(db_pass, password):
+            # The password is correct
+            # Return a token
+            token = create_access_token(identity=user.username)
+            return jsonify(access_token=token), 200
+
+    else:
+        # The user does not exist
+        return jsonify(message="The provided password or username is wrong"), 400
+
+
+# Register
 @app.route("/add", methods=["POST"])
 def add():
     """This function adds a new user."""
@@ -15,7 +64,7 @@ def add():
         firstname = json_data["first_name"]
         lastname = json_data["last_name"]
         username = json_data["username"]
-        password = json_data["password"]
+        password = bcrypt.generate_password_hash(json_data["password"])
     except KeyError:
         return "", 400
 
@@ -36,6 +85,7 @@ def add():
 
 
 @app.route("/add/<user_id>", methods=["POST"])
+@jwt_required()
 def add_post(user_id):
     """This function adds a post to a user. """
     # Convert parameter to int
@@ -67,7 +117,21 @@ def add_post(user_id):
         return "", 400
 
 
+@app.route("/user/logout", methods=["POST"])
+@jwt_required()
+def logout():
+    try:
+        jti = get_jwt()["jti"]
+        now = datetime.now(timezone.utc)
+        db.session.add(TokenBlocklist(jti=jti, created_at=now))
+        db.session.commit()
+        return jsonify(msg="JWT revoked")
+    except KeyError:
+        return "", 400
+
+
 @app.route("/befriend/<friend_id>/<user_id>", methods=["POST"])
+@jwt_required()
 def add_friend(friend_id, user_id):
     """Befriends two existing users. """
 
@@ -96,7 +160,9 @@ def add_friend(friend_id, user_id):
 
 
 @app.route("/comments/<post_id>", methods=["POST"])
+@jwt_required()
 def add_comment(post_id):
+    """Adds a comment to a post. """
     # Try to convert to integer.
     try:
         post_id = int(post_id)
@@ -111,6 +177,7 @@ def add_comment(post_id):
             # Create a comment
             comment = Comment(post_id=post_id, text=post_data["text"], user_id=post_data["user_id"])
             post.comments.append(comment)
+            db.session.commit()
         except KeyError:
             return "", 400
 
@@ -122,6 +189,7 @@ def add_comment(post_id):
 
 # ------- GET -------- #
 @app.route("/befriended/<user_id>/<friend_id>", methods=["GET"])
+@jwt_required()
 def are_friends(user_id, friend_id):
     """ Returns true if the users are friends, false if not. """
 
@@ -146,6 +214,7 @@ def are_friends(user_id, friend_id):
 
 
 @app.route("/posts/<user_id>/<nr_of_posts>", methods=["GET"])
+@jwt_required()
 def get_posts(user_id, nr_of_posts):
     """Fetch selected nr of posts. -1 = ALL"""
 
@@ -158,10 +227,10 @@ def get_posts(user_id, nr_of_posts):
 
     if nr_of_posts == -1:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
-            order_by(desc(Post.date_time)).all()]
+                 order_by(desc(Post.date_time)).all()]
     elif nr_of_posts >= 0:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
-            order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
+                 order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
     else:
         return "", 400
 
@@ -169,6 +238,7 @@ def get_posts(user_id, nr_of_posts):
 
 
 @app.route("/comments/<post_id>/<nr_of_comments>", methods=["GET"])
+@jwt_required()
 def get_comments(post_id, nr_of_comments):
     """Fetch selected nr of comments. -1 = ALL."""
 
@@ -196,6 +266,7 @@ def get_comments(post_id, nr_of_comments):
 
 
 @app.route("/friends/<user_id>/<nr_of_friends>", methods=["GET"])
+@jwt_required()
 def get_friends(user_id, nr_of_friends):
     """Fetch selected nr of friends. -1 = ALL."""
     try:
@@ -224,6 +295,7 @@ def get_friends(user_id, nr_of_friends):
 
 
 @app.route('/del/usr/<user_id>', methods=["DELETE"])
+@jwt_required()
 def remove_user(user_id):
     user = User.query.filter_by(id=user_id)
 
@@ -234,7 +306,9 @@ def remove_user(user_id):
     else:
         return "", 400
 
+
 @app.route('/del/post/<post_id>', methods=["DELETE"])
+@jwt_required()
 def remove_post(post_id):
     post = Post.query.filter_by(id=post_id)
 
@@ -245,7 +319,9 @@ def remove_post(post_id):
     else:
         return "", 400
 
+
 @app.route('/del/comment/<comment_id>', methods=["DELETE"])
+@jwt_required()
 def remove_comment(comment_id):
     comment = Comment.query.filter_by(id=comment_id)
 
@@ -255,8 +331,6 @@ def remove_comment(comment_id):
         return "", 200
     else:
         return "", 400
-
-
 
 
 if __name__ == "__main__":

@@ -50,7 +50,7 @@ def login():
 
     else:
         # The user does not exist
-        return jsonify(message="The provided password or username is wrong"), 400
+        return jsonify(message="The provided password or username is wrong"), 403
 
 
 # Register

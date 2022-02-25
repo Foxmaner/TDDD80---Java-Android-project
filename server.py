@@ -48,9 +48,8 @@ def login():
             token = create_access_token(identity=user.username)
             return jsonify(access_token=token), 200
 
-    else:
-        # The user does not exist
-        return jsonify(message="The provided password or username is wrong"), 403
+    # The user does not exist
+    return jsonify(message="The provided password or username is wrong"), 403
 
 
 # Register

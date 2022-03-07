@@ -5,4 +5,9 @@
     <string name="loginPassword">Password</string>
     <string name="loginButton">Login</string>
     <string name="loginRegisterText">Do you want to register? Click here!</string>
+    <string name="inputRegisterFirstNameHint">First name</string>
+    <string name="inputRegisterLastNameHint">Last name</string>
+    <string name="inputRegisterUserNameHint">Username</string>
+    <string name="inputRegisterEmailHint">Email</string>
+    <string name="inputRegisterPasswordHint">Password</string>
 </resources>

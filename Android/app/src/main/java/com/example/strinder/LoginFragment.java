@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,11 +46,13 @@ public class LoginFragment extends Fragment {
         Button loginBtn = view.findViewById(R.id.loginButton);
         EditText username = view.findViewById(R.id.loginUsername);
         EditText password = view.findViewById(R.id.loginPassword);
+        TextView registerText = view.findViewById(R.id.loginRegisterText);
 
         //Handle login
         loginBtn.setOnClickListener((v) -> {
             String usernameInput = username.getText().toString();
             String passwordInput = password.getText().toString();
+
             if(usernameInput.equals("") || usernameInput.contains(" ")) {
                 username.setBackgroundResource(R.drawable.edt_err);
             }
@@ -60,9 +63,23 @@ public class LoginFragment extends Fragment {
                 //Everything went fine.
                 username.setBackgroundResource(R.drawable.edt_normal);
                 password.setBackgroundResource(R.drawable.edt_normal);
+
+                //TODO Network stuff
             }
 
         });
+
+        //Add a click listener to the text.
+        registerText.setOnClickListener((v) -> {
+            //Send data to MainActivity
+            if(getActivity() != null) {
+                getActivity().getSupportFragmentManager().beginTransaction().
+                        replace(R.id.fragmentView, RegisterFragment.newInstance()).commit();
+
+            }
+        });
+
+
 
         return view;
     }

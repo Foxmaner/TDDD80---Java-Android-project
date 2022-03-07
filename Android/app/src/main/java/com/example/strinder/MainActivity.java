@@ -1,7 +1,6 @@
 package com.example.strinder;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentContainerView;
 
 import android.os.Bundle;
 

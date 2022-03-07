@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">Strinder</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
+    <string name="loginTitle">Login Page</string>
+    <string name="loginUsername">Username</string>
+    <string name="loginPassword">Password</string>
+    <string name="loginButton">Login</string>
+    <string name="loginRegisterText">Do you want to register? Click here!</string>
     <string name="inputRegisterFirstNameHint">First name</string>
     <string name="inputRegisterLastNameHint">Last name</string>
     <string name="inputRegisterUserNameHint">Username</string>

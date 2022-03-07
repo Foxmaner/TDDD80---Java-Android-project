@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Strinder</string>
+    <string name="loginTitle">Login Page</string>
+    <string name="loginUsername">Username</string>
+    <string name="loginPassword">Password</string>
+    <string name="loginButton">Login</string>
+    <string name="loginRegisterText">Do you want to register? Click here!</string>
 </resources>

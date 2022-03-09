@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -45,19 +46,31 @@ public class RegisterFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_register, container, false);
 
         Button registerBtn = view.findViewById(R.id.registerBtn);
-        EditText inputFirstName = view.findViewById(R.id.inputRegisterFirstName);
-        EditText inputLastName = view.findViewById(R.id.inputRegisterLastName);
-        EditText inputUserName = view.findViewById(R.id.inputRegisterUserName);
-        EditText inputEmail = view.findViewById(R.id.inputRegisterEmail);
-        EditText inputPassword = view.findViewById(R.id.inputRegisterPassword);
+        EditText inputFirstName = view.findViewById(R.id.registerFirstName);
+        EditText inputLastName = view.findViewById(R.id.registerLastName);
+        EditText inputUserName = view.findViewById(R.id.registerUserName);
+        EditText inputEmail = view.findViewById(R.id.registerEmail);
+        EditText inputPassword = view.findViewById(R.id.registerPassword);
+        TextView toLoginText = view.findViewById(R.id.registerLoginText);
 
+        //TODO Fix this long if
         registerBtn.setOnClickListener((v) -> {
-            if (inputFirstName.getText().toString().equals("") &&
-                    inputLastName.getText().toString().equals("") &&
-                    inputUserName.getText().toString().equals("") &&
-                    inputEmail.getText().toString().equals("") &&
-                    inputPassword.getText().toString().equals("")) {
-                System.out.println("Success");
+            if (!inputFirstName.getText().toString().trim().equals("") &&
+                    !inputLastName.getText().toString().trim().equals("") &&
+                    !inputUserName.getText().toString().trim().equals("") &&
+                    !inputEmail.getText().toString().trim().equals("") &&
+                    !inputPassword.getText().toString().trim().equals("")) {
+
+                System.out.println("Register!");
+            }
+        });
+
+        toLoginText.setOnClickListener((v) -> {
+            //To Login we go
+            if(getActivity() != null) {
+                getActivity().getSupportFragmentManager().beginTransaction().
+                        replace(R.id.fragmentView, LoginFragment.newInstance()).commit();
+
             }
         });
 

@@ -1,4 +1,5 @@
 <resources>
+    <!-- Login -->
     <string name="app_name">Strinder</string>
     <string name="loginTitle">Login Page</string>
     <string name="loginUsername">Username</string>
@@ -6,6 +7,7 @@
     <string name="loginButton">Login</string>
     <string name="loginRegisterText">Do you want to register? Click here!</string>
 
+    <!-- Register -->
     <string name="registerTitle">Register Page</string>
     <string name="registerFirstName">First name</string>
     <string name="registerLastName">Last name</string>
@@ -14,4 +16,13 @@
     <string name="registerPassword">Password</string>
     <string name="registerBtn">Register</string>
     <string name="registerLoginText">Do you want to login? Click here!</string>
+
+    <!-- Navbar -->
+    <string name="navbar_home">Home</string>
+    <string name="navbar_plus">Add</string>
+    <string name="navbar_friends">Friends</string>
+    <string name="navbar_profile">Profile</string>
+    <string name="navbar_messages">Messages</string>
+
+
 </resources>

@@ -3,6 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Programmering/Liu/tddd80-projekt/Android/app/src/main/res/layout/activity_main.xml" value="0.35778985507246375" />
+        <entry key="..\:/Programmering/Liu/tddd80-projekt/Android/app/src/main/res/layout/fragment_friends.xml" value="0.35778985507246375" />
+        <entry key="..\:/Programmering/Liu/tddd80-projekt/Android/app/src/main/res/layout/fragment_home.xml" value="0.35778985507246375" />
+        <entry key="..\:/Programmering/Liu/tddd80-projekt/Android/app/src/main/res/layout/fragment_login.xml" value="0.35778985507246375" />
+        <entry key="..\:/Programmering/Liu/tddd80-projekt/Android/app/src/main/res/layout/fragment_messages.xml" value="0.35778985507246375" />
+        <entry key="..\:/Programmering/Liu/tddd80-projekt/Android/app/src/main/res/layout/fragment_profile.xml" value="0.35778985507246375" />
+        <entry key="..\:/Programmering/Liu/tddd80-projekt/Android/app/src/main/res/layout/fragment_register.xml" value="0.35778985507246375" />
         <entry key="..\:/Programming/Skola/TDDD80/tddd80-projekt/Android/app/src/main/res/drawable/home.xml" value="0.2995" />
         <entry key="..\:/Programming/Skola/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/activity_main.xml" value="0.31354166666666666" />
         <entry key="..\:/Programming/Skola/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_home.xml" value="0.31354166666666666" />

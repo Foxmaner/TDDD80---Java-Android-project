@@ -6,6 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".LoggedInActivity">
 
+    <include
+        layout="@layout/toolbar"
+        android:id="@+id/toolbar"/>
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navBar"
         android:layout_width="0dp"

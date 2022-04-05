@@ -8,10 +8,10 @@
     <string name="navbar_friends">Friends</string>
     <string name="navbar_profile">Profile</string>
     <string name="navbar_messages">Messages</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
     <string name="notifications">Notifications</string>
     <string name="settings">Settings</string>
+    <string name="client_id">960100179212-vsh7i7ja5r93a1l8373t94m9b7cr3opo.apps.googleusercontent.com</string>
 
 
 </resources>

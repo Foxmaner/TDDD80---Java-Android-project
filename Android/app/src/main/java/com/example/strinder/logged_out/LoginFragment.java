@@ -4,13 +4,15 @@ import static android.app.Activity.RESULT_OK;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.activity.result.ActivityResultLauncher;
-import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.fragment.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.fragment.app.Fragment;
+
 import com.example.strinder.LoggedInActivity;
 import com.example.strinder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -130,6 +132,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     private void login(GoogleSignInAccount account) {
+        //TODO Use account here somehow. We can get all the information from there.
         Log.i("Google Sign In", "Logged in. Sending user to main.");
         Intent myIntent = new Intent(getActivity(), LoggedInActivity.class);
         startActivity(myIntent);

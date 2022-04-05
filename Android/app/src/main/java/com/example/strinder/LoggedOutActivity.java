@@ -1,7 +1,8 @@
 package com.example.strinder;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.strinder.logged_out.LoginFragment;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;

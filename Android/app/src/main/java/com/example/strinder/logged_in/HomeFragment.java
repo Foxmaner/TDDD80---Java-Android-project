@@ -1,4 +1,4 @@
-package com.example.strinder;
+package com.example.strinder.logged_in;
 
 import android.os.Bundle;
 
@@ -8,6 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.strinder.R;
+
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link HomeFragment#newInstance} factory method to
@@ -15,8 +17,6 @@ import android.view.ViewGroup;
  */
 public class HomeFragment extends Fragment {
 
-    //TODO https://www.youtube.com/watch?v=fODp1hZxfng&ab_channel=CodePalace
-    /* We have to solve issue when it comes to not showing the menu when logging in.*/
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -28,22 +28,21 @@ public class HomeFragment extends Fragment {
      */
     // TODO: Rename and change types and number of parameters
     public static HomeFragment newInstance() {
-        return new HomeFragment();
-
+        HomeFragment fragment = new HomeFragment();
+        Bundle args = new Bundle();
+        fragment.setArguments(args);
+        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_home, container, false);
-
-        return view;
+        return inflater.inflate(R.layout.fragment_home, container, false);
     }
 }

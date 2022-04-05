@@ -4,6 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
+import com.example.strinder.logged_in.LoggedInFragment;
+import com.example.strinder.logged_out.LoggedOutFragment;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -11,12 +14,9 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Create a LoginFragment
-        LoginFragment loginFragment = LoginFragment.newInstance();
-        //Set the fragment
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.fragmentView, loginFragment)
-                .commit();
+        LoggedOutFragment fragment = LoggedOutFragment.newInstance();
+
+        getSupportFragmentManager().beginTransaction().add(R.id.mainView,fragment).commit();
 
     }
 }

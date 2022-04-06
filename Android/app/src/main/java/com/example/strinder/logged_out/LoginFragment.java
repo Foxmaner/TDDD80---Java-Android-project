@@ -70,7 +70,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         if(getActivity() != null && getContext() != null) {
             mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
-            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
+            GoogleSignInAccount account = null;
+            //GoogleSignIn.getLastSignedInAccount(getContext());
 
             SignInButton signInButton = v.findViewById(R.id.googleSignIn);
             signInButton.setVisibility(View.GONE);

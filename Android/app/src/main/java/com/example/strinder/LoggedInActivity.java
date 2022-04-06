@@ -43,7 +43,8 @@ public class LoggedInActivity extends AppCompatActivity {
 
     private void handleUser() {
 
-        //Check with networking.
+        //Check with networking if the user exists in the db, otherwise create a user.
+
     }
 
 }

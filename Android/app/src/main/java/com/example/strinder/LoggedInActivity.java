@@ -9,11 +9,21 @@ import androidx.appcompat.widget.Toolbar;
 
 public class LoggedInActivity extends AppCompatActivity {
 
+    private String firstName,lastName,email,photoUrl;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
+        //Get user information
+        Bundle bundle = getIntent().getExtras();
+        firstName = bundle.getString("firstName");
+        lastName = bundle.getString("lastName");
+        email = bundle.getString("email");
+        if(bundle.containsKey("photo")) {
+            photoUrl = bundle.getString("photo");
+        }
 
+        //Top Nav
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -24,6 +34,11 @@ public class LoggedInActivity extends AppCompatActivity {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.nav_top,menu);
         return true;
+    }
+
+    private void handleUser() {
+
+        //Check with networking.
     }
 
 }

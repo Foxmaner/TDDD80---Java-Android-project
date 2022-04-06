@@ -15,7 +15,6 @@ public class LoggedOutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_out);
 
-
         LoginFragment fragment = LoginFragment.newInstance();
         getSupportFragmentManager().beginTransaction().add(R.id.mainView,fragment).commit();
 

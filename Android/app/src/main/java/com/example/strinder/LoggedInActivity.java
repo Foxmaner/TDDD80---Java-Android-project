@@ -7,6 +7,8 @@ import android.view.MenuInflater;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 public class LoggedInActivity extends AppCompatActivity {
 
     @Override
@@ -16,6 +18,9 @@ public class LoggedInActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        BottomNavigationView menuBar = findViewById(R.id.navBar);
+        menuBar.setSelectedItemId(R.id.home);
 
     }
 

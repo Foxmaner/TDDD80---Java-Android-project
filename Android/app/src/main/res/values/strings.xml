@@ -15,6 +15,7 @@
     <string name="strinder">STRINDER</string>
     <string name="login_background">login background</string>
     <string name="background_image_viewer">Background image</string>
+    <string name="logoContent">The logo of Strinder</string>
 
 
 </resources>

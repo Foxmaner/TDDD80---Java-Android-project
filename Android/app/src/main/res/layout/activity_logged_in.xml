@@ -15,7 +15,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="?android:attr/windowBackground"
+        android:background="@color/papaya"
         app:itemBackground="@color/papaya"
         app:itemIconTint="#fff"
         app:itemTextColor="#fff"

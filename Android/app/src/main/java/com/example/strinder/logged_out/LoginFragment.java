@@ -180,6 +180,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Res
     }
 
 
+    //TODO THE CODE BELOW NEEDS ABSTRACTION. DO THESE IN RegisterHandler and LoginHandler!
+
     @Override
     public void onResponse(Object response) {
 

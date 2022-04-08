@@ -7,7 +7,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.strinder.logged_out.LoginFragment;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 
-
+/**
+ * This activity class handles all fragments that are available for users that are NOT logged in
+ * on the server.
+ * */
 public class LoggedOutActivity extends AppCompatActivity {
 
     @Override
@@ -15,21 +18,21 @@ public class LoggedOutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_out);
 
+        //Set the FragmentContainerView to a LoginFragment.
         LoginFragment fragment = LoginFragment.newInstance();
         getSupportFragmentManager().beginTransaction().add(R.id.mainView,fragment).commit();
 
         //Connect FireBase to Google API
         // Your server's client ID, not your Android client ID.
         // Only show accounts previously used to sign in.
-        BeginSignInRequest signInRequest = BeginSignInRequest.builder()
+        BeginSignInRequest.builder()
                 .setGoogleIdTokenRequestOptions(BeginSignInRequest.GoogleIdTokenRequestOptions.builder()
                         .setSupported(true)
                         // Your server's client ID, not your Android client ID.
                         .setServerClientId(getString(R.string.client_id))
                         // Only show accounts previously used to sign in.
                         .setFilterByAuthorizedAccounts(true)
-                        .build())
-                .build();
+                        .build());
 
     }
 

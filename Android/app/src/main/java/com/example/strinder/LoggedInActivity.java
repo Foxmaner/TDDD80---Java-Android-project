@@ -17,6 +17,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
+/** This Activity class handles all the fragments and backend code that is used when a user
+ * is logged in to the server.
+ */
 public class LoggedInActivity extends AppCompatActivity {
 
     private String firstName,lastName,email,photoUrl;

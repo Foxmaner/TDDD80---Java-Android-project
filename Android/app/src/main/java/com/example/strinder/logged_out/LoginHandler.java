@@ -65,7 +65,7 @@ public class LoginHandler implements VolleyResponseListener {
     @Override
     public void onError(VolleyError error) {
         Log.e("Volley Login Error", error.toString());
-        Toast.makeText(activity, "Failed to login. Please try again later"
+        Toast.makeText(activity, "Error: " + error + ". Please try again later"
                 ,Toast.LENGTH_SHORT).show();
 
     }

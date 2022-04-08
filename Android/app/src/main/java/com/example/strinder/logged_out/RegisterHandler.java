@@ -59,15 +59,13 @@ public class RegisterHandler implements VolleyResponseListener {
     @Override
     public void onError(VolleyError error) {
 
-        int statusCode = error.networkResponse.statusCode;
-
-        if(statusCode == CONFLICT_STATUS_CODE) {
+        if(error.networkResponse != null && error.networkResponse.statusCode == CONFLICT_STATUS_CODE) {
             Log.i("Volley Register Failed","Account already exists. Performing login action.");
             loginHandler.tryLogin();
         }
         else {
             Log.e("Volley Register Error", error.toString());
-            Toast.makeText(activity, "Bad request from client. Please try again later.",
+            Toast.makeText(activity, "Error: " +  error + ". Please try again later.",
                     Toast.LENGTH_SHORT).show();
         }
     }

@@ -66,7 +66,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestProfile().requestEmail()
+                .requestProfile().requestEmail().requestId()
                 .build();
         if(getActivity() != null && getContext() != null) {
             mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
@@ -155,6 +155,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void login(final GoogleSignInAccount account) {
         Log.i("Google Sign In", "Logged in. Sending user to main.");
         //Connect to OUR server.
+        //TODO Use this as the password? Idk?
+        System.out.println(account.getId());
         RegisterHandler registerHandler = new RegisterHandler(account,this.getActivity());
         registerHandler.tryRegister();
 

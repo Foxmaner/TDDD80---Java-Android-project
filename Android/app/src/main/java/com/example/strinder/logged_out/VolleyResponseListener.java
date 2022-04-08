@@ -1,8 +1,8 @@
-package com.example.strinder;
+package com.example.strinder.logged_out;
 
 import com.android.volley.VolleyError;
 
-public interface ResponseListener {
+public interface VolleyResponseListener {
 
     void onResponse(final Object response);
 

@@ -8,22 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.example.strinder.LoggedInActivity;
 import com.example.strinder.R;
-import com.example.strinder.ResponseListener;
-import com.example.strinder.ServerConnection;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,23 +22,15 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment implements View.OnClickListener, ResponseListener {
+public class LoginFragment extends Fragment implements View.OnClickListener {
 
     private GoogleSignInClient mGoogleSignInClient;
     private ActivityResultLauncher<Intent> activityResultLauncher;
-    private GoogleSignInAccount account;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -87,7 +69,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Res
         if(getActivity() != null && getContext() != null) {
             mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
-            account = null;//GoogleSignIn.getLastSignedInAccount(getContext());
+            //TODO Ta bort kommentaren här sen så att account INTE är null.
+            GoogleSignInAccount account = null;//GoogleSignIn.getLastSignedInAccount(getContext());
 
             SignInButton signInButton = v.findViewById(R.id.googleSignIn);
             signInButton.setColorScheme(SignInButton.COLOR_LIGHT);
@@ -111,7 +94,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Res
 
             }
             else {
-                login();
+                login(account);
             }
 
         }
@@ -138,9 +121,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Res
 
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            account = completedTask.getResult(ApiException.class);
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-            login();
+            login(account);
 
         } catch (ApiException e) {
             // The ApiException status code indicates the detailed failure reason.
@@ -149,125 +132,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener, Res
         }
     }
 
-    private void login() {
-        //TODO Use account here somehow. We can get all the information from there.
+    private void login(final GoogleSignInAccount account) {
         Log.i("Google Sign In", "Logged in. Sending user to main.");
-        handleUser();
+        //Connect to OUR server.
+        RegisterHandler registerHandler = new RegisterHandler(account,this.getActivity());
+        registerHandler.tryRegister();
 
     }
 
 
-    private void handleUser() {
-        //Check with networking if the user exists in the db, otherwise create a user.
-        //TODO This works with HTTP, because of the network_security_config.xml. I needed this
-        //TODO for it to work locally. In HTTPS, the server parsed the data wrong. We have to check
-        //TODO if this error occurs on heroku or not. Also, we need to have this code "global"
-        //TODO later.
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("first_name", account.getGivenName());
-            jsonObject.put("last_name",account.getFamilyName());
-            jsonObject.put("username", account.getGivenName());
-            //TODO Fix password issue. We can't get the google password...
-            jsonObject.put("password","TestPassword");
-            //Send a request and let the listener (this) handle what to do.
-            ServerConnection.sendStringJsonRequest(this.getContext(), "/add", jsonObject, Request.Method.POST, this);
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-
-    //TODO THE CODE BELOW NEEDS ABSTRACTION. DO THESE IN RegisterHandler and LoginHandler!
-
-    @Override
-    public void onResponse(Object response) {
-
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("username", account.getGivenName());
-            //TODO Fix password issue. We can't get the google password...
-            jsonObject.put("password","TestPassword");
-            //Send a request and let the listener (this) handle what to do.
-            ServerConnection.sendStringJsonRequest(this.getContext(), "/user/login", jsonObject, Request.Method.POST, new ResponseListener() {
-                @Override
-                public void onResponse(Object response) {
-                    //TODO We need to pass the Token as well!
-                    Intent myIntent = new Intent(getActivity(), LoggedInActivity.class);
-                    myIntent.putExtra("email", account.getEmail());
-                    myIntent.putExtra("firstName", account.getGivenName());
-                    myIntent.putExtra("lastName", account.getFamilyName());
-                    if (account.getPhotoUrl() != null) {
-                        myIntent.putExtra("photo", account.getPhotoUrl().toString());
-                    }
-
-                    startActivity(myIntent);
-                }
-
-                @Override
-                public void onError(VolleyError error) {
-
-                    //FIXME I can't do a Toast here, because this does not have context.
-                    System.out.println("ERROR!! Failed to login.");
-                    /*
-                      /*
-                    Toast.makeText(this.getContext(), "Failed to handle request on the server. Please " +
-                "try again later", Toast.LENGTH_SHORT).show();
-                     */
-
-                }
-            });
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-
-
-    }
-
-    @Override
-    public void onError(VolleyError error) {
-        //We got an error on register. We need to check if we can login.
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("username", account.getGivenName());
-            //TODO Fix password issue. We can't get the google password...
-            jsonObject.put("password","TestPassword");
-            //Send a request and let the listener (this) handle what to do.
-            ServerConnection.sendStringJsonRequest(this.getContext(), "/user/login", jsonObject, Request.Method.POST, new ResponseListener() {
-                @Override
-                public void onResponse(Object response) {
-                    //TODO We need to pass the Token as well!
-                    Intent myIntent = new Intent(getActivity(), LoggedInActivity.class);
-                    myIntent.putExtra("email", account.getEmail());
-                    myIntent.putExtra("firstName", account.getGivenName());
-                    myIntent.putExtra("lastName", account.getFamilyName());
-                    if (account.getPhotoUrl() != null) {
-                        myIntent.putExtra("photo", account.getPhotoUrl().toString());
-                    }
-
-                    startActivity(myIntent);
-                }
-
-                @Override
-                public void onError(VolleyError error) {
-
-                    //FIXME I can't do a Toast here, because this does not have context.
-                    /*
-                    Toast.makeText(this.getContext(), "Failed to handle request on the server. Please " +
-                "try again later", Toast.LENGTH_SHORT).show();
-                     */
-                    System.out.println("ERROR!! Failed to login.");
-                }
-            });
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-    }
 }

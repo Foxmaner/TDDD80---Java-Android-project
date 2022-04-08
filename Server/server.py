@@ -83,8 +83,8 @@ def add():
         db.session.commit()
 
         return new_user.to_dict(), 200
-
-    return "", 400
+    else:
+        return "", 409
 
 
 @app.route("/add/<user_id>", methods=["POST"])

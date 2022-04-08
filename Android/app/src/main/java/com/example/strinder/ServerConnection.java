@@ -4,9 +4,10 @@ import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.strinder.logged_out.VolleyResponseListener;
+
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
@@ -19,7 +20,7 @@ public class ServerConnection {
 
     public static void sendStringJsonRequest(final Context context, final String route,
                                              final JSONObject json, final int method,
-                                             final ResponseListener responseListener) {
+                                             final VolleyResponseListener volleyResponseListener) {
 
         if(method != Request.Method.POST && method != Request.Method.GET &&
                 method != Request.Method.DELETE && method != Request.Method.PUT) {
@@ -31,7 +32,7 @@ public class ServerConnection {
         String url = BASE_URL + route;
         String jsonString = json.toString();
 
-        StringRequest request = new StringRequest(method, url, (responseListener::onResponse), responseListener::onError) {
+        StringRequest request = new StringRequest(method, url, (volleyResponseListener::onResponse), volleyResponseListener::onError) {
             @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> params = new HashMap<>();

@@ -1,4 +1,4 @@
-package com.example.strinder.logged_out;
+package com.example.strinder;
 
 import com.android.volley.VolleyError;
 

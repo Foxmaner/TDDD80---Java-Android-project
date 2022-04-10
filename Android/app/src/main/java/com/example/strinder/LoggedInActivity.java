@@ -3,13 +3,21 @@ package com.example.strinder;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.strinder.logged_in.AddActivityFragment;
+import com.example.strinder.logged_in.FriendsFragment;
+import com.example.strinder.logged_in.HomeFragment;
+import com.example.strinder.logged_in.MessagesFragment;
+import com.example.strinder.logged_in.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -43,6 +51,33 @@ public class LoggedInActivity extends AppCompatActivity {
 
         BottomNavigationView menuBar = findViewById(R.id.navBar);
         menuBar.setSelectedItemId(R.id.home);
+
+        menuBar.setOnItemSelectedListener(item -> {
+            // do stuff
+            if (item.getItemId()==R.id.home){
+                HomeFragment home = new HomeFragment();
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.loggedInView, home).commit();
+            }else if(item.getItemId()==R.id.friends){
+                FriendsFragment friends = new FriendsFragment();
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.loggedInView, friends).commit();
+            }else if(item.getItemId()==R.id.plus){
+                AddActivityFragment addActivity = new AddActivityFragment();
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.loggedInView, addActivity).commit();
+            }else if(item.getItemId()==R.id.messages){
+                MessagesFragment messages = new MessagesFragment();
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.loggedInView, messages).commit();
+            }else if(item.getItemId()==R.id.profile){
+                ProfileFragment profile = new ProfileFragment();
+                getSupportFragmentManager().beginTransaction().
+                        replace(R.id.loggedInView, profile).commit();
+            }
+
+            return true;
+        });
 
     }
 

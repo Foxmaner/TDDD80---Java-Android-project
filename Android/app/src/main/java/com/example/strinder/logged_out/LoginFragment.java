@@ -71,9 +71,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         if(getActivity() != null && getContext() != null) {
             mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
-            //TODO Ta bort kommentaren här sen så att account INTE är null.
             //Check if the user was recently signed in through Google on this device.
-            GoogleSignInAccount account = null;//GoogleSignIn.getLastSignedInAccount(getContext());
+            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
 
             //Set SignInButton style programatically.
             SignInButton signInButton = v.findViewById(R.id.googleSignIn);
@@ -155,8 +154,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void login(final GoogleSignInAccount account) {
         Log.i("Google Sign In", "Logged in. Sending user to main.");
         //Connect to OUR server.
-        //TODO Use this as the password? Idk?
-        System.out.println(account.getId());
         RegisterHandler registerHandler = new RegisterHandler(account,this.getActivity());
         registerHandler.tryRegister();
 

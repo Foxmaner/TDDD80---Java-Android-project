@@ -6,6 +6,7 @@ from database_com import db_uri, address
 
 # Run with pytest. "pytest test_server.py"
 
+
 @pytest.fixture
 def client():
     db_fd, name = tempfile.mkstemp()

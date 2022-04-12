@@ -19,6 +19,7 @@ public class RegisterHandler implements VolleyResponseListener {
     private final LoginHandler loginHandler;
     private final GoogleSignInAccount account;
     private final Activity activity;
+    private final ServerConnection connection;
 
     /** Initialize a RegisterHandler object
      *
@@ -29,6 +30,7 @@ public class RegisterHandler implements VolleyResponseListener {
         this.account = account;
         this.loginHandler = new LoginHandler(account,activity);
         this.activity = activity;
+        this.connection = new ServerConnection(activity);
     }
 
     /** Try to register the account, if this returns error code 409, we will try to login with
@@ -41,10 +43,10 @@ public class RegisterHandler implements VolleyResponseListener {
             jsonObject.put("first_name", account.getGivenName());
             jsonObject.put("last_name",account.getFamilyName());
             jsonObject.put("username", account.getGivenName());
-            //TODO Fix password issue. We can't get the google password...
-            jsonObject.put("password","TestPassword");
+            //The password is set the google id, then salted and hashed on the server side.
+            jsonObject.put("password",account.getId());
             //Send a request and let the listener (this) handle what to do.
-            ServerConnection.sendStringJsonRequest(activity, "/add", jsonObject, Request.Method.POST, this);
+            connection.sendStringJsonRequest("/add", jsonObject, Request.Method.POST, null,this);
 
         } catch (JSONException e) {
             e.printStackTrace();

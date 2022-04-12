@@ -68,13 +68,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestProfile().requestEmail().requestId()
                 .build();
+
         if(getActivity() != null && getContext() != null) {
             mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
             //Check if the user was recently signed in through Google on this device.
             GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
 
-            //Set SignInButton style programatically.
+            //Set SignInButton style programmatically.
             SignInButton signInButton = v.findViewById(R.id.googleSignIn);
             signInButton.setColorScheme(SignInButton.COLOR_LIGHT);
             signInButton.setSize(SignInButton.SIZE_WIDE);
@@ -136,7 +137,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-
             login(account);
 
         } catch (ApiException e) {

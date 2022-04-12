@@ -54,7 +54,6 @@ public class LoggedInActivity extends AppCompatActivity {
 
         setBottomNavListener(menuBar);
 
-
     }
 
     @Override
@@ -101,7 +100,5 @@ public class LoggedInActivity extends AppCompatActivity {
             return false;
         });
     }
-
-
 
 }

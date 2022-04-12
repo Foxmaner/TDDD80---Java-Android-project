@@ -11,14 +11,22 @@ import com.example.strinder.LoggedInActivity;
 import com.example.strinder.ServerConnection;
 import com.example.strinder.VolleyResponseListener;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.lang.reflect.Type;
+import java.sql.SQLOutput;
+import java.util.Map;
+
 /** This class handles the login request to the server. */
 public class LoginHandler implements VolleyResponseListener {
 
     private final GoogleSignInAccount account;
     private final Activity activity;
+    private final ServerConnection connection;
 
     /** Initialize a LoginHandler object
      *
@@ -28,6 +36,7 @@ public class LoginHandler implements VolleyResponseListener {
     public LoginHandler(final GoogleSignInAccount account, final Activity activity) {
         this.account = account;
         this.activity = activity;
+        this.connection = new ServerConnection(activity);
     }
 
     /** Try to login to the server with the given GoogleSignInAccount data. */
@@ -35,11 +44,10 @@ public class LoginHandler implements VolleyResponseListener {
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("username", account.getGivenName());
-            //TODO Fix password issue. We can't get the google password...
-            jsonObject.put("password","TestPassword");
+            jsonObject.put("password",account.getId());
             //Send a request and let the listener (this) handle what to do.
-            ServerConnection.sendStringJsonRequest(activity, "/user/login", jsonObject,
-                    Request.Method.POST, this);
+            connection.sendStringJsonRequest("/user/login", jsonObject,
+                    Request.Method.POST, null,this);
 
         }
         catch (JSONException e) {
@@ -49,15 +57,15 @@ public class LoginHandler implements VolleyResponseListener {
 
     @Override
     public void onResponse(Object response) {
-        //TODO We need to pass the Token as well!
         Intent myIntent = new Intent(activity, LoggedInActivity.class);
-        myIntent.putExtra("email", account.getEmail());
-        myIntent.putExtra("firstName", account.getGivenName());
-        myIntent.putExtra("lastName", account.getFamilyName());
-
-        if (account.getPhotoUrl() != null) {
-            myIntent.putExtra("photo", account.getPhotoUrl().toString());
-        }
+        //Convert the response with GSON.
+        Gson gson = new Gson();
+        Type type = new TypeToken<Map<String,String>>(){}.getType();
+        Map<String,String > json = gson.fromJson(response.toString(),type);
+        String accessToken = json.get("access_token");
+        myIntent.putExtra("token",accessToken);
+        //Send account
+        myIntent.putExtra("account",account);
 
         activity.startActivity(myIntent);
     }

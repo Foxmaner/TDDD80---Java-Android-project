@@ -6,7 +6,6 @@ from database_com import db_uri, address
 
 # Run with pytest. "pytest test_server.py"
 
-
 @pytest.fixture
 def client():
     db_fd, name = tempfile.mkstemp()
@@ -15,14 +14,12 @@ def client():
     server.app.config['TESTING'] = True
     with server.app.test_client() as client:
         with server.app.app_context():
-            #Kommenterat bort nu, testerna är inte fristående
-            #server.db.drop_all()
-
             server.db.create_all()
 
             user = {"username": "TestUser1", "first_name": "TestUser1FirstName", "last_name": "TestUser1LastName",
                     "password": "TestUser1Password"}
-            user1_request = client.post(address + "/add", json=user)
+
+            client.post(address + "/add", json=user)
 
             token = login_and_get_token(client)
 
@@ -64,7 +61,7 @@ def test_add_post_1(client):
     # Add a post to the user_id: 1.
     post_data = {"title": "Min post", "caption": "Omg guys!"}
     add_post_req = c.post(address + "/add/1", json=post_data, headers={"Authorization": "Bearer " +
-                                                                            token})
+                                                                                        token})
     assert add_post_req.status_code == 200
 
 
@@ -75,7 +72,7 @@ def test_add_post_2(client):
 
     post_data = {"title": "Min andra post", "caption": "Omg guys hello there!"}
     add_post_req2 = c.post(address + "/add/1", json=post_data, headers={"Authorization": "Bearer " +
-                                                                             token})
+                                                                                         token})
     assert add_post_req2.status_code == 200
 
 
@@ -127,7 +124,7 @@ def test_add_comment_1(client):
     #  Add a comment to a post
     post_data = {"text": "Du är så snygg", "user_id": 1}
     add_comment_req = c.post(address + "/comments/1", json=post_data,
-                                  headers={"Authorization": "Bearer " + token})
+                             headers={"Authorization": "Bearer " + token})
     assert add_comment_req.status_code == 200
 
 
@@ -223,7 +220,5 @@ def login_and_get_token(client):
     user = {"username": "TestUser1", "password": "TestUser1Password"}
     user_login = client.post(address + "/user/login", json=user)
     print(user_login.status_code)
-
-
 
     return user_login.get_json()["access_token"]

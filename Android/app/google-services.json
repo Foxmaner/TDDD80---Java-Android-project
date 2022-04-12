@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "110390213444",
+    "project_id": "strinder",
+    "storage_bucket": "strinder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:110390213444:android:45dffec8d5418c39433511",
+        "android_client_info": {
+          "package_name": "com.example.strinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "110390213444-q8ijpavaoo3ac5cueduq2saiacniumvo.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB-MtsRgOoJiakkNrWB3MH-yR0_P94JX40"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "110390213444-q8ijpavaoo3ac5cueduq2saiacniumvo.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

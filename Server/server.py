@@ -57,6 +57,10 @@ def login():
 def add():
     """This function adds a new user."""
     json_data = request.get_json()
+
+    if json_data is None:
+        return "", 400
+
     # Get the json data, if it is not available - return error code 400.
     try:
         # Try to convert the dictionary to variables. If it fails,then return error code 400.
@@ -79,8 +83,8 @@ def add():
         db.session.commit()
 
         return new_user.to_dict(), 200
-
-    return "", 400
+    else:
+        return "", 409
 
 
 @app.route("/add/<user_id>", methods=["POST"])

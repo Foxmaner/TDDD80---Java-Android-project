@@ -1,22 +1,7 @@
 <resources>
     <!-- Login -->
     <string name="app_name">Strinder</string>
-    <string name="loginTitle">Login Page</string>
-    <string name="loginUsername">Username</string>
-    <string name="loginPassword">Password</string>
-    <string name="loginButton">Login</string>
-    <string name="loginRegisterText">Do you want to register? Click here!</string>
-
-    <!-- Register -->
-    <string name="registerTitle">Register Page</string>
-    <string name="registerFirstName">First name</string>
-    <string name="registerLastName">Last name</string>
-    <string name="registerUserName">Username</string>
-    <string name="registerEmail">Email</string>
-    <string name="registerPassword">Password</string>
-    <string name="registerBtn">Register</string>
-    <string name="registerLoginText">Do you want to login? Click here!</string>
-
+    <string name="loginHeader">Login</string>
     <!-- Navbar -->
     <string name="navbar_home">Home</string>
     <string name="navbar_plus">Add</string>
@@ -26,5 +11,18 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
+    <string name="notifications">Notifications</string>
+    <string name="settings">Settings</string>
+    <string name="client_id">960100179212-vsh7i7ja5r93a1l8373t94m9b7cr3opo.apps.googleusercontent.com</string>
+    <string name="strinder">STRINDER</string>
+    <string name="login_background">login background</string>
+    <string name="background_image_viewer">Background image</string>
+    <string name="logoContent">The logo of Strinder</string>
+    <string name="home">home</string>
+    <string name="friends">friends</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="profilepage">ProfilePage</string>
+    <string name="messagespage">messagesPage</string>
 
 </resources>

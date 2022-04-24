@@ -7,15 +7,17 @@ import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.strinder.R;
+import com.google.android.material.textfield.TextInputLayout;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AddActivityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddActivityFragment extends Fragment {
+public class AddActivityFragment extends Fragment implements View.OnClickListener{
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -61,6 +63,17 @@ public class AddActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_activity, container, false);
+        View view;
+        view =  inflater.inflate(R.layout.fragment_add_activity, container, false);
+
+        Button addActivityButton = (Button) view.findViewById(R.id.addActivityButton);
+        addActivityButton.setOnClickListener((View.OnClickListener) this);
+
+        return view;
+    }
+
+    @Override
+    public void onClick(View view) {
+        System.out.println("cooler");
     }
 }

@@ -8,7 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
@@ -18,8 +17,10 @@ import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.Scopes;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
 
 /**
@@ -65,8 +66,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestProfile().requestEmail().requestId()
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestServerAuthCode(getString(R.string.client_id))
+                .requestProfile().requestEmail().requestId().requestScopes(
+                        new Scope("https://www.googleapis.com/auth/user.addresses.read"),
+                        new Scope("https://www.googleapis.com/auth/user.phonenumbers.read"),
+                        new Scope(Scopes.PROFILE))
                 .build();
 
         if(getActivity() != null && getContext() != null) {
@@ -158,6 +162,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         registerHandler.tryRegister();
 
     }
+
+
 
 
 

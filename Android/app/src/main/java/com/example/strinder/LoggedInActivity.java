@@ -48,7 +48,7 @@ public class LoggedInActivity extends AppCompatActivity {
         BottomNavigationView menuBar = findViewById(R.id.navBar);
         menuBar.setSelectedItemId(R.id.home);
 
-        setBottomNavListener(toolbar,menuBar);
+        setBottomNavListener(toolbar,menuBar,account,token);
 
     }
 
@@ -64,7 +64,7 @@ public class LoggedInActivity extends AppCompatActivity {
      * the user presses.
      * @param menuBar -  the BottomNavigationView object that the listener will be added to.
      */
-    private void setBottomNavListener(final Toolbar toolbar,final BottomNavigationView menuBar) {
+    private void setBottomNavListener(final Toolbar toolbar,final BottomNavigationView menuBar, final GoogleSignInAccount account, final String token) {
         menuBar.setOnItemSelectedListener(item -> {
 
             Fragment fragment = null;
@@ -92,7 +92,7 @@ public class LoggedInActivity extends AppCompatActivity {
                 view.setText(getString(R.string.navbar_messages));
             }
             else if (id == R.id.profile) {
-                fragment = new ProfileFragment();
+                fragment = ProfileFragment.newInstance(account,token);
                 TextView view = toolbar.findViewById(R.id.fragmentName);
                 view.setText(getString(R.string.navbar_profile));
             }

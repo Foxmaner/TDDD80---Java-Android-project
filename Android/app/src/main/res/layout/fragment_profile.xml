@@ -14,16 +14,17 @@
         app:layout_constraintGuide_begin="200dp" />
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/materialCardView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:strokeWidth="1dp"
-        app:cardElevation="5dp"
-        app:strokeColor="@color/white"
         app:cardBackgroundColor="@color/white"
+        app:cardElevation="5dp"
         app:layout_constraintBottom_toTopOf="@+id/guideline4"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent"
+        app:strokeColor="@color/white"
+        app:strokeWidth="1dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,27 +32,29 @@
 
             <ImageView
                 android:id="@+id/profileImage"
-                android:layout_width="91dp"
-                android:layout_height="98dp"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
                 android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginBottom="94dp"
                 android:contentDescription="@string/profile_desc"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/firstLastName"
+                app:layout_constraintEnd_toStartOf="@+id/guideline3"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/login_pic"
-                tools:ignore="ImageContrastCheck"
-                tools:src="@tools:sample/avatars" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/firstLastName"
                 android:layout_width="181dp"
                 android:layout_height="33dp"
+                android:layout_marginStart="8dp"
                 android:text="@string/placeholder"
+                android:textColor="#000000"
+                android:textSize="13sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.050000012" />
 
@@ -59,12 +62,14 @@
                 android:id="@+id/city"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
+                android:layout_marginStart="8dp"
                 android:text="@string/placeholder"
+                android:textColor="#000000"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.33"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
                 app:layout_constraintTop_toBottomOf="@+id/firstLastName"
                 app:layout_constraintVertical_bias="0.060000002" />
 
@@ -72,10 +77,14 @@
                 android:id="@+id/biography"
                 android:layout_width="179dp"
                 android:layout_height="78dp"
+                android:layout_marginStart="8dp"
                 android:text="@string/placeholder"
+                android:textColor="#000000"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline2"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline3"
                 app:layout_constraintTop_toBottomOf="@+id/city" />
 
             <ImageButton
@@ -88,7 +97,7 @@
                 android:src="@drawable/camera"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.01"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/profileImage"
                 tools:ignore="RedundantDescriptionCheck" />
@@ -102,10 +111,24 @@
                 android:contentDescription="@string/upload_desc"
                 android:src="@drawable/upload"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/biography"
+                app:layout_constraintEnd_toStartOf="@+id/guideline3"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/cameraButton"
                 app:layout_constraintTop_toBottomOf="@+id/profileImage" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="300dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="113dp" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </androidx.constraintlayout.widget.ConstraintLayout>

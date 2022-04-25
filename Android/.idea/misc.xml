@@ -24,10 +24,20 @@
         <entry key="..\:/Programming/Skola/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_login.xml" value="0.36096014492753625" />
         <entry key="..\:/Programming/Skola/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_register.xml" value="0.36096014492753625" />
         <entry key="..\:/Programming/Skola/TDDD80/tddd80-projekt/Android/app/src/main/res/menu/nav_menu.xml" value="0.31354166666666666" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/activity_logged_in.xml" value="0.10869565217391304" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/activity_logged_out.xml" value="0.1" />
         <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/activity_main.xml" value="0.152" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_add_activity.xml" value="0.10054347826086957" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_friends.xml" value="0.10054347826086957" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_home.xml" value="0.176" />
         <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_login.xml" value="0.2" />
         <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_login2.xml" value="0.12360688956433637" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_messages.xml" value="0.1" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_profile.xml" value="0.38408304498269896" />
         <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/fragment_register.xml" value="0.1" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/layout/toolbar.xml" value="0.2" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/menu/nav_menu.xml" value="0.11302083333333333" />
+        <entry key="..\:/Programming/TDDD80/tddd80-projekt/Android/app/src/main/res/menu/nav_top.xml" value="0.16" />
       </map>
     </option>
   </component>

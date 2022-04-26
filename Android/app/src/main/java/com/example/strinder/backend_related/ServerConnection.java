@@ -1,4 +1,4 @@
-package com.example.strinder;
+package com.example.strinder.backend_related;
 
 import android.content.Context;
 

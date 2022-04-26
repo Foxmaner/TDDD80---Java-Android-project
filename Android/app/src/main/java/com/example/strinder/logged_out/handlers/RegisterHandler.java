@@ -1,4 +1,4 @@
-package com.example.strinder.logged_out;
+package com.example.strinder.logged_out.handlers;
 
 import android.app.Activity;
 import android.util.Log;
@@ -6,9 +6,10 @@ import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.example.strinder.ServerConnection;
-import com.example.strinder.VolleyResponseListener;
+import com.example.strinder.backend_related.ServerConnection;
+import com.example.strinder.backend_related.VolleyResponseListener;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,9 +27,10 @@ public class RegisterHandler implements VolleyResponseListener {
      * @param account - the GoogleSignInAccount that is verified.
      * @param activity - the Activity.
      */
-    public RegisterHandler(final GoogleSignInAccount account, final Activity activity) {
+    public RegisterHandler(final GoogleSignInAccount account, final Activity activity,
+                           final GoogleSignInClient client) {
         this.account = account;
-        this.loginHandler = new LoginHandler(account,activity);
+        this.loginHandler = new LoginHandler(account,activity,client);
         this.activity = activity;
         this.connection = new ServerConnection(activity);
     }

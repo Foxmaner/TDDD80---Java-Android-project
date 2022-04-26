@@ -1,10 +1,9 @@
-package com.example.strinder;
+package com.example.strinder.private_data;
 
 import android.accounts.Account;
 import android.app.Activity;
-import android.content.Context;
-import android.view.View;
 
+import com.example.strinder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.http.HttpTransport;
@@ -14,8 +13,6 @@ import com.google.api.services.people.v1.PeopleService;
 import com.google.api.services.people.v1.model.Person;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /** This class handles the connections to Google Services when it comes to their People API.

@@ -3,6 +3,7 @@ package com.example.strinder;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBar;
@@ -15,6 +16,8 @@ import com.example.strinder.logged_in.FriendsFragment;
 import com.example.strinder.logged_in.HomeFragment;
 import com.example.strinder.logged_in.MessagesFragment;
 import com.example.strinder.logged_in.ProfileFragment;
+import com.example.strinder.logged_in.SettingsFragment;
+import com.example.strinder.logged_out.LoginFragment;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
@@ -24,16 +27,18 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
  */
 public class LoggedInActivity extends AppCompatActivity {
 
+    private Toolbar toolbar;
+    private String token;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
         //Get user information and JWT Token.
         GoogleSignInAccount account = getIntent().getParcelableExtra("account");
-        String token = getIntent().getExtras().getString("token");
+        token = getIntent().getExtras().getString("token");
 
         //Top Nav
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar bar =  getSupportActionBar();
 
@@ -48,7 +53,7 @@ public class LoggedInActivity extends AppCompatActivity {
         BottomNavigationView menuBar = findViewById(R.id.navBar);
         menuBar.setSelectedItemId(R.id.home);
 
-        setBottomNavListener(toolbar,menuBar,account,token);
+        setBottomNavListener(menuBar,account,token);
 
     }
 
@@ -60,11 +65,33 @@ public class LoggedInActivity extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        if(item.getItemId() == R.id.action_settings) {
+            SettingsFragment fragment = SettingsFragment.newInstance(token);
+            getSupportFragmentManager().beginTransaction().replace(R.id.loggedInView,fragment).commit();
+            setHeaderText(getString(R.string.settings));
+            return true;
+        }
+
+        return false;
+    }
+
+    /** Change the top navigation menu header text
+     *
+     * @param text - the new String of text that is to be displayed.
+     */
+    private void setHeaderText(final String text) {
+        TextView view = toolbar.findViewById(R.id.fragmentName);
+        view.setText(text);
+    }
+
     /** This enables  the BottomNavListener to change fragment depending on what button
      * the user presses.
      * @param menuBar -  the BottomNavigationView object that the listener will be added to.
      */
-    private void setBottomNavListener(final Toolbar toolbar,final BottomNavigationView menuBar, final GoogleSignInAccount account, final String token) {
+    private void setBottomNavListener(final BottomNavigationView menuBar, final GoogleSignInAccount account, final String token) {
         menuBar.setOnItemSelectedListener(item -> {
 
             Fragment fragment = null;
@@ -72,29 +99,24 @@ public class LoggedInActivity extends AppCompatActivity {
 
             //We can't convert this to a switch case due to the ids not being final.
             if (id == R.id.home) {
-                TextView view = toolbar.findViewById(R.id.fragmentName);
-                view.setText(getString(R.string.navbar_home));
+                setHeaderText(getString(R.string.navbar_home));
                 fragment = new HomeFragment();
             }
             else if (id == R.id.friends) {
                 fragment = new FriendsFragment();
-                TextView view = toolbar.findViewById(R.id.fragmentName);
-                view.setText(getString(R.string.navbar_friends));
+                setHeaderText(getString(R.string.navbar_friends));
             }
             else if (id == R.id.plus) {
                 fragment = new AddActivityFragment();
-                TextView view = toolbar.findViewById(R.id.fragmentName);
-                view.setText(getString(R.string.navbar_plus));
+                setHeaderText(getString(R.string.navbar_plus));
             }
             else if (id == R.id.messages) {
                 fragment = new MessagesFragment();
-                TextView view = toolbar.findViewById(R.id.fragmentName);
-                view.setText(getString(R.string.navbar_messages));
+                setHeaderText(getString(R.string.navbar_messages));
             }
             else if (id == R.id.profile) {
                 fragment = ProfileFragment.newInstance(account,token);
-                TextView view = toolbar.findViewById(R.id.fragmentName);
-                view.setText(getString(R.string.navbar_profile));
+                setHeaderText(getString(R.string.navbar_profile));
             }
 
             if(fragment != null) {

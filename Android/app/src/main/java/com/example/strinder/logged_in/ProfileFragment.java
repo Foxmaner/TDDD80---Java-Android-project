@@ -9,13 +9,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.strinder.CompletionListener;
-import com.example.strinder.GoogleServices;
+import com.example.strinder.private_data.CompletionListener;
+import com.example.strinder.private_data.GoogleServices;
 import com.example.strinder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.Scopes;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,10 +62,11 @@ public class ProfileFragment extends Fragment implements CompletionListener {
         if(bundle != null) {
             GoogleSignInAccount account =  bundle.getParcelable("account");
             token = bundle.getString("token");
+            //First and last name
             TextView firstLastName = v.findViewById(R.id.firstLastName);
             firstLastName.setText(account.getDisplayName());
 
-
+            //Profile image
             ImageView profileImage = v.findViewById(R.id.profileImage);
             Picasso.with(getContext())
                     .load(account.getPhotoUrl())
@@ -72,20 +74,23 @@ public class ProfileFragment extends Fragment implements CompletionListener {
                     .error(android.R.drawable.sym_def_app_icon)
                     .into(profileImage);
 
-
+            //Private information
             List<String> scopes = new ArrayList<>();
 
             scopes.add("https://www.googleapis.com/auth/user.gender.read");
             scopes.add("https://www.googleapis.com/auth/user.addresses.read");
+            scopes.add("https://www.googleapis.com/auth/user.birthday.read");
             scopes.add(Scopes.PROFILE);
             GoogleServices services = new GoogleServices(getActivity());
 
-            services.requestPrivateData(account,scopes,"addresses,genders",(person, obj) -> {
+            services.requestPrivateData(account,scopes,"addresses,genders,birthdays",(person, obj) -> {
                 //Change GUI usage
                 View view = (View)obj;
                 TextView info = view.findViewById(R.id.city);
                 String gender = "Unknown";
                 String address = "Unknown";
+                String birthday = "Unknown";
+
                 if(person.getGenders() != null) {
                     gender = person.getGenders().get(0).getFormattedValue();
                 }
@@ -94,7 +99,16 @@ public class ProfileFragment extends Fragment implements CompletionListener {
                     address = person.getGenders().get(0).getFormattedValue();
                 }
 
-                info.setText("Address: " + address + "  Gender: " + gender);
+                if(person.getBirthdays() != null) {
+                    try {
+                        birthday = person.getBirthdays().get(0).getDate().toPrettyString();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+
+                info.setText("Address: " + address + "  Gender: " + gender + " \nBirthday: " + birthday);
 
 
             },v,this);

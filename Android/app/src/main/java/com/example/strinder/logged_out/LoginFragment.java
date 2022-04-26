@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
 import com.example.strinder.R;
+import com.example.strinder.logged_out.handlers.RegisterHandler;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -70,6 +71,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                 .requestProfile().requestEmail().requestId().requestScopes(
                         new Scope("https://www.googleapis.com/auth/user.addresses.read"),
                         new Scope("https://www.googleapis.com/auth/user.gender.read"),
+                        new Scope("https://www.googleapis.com/auth/user.birthday.read"),
                         new Scope(Scopes.PROFILE))
                 .build();
 
@@ -158,7 +160,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void login(final GoogleSignInAccount account) {
         Log.i("Google Sign In", "Logged in. Sending user to main.");
         //Connect to OUR server.
-        RegisterHandler registerHandler = new RegisterHandler(account,this.getActivity());
+        RegisterHandler registerHandler = new RegisterHandler(account,this.getActivity(),
+                mGoogleSignInClient);
         registerHandler.tryRegister();
 
     }

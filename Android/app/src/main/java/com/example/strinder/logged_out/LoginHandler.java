@@ -43,7 +43,7 @@ public class LoginHandler implements VolleyResponseListener {
     public void tryLogin() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("username", account.getGivenName());
+            jsonObject.put("username", account.getId());
             jsonObject.put("password",account.getId());
             //Send a request and let the listener (this) handle what to do.
             connection.sendStringJsonRequest("/user/login", jsonObject,

@@ -66,10 +66,10 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).requestServerAuthCode(getString(R.string.client_id))
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestProfile().requestEmail().requestId().requestScopes(
                         new Scope("https://www.googleapis.com/auth/user.addresses.read"),
-                        new Scope("https://www.googleapis.com/auth/user.phonenumbers.read"),
+                        new Scope("https://www.googleapis.com/auth/user.gender.read"),
                         new Scope(Scopes.PROFILE))
                 .build();
 

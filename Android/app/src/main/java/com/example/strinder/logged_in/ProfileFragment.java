@@ -1,37 +1,22 @@
 package com.example.strinder.logged_in;
 
-import android.accounts.Account;
-import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
-import android.util.Log;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.example.strinder.CompletionListener;
+import com.example.strinder.GoogleServices;
 import com.example.strinder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.Scopes;
-import com.google.android.gms.common.api.Scope;
-import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeTokenRequest;
-import com.google.api.client.googleapis.auth.oauth2.GoogleCredential;
-import com.google.api.client.googleapis.auth.oauth2.GoogleTokenResponse;
-import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
-import com.google.api.client.http.HttpTransport;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-import com.google.api.services.people.v1.PeopleService;
-import com.google.api.services.people.v1.model.ListConnectionsResponse;
-import com.google.api.services.people.v1.model.Person;
-import com.google.api.services.people.v1.model.PhoneNumber;
 import com.squareup.picasso.Picasso;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -40,8 +25,9 @@ import java.util.List;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends Fragment implements CompletionListener {
 
+    private String token;
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -74,7 +60,7 @@ public class ProfileFragment extends Fragment {
         Bundle bundle = getArguments();
         if(bundle != null) {
             GoogleSignInAccount account =  bundle.getParcelable("account");
-            String token = bundle.getString("token");
+            token = bundle.getString("token");
             TextView firstLastName = v.findViewById(R.id.firstLastName);
             firstLastName.setText(account.getDisplayName());
 
@@ -87,56 +73,39 @@ public class ProfileFragment extends Fragment {
                     .into(profileImage);
 
 
-            //DEN HÄR KODEN ÄR FORTFARANDE SÖNDER.
+            List<String> scopes = new ArrayList<>();
 
-            if(this.getContext() != null) {
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+            scopes.add("https://www.googleapis.com/auth/user.gender.read");
+            scopes.add("https://www.googleapis.com/auth/user.addresses.read");
+            scopes.add(Scopes.PROFILE);
+            GoogleServices services = new GoogleServices(getActivity());
 
-                        HttpTransport httpTransport = new NetHttpTransport();
-                        JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-                        List<String> scopes = new ArrayList<>();
-                        /*
-                        scopes.add("https://www.googleapis.com/auth/user.phonenumbers.read");
-                        scopes.add("https://www.googleapis.com/auth/user.gender.read");
-                        scopes.add("https://www.googleapis.com/auth/user.addresses.read");
-                        scopes.add("https://www.googleapis.com/auth/user.birthday.read");
-                        */
-                        scopes.add(Scopes.PROFILE);
+            services.requestPrivateData(account,scopes,"addresses,genders",(person, obj) -> {
+                //Change GUI usage
+                View view = (View)obj;
+                TextView info = view.findViewById(R.id.city);
+                String gender = "Unknown";
+                String address = "Unknown";
+                if(person.getGenders() != null) {
+                    gender = person.getGenders().get(0).getFormattedValue();
+                }
 
-                        // STEP 2
-                        GoogleAccountCredential credential =
-                                GoogleAccountCredential.usingOAuth2(getContext(), scopes);
-                        credential.setSelectedAccount(
-                                new Account(account.getEmail(), "com.google"));
+                if(person.getAddresses() != null) {
+                    address = person.getGenders().get(0).getFormattedValue();
+                }
 
-                        PeopleService service = new PeopleService.Builder(httpTransport, jsonFactory, credential)
-                                .setApplicationName(getString(R.string.app_name))
-                                .build();
+                info.setText("Address: " + address + "  Gender: " + gender);
 
 
-                        try {
-                            //Det funkar, vi får ut något - men vi får inte all info vi vill ha. Permissions fel. Se utkommenterade rader ovanför.
-                            Person response = service.people().get("people/me").setPersonFields("phoneNumbers").execute();
-                            System.out.println(response);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                });
-
-                thread.start();
-            }
-
-
-
-
+            },v,this);
 
         }
 
         return v;
     }
 
+    @Override
+    public void onCompletion() {
+        System.out.println(token);
+    }
 }

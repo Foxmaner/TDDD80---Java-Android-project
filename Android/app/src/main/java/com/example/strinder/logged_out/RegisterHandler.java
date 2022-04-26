@@ -40,11 +40,28 @@ public class RegisterHandler implements VolleyResponseListener {
     public void tryRegister() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("first_name", account.getGivenName());
-            jsonObject.put("last_name",account.getFamilyName());
-            jsonObject.put("username", account.getGivenName());
+            String firstName = "Unknown";
+            String lastName = "Unknown";
+            //If these fail, we can sadly not create an account.
+            String username = null;
+            String password = null;
+
+            if(account.getGivenName() != null) {
+                firstName =  account.getGivenName();
+            }
+            if(account.getFamilyName() != null) {
+                lastName =  account.getFamilyName();
+            }
+            if(account.getId() != null) {
+                username =  account.getId();
+                password = account.getId();
+            }
+
+            jsonObject.put("first_name", firstName);
+            jsonObject.put("last_name",lastName);
+            jsonObject.put("username", username);
             //The password is set the google id, then salted and hashed on the server side.
-            jsonObject.put("password",account.getId());
+            jsonObject.put("password",password);
             //Send a request and let the listener (this) handle what to do.
             connection.sendStringJsonRequest("/add", jsonObject, Request.Method.POST, null,this);
 

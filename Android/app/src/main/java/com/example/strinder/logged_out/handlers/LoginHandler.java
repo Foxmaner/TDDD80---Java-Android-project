@@ -1,4 +1,4 @@
-package com.example.strinder.logged_out;
+package com.example.strinder.logged_out.handlers;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -8,9 +8,10 @@ import android.widget.Toast;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.LoggedInActivity;
-import com.example.strinder.ServerConnection;
-import com.example.strinder.VolleyResponseListener;
+import com.example.strinder.backend_related.ServerConnection;
+import com.example.strinder.backend_related.VolleyResponseListener;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -18,7 +19,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.lang.reflect.Type;
-import java.sql.SQLOutput;
 import java.util.Map;
 
 /** This class handles the login request to the server. */
@@ -43,7 +43,7 @@ public class LoginHandler implements VolleyResponseListener {
     public void tryLogin() {
         JSONObject jsonObject = new JSONObject();
         try {
-            jsonObject.put("username", account.getGivenName());
+            jsonObject.put("username", account.getId());
             jsonObject.put("password",account.getId());
             //Send a request and let the listener (this) handle what to do.
             connection.sendStringJsonRequest("/user/login", jsonObject,

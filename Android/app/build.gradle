@@ -36,14 +36,22 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 
 dependencies {
+    //Used to convert GoogleSignInAccount URI to an actual image.
+    implementation('com.squareup.picasso:picasso:2.5.2')
     //Volley
     implementation("com.android.volley:volley:1.2.1")
+    //Google
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+    implementation 'com.google.apis:google-api-services-people:v1-rev255-1.23.0'
+    implementation 'com.google.api-client:google-api-client-android:1.23.0'
+    implementation 'com.google.android.gms:play-services-auth:20.1.0'
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:29.2.1')
     implementation 'com.google.firebase:firebase-analytics'
     //GSON
     implementation 'com.google.code.gson:gson:2.8.7'
     //Other
+    implementation 'com.google.android.material:material:1.5.0'
     implementation 'com.google.android.gms:play-services-auth:20.1.0'
     implementation 'androidx.appcompat:appcompat:1.4.1'
     implementation 'com.google.android.material:material:1.5.0'

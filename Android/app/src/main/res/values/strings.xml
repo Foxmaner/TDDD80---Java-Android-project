@@ -2,23 +2,28 @@
     <!-- Login -->
     <string name="app_name">Strinder</string>
     <string name="loginHeader">Login</string>
+    <string name="login_background">Login background</string>
+    <string name="background_image_viewer">Background image</string>
+    <string name="logoContent">The logo of Strinder</string>
     <!-- Navbar -->
     <string name="navbar_home">Home</string>
     <string name="navbar_plus">Add</string>
     <string name="navbar_friends">Friends</string>
     <string name="navbar_profile">Profile</string>
     <string name="navbar_messages">Messages</string>
-
+    <string name="camera_desc">Take picture.</string>
+    <string name="profile_desc">Your profile image.</string>
+    <string name="upload_desc">Upload image from device.</string>
+    <string name="placeholder">Placeholder</string>
     <string name="notifications">Notifications</string>
     <string name="settings">Settings</string>
+    <!-- Client id -->
     <string name="client_id">960100179212-vsh7i7ja5r93a1l8373t94m9b7cr3opo.apps.googleusercontent.com</string>
-    <string name="strinder">STRINDER</string>
-    <string name="login_background">login background</string>
-    <string name="background_image_viewer">Background image</string>
-    <string name="logoContent">The logo of Strinder</string>
-    <string name="home">home</string>
-    <string name="friends">friends</string>
-    <string name="profilepage">ProfilePage</string>
-    <string name="messagespage">messagesPage</string>
+    <!-- Settings -->
+    <string name="sign_out">Sign Out</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

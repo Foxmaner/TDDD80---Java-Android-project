@@ -14,8 +14,8 @@ import android.widget.RadioGroup;
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
-import com.example.strinder.ServerConnection;
-import com.example.strinder.VolleyResponseListener;
+import com.example.strinder.backend_related.ServerConnection;
+import com.example.strinder.backend_related.VolleyResponseListener;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.textfield.TextInputLayout;
 
@@ -26,7 +26,7 @@ import org.json.JSONObject;
  * Use the {@link AddActivityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddActivityFragment extends Fragment implements View.OnClickListener, VolleyResponseListener{
+public class AddActivityFragment extends Fragment implements View.OnClickListener, VolleyResponseListener {
 
     private TextInputLayout titleInput;
     private TextInputLayout captionInput;

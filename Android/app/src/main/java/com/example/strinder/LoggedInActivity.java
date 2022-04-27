@@ -62,11 +62,11 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
         scopes.add("https://www.googleapis.com/auth/user.birthday.read");
         scopes.add(Scopes.PROFILE);
         GoogleServices services = new GoogleServices(this);
-
+    /*
         services.requestPrivateData(account,scopes,"genders,birthdays",(person,
                                                                                   obj) -> {
             if(person.getBirthdays() != null) {
-                user.setBirthday(person.getBirthdays().get(0).getDate());
+                //user.setBirthday(person.getBirthdays().get(0).getDate());
             }
 
             if(person.getGenders() != null) {
@@ -74,7 +74,7 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
             }
 
         },user,this);
-
+*/
     }
 
     @Override

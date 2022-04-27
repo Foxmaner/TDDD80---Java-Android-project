@@ -160,8 +160,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     private void login(final GoogleSignInAccount account) {
         Log.i("Google Sign In", "Logged in. Sending user to main.");
         //Connect to OUR server.
-        RegisterHandler registerHandler = new RegisterHandler(account,this.getActivity(),
-                mGoogleSignInClient);
+        RegisterHandler registerHandler = new RegisterHandler(account,this.getActivity());
         registerHandler.tryRegister();
 
     }

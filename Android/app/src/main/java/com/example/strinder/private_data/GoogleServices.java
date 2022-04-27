@@ -47,7 +47,7 @@ public class GoogleServices {
      *                         a response from Google. This code will be run inside the GUI thread.
      * @param obj - an Object that you can alter in your completionCode.
      *              This can be null if you don't need it. The code will be run inside
- *                  the GUI thread so it would make sense to change the GUI.
+     *                  the GUI thread so it would make sense to change the GUI.
      *
      */
     public void requestPrivateData(final GoogleSignInAccount account,
@@ -62,7 +62,6 @@ public class GoogleServices {
                     HttpTransport httpTransport = new NetHttpTransport();
                     JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-                    // STEP 2
                     GoogleAccountCredential credential =
                             GoogleAccountCredential.usingOAuth2(activity, scopes);
                     credential.setSelectedAccount(
@@ -81,6 +80,7 @@ public class GoogleServices {
                         e.printStackTrace();
                     }
                 }
+
                 onComplete(person,completionCode,obj,listener);
             });
 

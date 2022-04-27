@@ -9,16 +9,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.strinder.backend_related.User;
 import com.example.strinder.private_data.CompletionListener;
-import com.example.strinder.private_data.GoogleServices;
 import com.example.strinder.R;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.common.Scopes;
 import com.squareup.picasso.Picasso;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -38,10 +32,10 @@ public class ProfileFragment extends Fragment implements CompletionListener {
      * this fragment using the provided parameters.
      * @return A new instance of fragment ProfileFragment.
      */
-    public static ProfileFragment newInstance(final GoogleSignInAccount account, final String token) {
+    public static ProfileFragment newInstance(final User user, final String token) {
         ProfileFragment profileFragment = new ProfileFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("account",account);
+        bundle.putParcelable("account",user);
         bundle.putString("token",token);
         profileFragment.setArguments(bundle);
 
@@ -60,58 +54,35 @@ public class ProfileFragment extends Fragment implements CompletionListener {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         Bundle bundle = getArguments();
         if(bundle != null) {
-            GoogleSignInAccount account =  bundle.getParcelable("account");
+            User user =  bundle.getParcelable("account");
             token = bundle.getString("token");
             //First and last name
             TextView firstLastName = v.findViewById(R.id.firstLastName);
-            firstLastName.setText(account.getDisplayName());
+            firstLastName.setText(user.getFirstName());
+            firstLastName.append(" ");
+            firstLastName.append(user.getLastName());
 
             //Profile image
             ImageView profileImage = v.findViewById(R.id.profileImage);
-            Picasso.with(getContext())
-                    .load(account.getPhotoUrl())
-                    .placeholder(android.R.drawable.sym_def_app_icon)
-                    .error(android.R.drawable.sym_def_app_icon)
-                    .into(profileImage);
 
-            //Private information
-            List<String> scopes = new ArrayList<>();
+            if(user.getPhotoUrl() != null) {
+                Picasso.with(getContext())
+                        .load(user.getPhotoUrl())
+                        .placeholder(android.R.drawable.sym_def_app_icon)
+                        .error(android.R.drawable.sym_def_app_icon)
+                        .into(profileImage);
+            }
 
-            scopes.add("https://www.googleapis.com/auth/user.gender.read");
-            scopes.add("https://www.googleapis.com/auth/user.addresses.read");
-            scopes.add("https://www.googleapis.com/auth/user.birthday.read");
-            scopes.add(Scopes.PROFILE);
-            GoogleServices services = new GoogleServices(getActivity());
+            TextView gender = v.findViewById(R.id.gender);
+            if(user.getGender() != null) {
+                gender.setText(user.getGender());
+            }
+            TextView birthday = v.findViewById(R.id.birthday);
+            if(user.getBirthday() != null) {
+                birthday.setText(user.getBirthday());
+            }
 
-            services.requestPrivateData(account,scopes,"addresses,genders,birthdays",(person, obj) -> {
-                //Change GUI usage
-                View view = (View)obj;
-                TextView info = view.findViewById(R.id.city);
-                String gender = "Unknown";
-                String address = "Unknown";
-                String birthday = "Unknown";
-
-                if(person.getGenders() != null) {
-                    gender = person.getGenders().get(0).getFormattedValue();
-                }
-
-                if(person.getAddresses() != null) {
-                    address = person.getGenders().get(0).getFormattedValue();
-                }
-
-                if(person.getBirthdays() != null) {
-                    try {
-                        birthday = person.getBirthdays().get(0).getDate().toPrettyString();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-
-
-                info.setText("Address: " + address + "  Gender: " + gender + " \nBirthday: " + birthday);
-
-
-            },v,this);
+            System.out.println(user.getId());
 
         }
 

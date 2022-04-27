@@ -27,10 +27,9 @@ public class RegisterHandler implements VolleyResponseListener {
      * @param account - the GoogleSignInAccount that is verified.
      * @param activity - the Activity.
      */
-    public RegisterHandler(final GoogleSignInAccount account, final Activity activity,
-                           final GoogleSignInClient client) {
+    public RegisterHandler(final GoogleSignInAccount account, final Activity activity) {
         this.account = account;
-        this.loginHandler = new LoginHandler(account,activity,client);
+        this.loginHandler = new LoginHandler(account,activity);
         this.activity = activity;
         this.connection = new ServerConnection(activity);
     }

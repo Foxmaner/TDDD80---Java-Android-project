@@ -27,19 +27,16 @@ public class LoginHandler implements VolleyResponseListener {
     private final GoogleSignInAccount account;
     private final Activity activity;
     private final ServerConnection connection;
-    private final GoogleSignInClient client;
 
     /** Initialize a LoginHandler object
      *
      * @param account - the verified GoogleSignInAccount.
      * @param activity - the Activity.
      */
-    public LoginHandler(final GoogleSignInAccount account, final Activity activity,
-                        final GoogleSignInClient client) {
+    public LoginHandler(final GoogleSignInAccount account, final Activity activity) {
         this.account = account;
         this.activity = activity;
         this.connection = new ServerConnection(activity);
-        this.client = client;
     }
 
     /** Try to login to the server with the given GoogleSignInAccount data. */

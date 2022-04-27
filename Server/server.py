@@ -197,7 +197,7 @@ def add_comment(post_id):
 def get_id(username):
     #No try/catch needed here
 
-    user = User.query.filter_by(username=username).first();
+    user = User.query.filter_by(username=username).first()
 
     if user is not None:
         return str(user.id), 200

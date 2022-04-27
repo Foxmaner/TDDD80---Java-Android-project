@@ -130,7 +130,7 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
             }
             else if (id == R.id.plus) {
 
-                fragment = new AddActivityFragment();
+                fragment = AddActivityFragment.newInstance(user,token);
                 setHeaderText(getString(R.string.navbar_plus));
 
             }

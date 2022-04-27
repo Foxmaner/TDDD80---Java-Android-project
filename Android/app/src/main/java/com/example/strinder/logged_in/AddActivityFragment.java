@@ -10,11 +10,13 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.ServerConnection;
+import com.example.strinder.backend_related.User;
 import com.example.strinder.backend_related.VolleyResponseListener;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.textfield.TextInputLayout;
@@ -33,7 +35,8 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
     private RadioGroup postSportTypeInput;
     private ServerConnection connection;
     private String token;
-    private GoogleSignInAccount account;
+    private User user;
+
 
     public AddActivityFragment() {
         // Required empty public constructor
@@ -41,10 +44,10 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
 
 
     // TODO: Rename and change types and number of parameters
-    public static AddActivityFragment newInstance(final GoogleSignInAccount account, final String token) {
+    public static AddActivityFragment newInstance(final User user, final String token) {
         AddActivityFragment fragment = new AddActivityFragment();
         Bundle bundle = new Bundle();
-        bundle.putParcelable("account",account);
+        bundle.putParcelable("account",user);
         bundle.putString("token",token);
         fragment.setArguments(bundle);
 
@@ -67,7 +70,7 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         Bundle bundle = getArguments();
 
         if(bundle != null) {
-            account =  bundle.getParcelable("account");
+            user =  bundle.getParcelable("account");
             token = bundle.getString("token");
         }
 
@@ -102,7 +105,7 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         }catch(Exception e){
             System.out.println(e);
         }
-        connection.sendStringJsonRequest("/add/" + 1, jsonObject, Request.Method.POST, token, this);
+        connection.sendStringJsonRequest("/add/" + user.getId(), jsonObject, Request.Method.POST, token, this);
 
 
     }

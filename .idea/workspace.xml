@@ -4,10 +4,10 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="6274e67c-1b8b-4e46-b911-24b782ccf4a1" name="Changes" comment="Changes">
+    <list default="true" id="20e1d6c9-dc6f-4f92-9a41-17cf7c58c43f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Android/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/Android/.gitignore" afterDir="false" />
     </list>
-    <list id="1591a8b4-7142-443e-b1fb-18cf9c89df4a" name="Changes by eskil" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -68,10 +68,10 @@
     <property name="cidr.known.project.marker" value="true" />
     <property name="codeWithMe.voiceChat.enabledByDefault" value="false" />
     <property name="external.system.task.project.file.to.start" value="$PROJECT_DIR$/Android/app/src/main" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/Android" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="configurable.group.appearance" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Android App.Unnamed">
     <configuration name="Unnamed" type="AndroidRunConfigurationType" factoryName="Android App" nameIsGenerated="true">
       <option name="DEPLOY" value="true" />
       <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -153,7 +153,7 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="6274e67c-1b8b-4e46-b911-24b782ccf4a1" name="Changes" comment="" />
+      <changelist id="20e1d6c9-dc6f-4f92-9a41-17cf7c58c43f" name="Default Changelist" comment="" />
       <created>1643786761022</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />

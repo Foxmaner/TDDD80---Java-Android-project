@@ -11,35 +11,43 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.ServerConnection;
+import com.example.strinder.VolleyResponseListener;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.textfield.TextInputLayout;
+
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link AddActivityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddActivityFragment extends Fragment implements View.OnClickListener{
+public class AddActivityFragment extends Fragment implements View.OnClickListener, VolleyResponseListener{
 
     private TextInputLayout titleInput;
     private TextInputLayout captionInput;
     private RadioGroup postSportTypeInput;
+    private ServerConnection connection;
+    private String token;
+    private GoogleSignInAccount account;
 
     public AddActivityFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment AddActivityFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
-    public static AddActivityFragment newInstance(String param1, String param2) {
+    public static AddActivityFragment newInstance(final GoogleSignInAccount account, final String token) {
         AddActivityFragment fragment = new AddActivityFragment();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("account",account);
+        bundle.putString("token",token);
+        fragment.setArguments(bundle);
+
         return fragment;
     }
 
@@ -56,6 +64,14 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         View view;
         view =  inflater.inflate(R.layout.fragment_add_activity, container, false);
 
+        Bundle bundle = getArguments();
+
+        if(bundle != null) {
+            account =  bundle.getParcelable("account");
+            token = bundle.getString("token");
+        }
+
+        connection = new ServerConnection(view.getContext());
         titleInput = (TextInputLayout) view.findViewById(R.id.textInputLayoutPostTitle);
         captionInput = (TextInputLayout) view.findViewById(R.id.textInputLayoutPostCaption);
         postSportTypeInput = (RadioGroup) view.findViewById(R.id.inputAddActivitySport);
@@ -75,5 +91,29 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         RadioButton selectedButton = (RadioButton) postSportTypeInput.findViewById(selectedRadioId);
         String postSport = selectedButton.getText().toString();
         System.out.println(postSport);
+
+
+
+
+        JSONObject jsonObject = new JSONObject();
+        try {
+            jsonObject.put("title", postTitle);
+            jsonObject.put("caption", postCaption);
+        }catch(Exception e){
+            System.out.println(e);
+        }
+        connection.sendStringJsonRequest("/add/" + 1, jsonObject, Request.Method.POST, token, this);
+
+
+    }
+
+    @Override
+    public void onResponse(Object response) {
+        System.out.println("Success" + response);
+    }
+
+    @Override
+    public void onError(VolleyError error) {
+        System.out.println("Error" + error);
     }
 }

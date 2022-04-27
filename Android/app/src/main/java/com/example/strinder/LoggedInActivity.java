@@ -81,7 +81,7 @@ public class LoggedInActivity extends AppCompatActivity {
                 fragment = new FriendsFragment();
             }
             else if (id == R.id.plus) {
-                fragment = new AddActivityFragment();
+                fragment = AddActivityFragment.newInstance(account,token);
             }
             else if (id == R.id.messages) {
                 fragment = new MessagesFragment();

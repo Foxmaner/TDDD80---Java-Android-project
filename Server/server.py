@@ -90,6 +90,7 @@ def add():
 @app.route("/add/<user_id>", methods=["POST"])
 @jwt_required()
 def add_post(user_id):
+    print("thoo")
     """This function adds a post to a user. """
     # Convert parameter to int
     try:

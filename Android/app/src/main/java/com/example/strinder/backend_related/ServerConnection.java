@@ -75,7 +75,9 @@ public class ServerConnection {
                 return jsonString.getBytes(StandardCharsets.UTF_8);
             }
         };
-
+        System.out.println("_____Writing out some stuff_____");
+        System.out.println(request);
+        System.out.println(request.getMethod());
         requestQueue.add(request);
 
 

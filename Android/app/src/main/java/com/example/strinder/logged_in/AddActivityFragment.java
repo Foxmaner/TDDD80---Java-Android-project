@@ -87,13 +87,11 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        System.out.println("cooler");
         String postTitle = titleInput.getEditText().getText().toString();
         String postCaption = captionInput.getEditText().getText().toString();
         int selectedRadioId = postSportTypeInput.getCheckedRadioButtonId();
         RadioButton selectedButton = (RadioButton) postSportTypeInput.findViewById(selectedRadioId);
         String postSport = selectedButton.getText().toString();
-        System.out.println(postSport);
 
 
 
@@ -103,7 +101,7 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
             jsonObject.put("title", postTitle);
             jsonObject.put("caption", postCaption);
         }catch(Exception e){
-            System.out.println(e);
+            e.printStackTrace();
         }
         connection.sendStringJsonRequest("/add/" + user.getId(), jsonObject, Request.Method.POST, token, this);
 
@@ -112,11 +110,13 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onResponse(Object response) {
+        //TODO Improve this
         System.out.println("Success" + response);
     }
 
     @Override
     public void onError(VolleyError error) {
+        //TODO Improve this
         System.out.println("Error" + error);
     }
 }

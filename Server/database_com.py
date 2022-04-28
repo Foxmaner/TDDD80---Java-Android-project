@@ -51,6 +51,13 @@ class User(db.Model):
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
     password = db.Column(db.String(40), nullable=False)
+    #Might not need email.
+    email = db.Column(db.String(50), nullable=False)
+    birthday = db.Column(db.DateTime, nullable=True)
+    gender = db.Column(db.String(6), nullable=True)
+    biography = db.Column(db.String(100),nullable=True)
+    #TODO PhotoUrl
+
     # Relations
     friends = db.relationship("User", secondary=friend_to_friend, primaryjoin=id == friend_to_friend.c.user_id,
                               secondaryjoin=id == friend_to_friend.c.friend_id)

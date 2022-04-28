@@ -43,6 +43,7 @@ public class RegisterHandler implements VolleyResponseListener {
         try {
             String firstName = "Unknown";
             String lastName = "Unknown";
+            String email = "Unknown";
             //If these fail, we can sadly not create an account.
             String username = null;
             String password = null;
@@ -53,6 +54,9 @@ public class RegisterHandler implements VolleyResponseListener {
             if(account.getFamilyName() != null) {
                 lastName =  account.getFamilyName();
             }
+            if(account.getEmail() != null) {
+                email = account.getEmail();
+            }
             if(account.getId() != null) {
                 username =  account.getId();
                 password = account.getId();
@@ -61,6 +65,7 @@ public class RegisterHandler implements VolleyResponseListener {
             jsonObject.put("first_name", firstName);
             jsonObject.put("last_name",lastName);
             jsonObject.put("username", username);
+            jsonObject.put("email",email);
             //The password is set the google id, then salted and hashed on the server side.
             jsonObject.put("password",password);
             //Send a request and let the listener (this) handle what to do.

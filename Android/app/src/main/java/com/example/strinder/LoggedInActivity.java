@@ -29,7 +29,10 @@ import com.example.strinder.private_data.GoogleServices;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.Scopes;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.api.services.people.v1.model.Date;
+import com.google.api.services.people.v1.model.Gender;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -43,17 +46,16 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
 
     private Toolbar toolbar;
     private String token;
-    private User user;
+    //TODO Move a bunch of this code (getting User data) to registerHandler instead.
+    private  String[] privateData = new String[2];
+    private GoogleSignInAccount googleAccount;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
         //Get user information and JWT Token.
-        GoogleSignInAccount account = getIntent().getParcelableExtra("account");
+        googleAccount = getIntent().getParcelableExtra("account");
         token = getIntent().getExtras().getString("token");
-
-        user = new User(account.getGivenName(),account.getFamilyName(),account.getEmail(),
-                account.getId(), String.valueOf(account.getPhotoUrl()));
 
         //Private information
         List<String> scopes = new ArrayList<>();
@@ -63,17 +65,21 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
         scopes.add(Scopes.PROFILE);
         GoogleServices services = new GoogleServices(this);
 
-        services.requestPrivateData(account,scopes,"genders,birthdays",(person,
+        services.requestPrivateData(googleAccount,scopes,"genders,birthdays",(person,
                                                                                   obj) -> {
-            if(person.getBirthdays() != null) {
-                user.setBirthday(person.getBirthdays().get(0).getDate());
-            }
 
             if(person.getGenders() != null) {
-                user.setGender(person.getGenders().get(0));
+                Gender gender = person.getGenders().get(0);
+                privateData[0] = gender.getFormattedValue();
             }
 
-        },user,this);
+            if(person.getBirthdays() != null) {
+                Date date = person.getBirthdays().get(0).getDate();
+                privateData[1] = date.getYear() + "/" + date.getMonth() + "/" + date.getDay();
+            }
+
+
+        },null,this);
 
 
     }
@@ -115,7 +121,6 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
     private void setBottomNavListener(final BottomNavigationView menuBar, final User user,
                                       final String token) {
         menuBar.setOnItemSelectedListener(item -> {
-            System.out.println("CLICK");
             Fragment fragment = null;
             final int id = item.getItemId();
 
@@ -159,7 +164,7 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
         //Request ID
         ServerConnection connection = new ServerConnection(this);
         JSONObject object = new JSONObject();
-        connection.sendStringJsonRequest("/user/"+user.getUsername(),object,
+        connection.sendStringJsonRequest("/user/get_id/"+googleAccount.getId(),object,
                 Request.Method.GET,token,this);
 
     }
@@ -168,25 +173,42 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
     public void onResponse(Object response) {
         String idAsString = (String)response;
         int id = Integer.parseInt(idAsString);
-        user.setId(id);
 
-        //Top Nav
-        toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        ActionBar bar =  getSupportActionBar();
+        User user = new User(googleAccount.getGivenName(),googleAccount.getFamilyName(),
+                googleAccount.getEmail(),googleAccount.getId(),
+                String.valueOf(googleAccount.getPhotoUrl()),privateData[0],privateData[1],id);
 
-        //Remove app name from top nav.
-        if(bar != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-        }
+        user.setAndUploadData(this, token, new VolleyResponseListener() {
+            @Override
+            public void onResponse(Object response) {
+                //Top Nav
+                toolbar = findViewById(R.id.toolbar);
+                setSupportActionBar(toolbar);
+                ActionBar bar =  getSupportActionBar();
 
-        TextView view = toolbar.findViewById(R.id.fragmentName);
-        view.setText(getString(R.string.navbar_home));
+                //Remove app name from top nav.
+                if(bar != null) {
+                    getSupportActionBar().setDisplayShowTitleEnabled(false);
+                }
 
-        BottomNavigationView menuBar = findViewById(R.id.navBar);
-        menuBar.setSelectedItemId(R.id.home);
+                TextView view = toolbar.findViewById(R.id.fragmentName);
+                view.setText(getString(R.string.navbar_home));
 
-        setBottomNavListener(menuBar,user,token);
+                BottomNavigationView menuBar = findViewById(R.id.navBar);
+                menuBar.setSelectedItemId(R.id.home);
+
+                setBottomNavListener(menuBar,user,token);
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                //TODO Fix this. We can't use .this here because of the anonymous way we .
+                System.out.println("Failed to upload data to the Strinder database.");
+            }
+
+        });
+
+
     }
 
     @Override

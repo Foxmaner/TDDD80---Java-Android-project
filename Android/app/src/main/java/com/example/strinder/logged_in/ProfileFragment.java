@@ -9,10 +9,16 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.example.strinder.backend_related.ServerConnection;
 import com.example.strinder.backend_related.User;
+import com.example.strinder.backend_related.VolleyResponseListener;
 import com.example.strinder.private_data.CompletionListener;
 import com.example.strinder.R;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 
 /**
@@ -82,15 +88,13 @@ public class ProfileFragment extends Fragment implements CompletionListener {
                 birthday.setText(user.getBirthday());
             }
 
-            System.out.println(user.getId());
-
         }
+
 
         return v;
     }
 
     @Override
     public void onCompletion() {
-        System.out.println(token);
     }
 }

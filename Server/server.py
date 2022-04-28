@@ -5,6 +5,7 @@ from datetime import timedelta, datetime, timezone
 from database_com import app, db, User, Post, Comment, TokenBlocklist
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import get_jwt_identity
 
 bcrypt = Bcrypt(app)
 
@@ -67,16 +68,17 @@ def add():
         firstname = json_data["first_name"]
         lastname = json_data["last_name"]
         username = json_data["username"]
+        email = json_data["email"]
         password = bcrypt.generate_password_hash(json_data["password"])
     except KeyError:
         return "", 400
 
-    is_creatable = User.query.filter_by(username=username).first()
+    is_creatable = User.query.filter_by(username=username).first() is None
 
     # If there are no usernames like this, we continue.
-    if is_creatable is None:
+    if is_creatable:
         # We assume that the password is hashed.
-        new_user = User(username=username, first_name=firstname, last_name=lastname, password=password)
+        new_user = User(username=username, first_name=firstname, last_name=lastname, password=password,email=email)
 
         # Add it to the database and save.
         db.session.add(new_user)
@@ -90,7 +92,6 @@ def add():
 @app.route("/add/<user_id>", methods=["POST"])
 @jwt_required()
 def add_post(user_id):
-    print("thoo")
     """This function adds a post to a user. """
     # Convert parameter to int
     try:
@@ -132,6 +133,43 @@ def logout():
         return jsonify(msg="JWT revoked")
     except KeyError:
         return "", 400
+
+
+@app.route("/user/set_data",methods=["POST"])
+@jwt_required()
+def set_data():
+    """Sets the data that is allowed to change to the data that has been received."""
+    json_data = request.get_json()
+    if json_data is None:
+        return "", 400
+
+    # Get the json data, if it is not available - return error code 400.
+    try:
+        # Try to convert the dictionary to variables. If it fails,then return error code 400.
+        username = get_jwt_identity()
+        firstname = json_data["first_name"]
+        lastname = json_data["last_name"]
+        email = json_data["email"]
+        birthday = json_data["birthday"]
+        gender = json_data["gender"]
+        biography = json_data["biography"]
+    except KeyError:
+        return "", 400
+
+    user = User.query.filter_by(username=username).first()
+    if user is not None:
+        user.first_name = firstname
+        user.last_name = lastname
+        user.email = email
+        user.birthday = datetime.strptime(birthday,"%Y/%m/%d")
+        user.gender = gender
+        user.biography = biography
+
+        db.session.commit()
+
+        return "", 200
+
+    return "", 400
 
 
 @app.route("/befriend/<friend_id>/<user_id>", methods=["POST"])
@@ -192,8 +230,22 @@ def add_comment(post_id):
 
 
 # ------- GET -------- #
+@app.route("/user/get_data/<username>", methods=["GET"])
+@jwt_required()
+def get_data(username):
+    # No try/catch needed here
 
-@app.route("/user/<username>", methods=["GET"])
+    user = User.query.filter_by(username=username).first()
+
+    if user is not None:
+        data = {"first_name" : user.first_name, "last_name" : user.last_name,
+                "gender" : user.gender, "birthday" : user.birthday.strftime("%Y/%m/%d"),
+                "biography" : user.biography}
+
+        return jsonify(data),200
+
+    return "",400
+@app.route("/user/get_id/<username>", methods=["GET"])
 @jwt_required()
 def get_id(username):
     #No try/catch needed here

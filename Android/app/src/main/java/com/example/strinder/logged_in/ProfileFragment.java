@@ -1,17 +1,17 @@
 package com.example.strinder.logged_in;
 
 import android.os.Bundle;
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.fragment.app.Fragment;
+
+import com.example.strinder.R;
 import com.example.strinder.backend_related.User;
 import com.example.strinder.private_data.CompletionListener;
-import com.example.strinder.R;
 import com.squareup.picasso.Picasso;
 
 
@@ -22,7 +22,6 @@ import com.squareup.picasso.Picasso;
  */
 public class ProfileFragment extends Fragment implements CompletionListener {
 
-    private String token;
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -32,11 +31,10 @@ public class ProfileFragment extends Fragment implements CompletionListener {
      * this fragment using the provided parameters.
      * @return A new instance of fragment ProfileFragment.
      */
-    public static ProfileFragment newInstance(final User user, final String token) {
+    public static ProfileFragment newInstance(final User user) {
         ProfileFragment profileFragment = new ProfileFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("account",user);
-        bundle.putString("token",token);
         profileFragment.setArguments(bundle);
 
         return profileFragment;
@@ -55,7 +53,6 @@ public class ProfileFragment extends Fragment implements CompletionListener {
         Bundle bundle = getArguments();
         if(bundle != null) {
             User user =  bundle.getParcelable("account");
-            token = bundle.getString("token");
             //First and last name
             TextView firstLastName = v.findViewById(R.id.firstLastName);
             firstLastName.setText(user.getFirstName());
@@ -74,23 +71,19 @@ public class ProfileFragment extends Fragment implements CompletionListener {
             }
 
             TextView gender = v.findViewById(R.id.gender);
-            if(user.getGender() != null) {
-                gender.setText(user.getGender());
-            }
-            TextView birthday = v.findViewById(R.id.birthday);
-            if(user.getBirthday() != null) {
-                birthday.setText(user.getBirthday());
-            }
+            gender.setText(user.getGender());
 
-            System.out.println(user.getId());
+            TextView birthday = v.findViewById(R.id.birthday);
+            birthday.setText(user.getBirthday());
+
 
         }
+
 
         return v;
     }
 
     @Override
     public void onCompletion() {
-        System.out.println(token);
     }
 }

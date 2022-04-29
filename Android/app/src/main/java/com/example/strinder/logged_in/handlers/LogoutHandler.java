@@ -15,7 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import org.json.JSONObject;
 
-public class LogoutHandler implements VolleyResponseListener {
+public class LogoutHandler implements VolleyResponseListener<String> {
     private final Activity activity;
 
     public LogoutHandler(final Activity activity) {
@@ -42,7 +42,7 @@ public class LogoutHandler implements VolleyResponseListener {
     }
 
     @Override
-    public void onResponse(Object response) {
+    public void onResponse(String response) {
         //If successful (code = 200), go back to main page.
         Intent myIntent = new Intent(activity, LoggedOutActivity.class);
         activity.startActivity(myIntent);

@@ -1,98 +1,157 @@
 package com.example.strinder.backend_related;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import com.google.api.services.people.v1.model.Date;
-import com.google.api.services.people.v1.model.Gender;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class User implements Parcelable {
 
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String username;
-    private String birthday;
-    private String gender;
-    private String photoUrl;
-    private int id;
+    private final String firstName;
+    private final String lastName;
+    private final String email;
+    private final ArrayList<String> friends;
+    private final ArrayList<String> posts;
+    private final String username;
+    private final String birthday;
+    private final String gender;
+    //TODO Implement photoUrl in database, not sure how this will work out right now. We need a
+    //TODO solution for the uploading of images before this.
+    private final String photoUrl;
+    private final String biography;
+    private final int id;
+    private final String accessToken;
 
-    public User(final String firstName, final String lastName, final String email,
-                final String username, final String photoUrl) {
-
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.username = username;
-        this.photoUrl = photoUrl;
+    private User(final Parcel parcel) {
+        this.firstName = parcel.readString();
+        this.lastName = parcel.readString();
+        this.email = parcel.readString();
+        this.username = parcel.readString();
+        this.birthday = parcel.readString();
+        this.gender = parcel.readString();
+        this.biography = parcel.readString();
+        this.photoUrl = parcel.readString();
+        this.id = parcel.readInt();
+        friends = new ArrayList<>();
+        parcel.readList(friends,String.class.getClassLoader());
+        posts = new ArrayList<>();
+        parcel.readList(posts,String.class.getClassLoader());
+        accessToken = parcel.readString();
     }
 
     public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getPhotoUrl() {
         return photoUrl;
     }
 
-    public void setPhotoUrl(String photoUrl) {
-        this.photoUrl = photoUrl;
-    }
-
     public String getEmail() {
         return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
     }
 
     public String getUsername() {
         return username;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
     public String getBirthday() {
         return birthday;
-    }
-
-    private void setBirthday(String birthday) {
-        this.birthday = birthday;
-    }
-
-    public void setBirthday(Date birthday) {
-        this.birthday = String.format("%s/%s/%s",
-                birthday.getYear() == null ? "?" : birthday.getYear(),
-                birthday.getMonth() == null ? "?" : birthday.getMonth(),
-                birthday.getDay() == null ? "?" : birthday.getDay());
     }
 
     public String getGender() {
         return gender;
     }
 
-    private void setGender(String gender) {
-        this.gender = gender;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setGender(Gender gender) {
-        this.gender = gender.getFormattedValue();
+    public int getId() {
+        return id;
     }
+
+    public List<String> getFriends() {
+        return friends;
+    }
+
+    public List<String> getPosts() {
+        return posts;
+    }
+
+    public String getBiography() {
+        return biography;
+    }
+
+    /*
+    public void setAndUploadData(final Context context, final String token,
+                                 final VolleyResponseListener<String> listener, final String firstName,
+                                 final String lastName, final String email,
+                                 final String birthday, final String gender,
+                                 final String biography){
+
+        if(context == null || token == null || listener == null) {
+            throw new IllegalArgumentException("The context,token or the listener was null," +
+                    " not a valid argument.");
+        }
+        if(firstName != null) {
+            this.firstName = firstName;
+        }
+
+        if(lastName != null) {
+            this.lastName = lastName;
+        }
+
+        if(email != null) {
+            this.email = email;
+        }
+
+        if(birthday != null) {
+            this.birthday = birthday;
+        }
+
+        if(gender != null) {
+            this.gender = gender;
+        }
+
+        if(biography != null) {
+            this.biography = biography;
+        }
+
+        ServerConnection connection = new ServerConnection(context);
+        JSONObject object = new JSONObject();
+        try {
+            object.put("first_name", this.firstName);
+            object.put("last_name", this.lastName);
+            object.put("email", this.email);
+            object.put("birthday", this.birthday);
+            object.put("gender", this.gender);
+            object.put("biography", this.biography);
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+            Toast.makeText(context,"Failed to change data in database.",Toast.LENGTH_SHORT).
+                    show();
+        }
+
+        connection.sendStringJsonRequest("/user/set_data",object, Request.Method.POST,token,
+                listener);
+
+    }
+    */
 
     @Override
     public int describeContents() {
@@ -107,19 +166,19 @@ public class User implements Parcelable {
         parcel.writeString(username);
         parcel.writeString(birthday);
         parcel.writeString(gender);
+        parcel.writeString(biography);
+        parcel.writeString(photoUrl);
         parcel.writeInt(id);
+        parcel.writeList(friends);
+        parcel.writeList(posts);
+        parcel.writeString(accessToken);
     }
 
     public static final Parcelable.Creator<User> CREATOR
             = new Parcelable.Creator<User>() {
         public User createFromParcel(Parcel in) {
-            User user = new User(in.readString(),in.readString(),in.readString(),in.readString(),
-                    in.readString());
-            user.setBirthday(in.readString());
-            user.setGender(in.readString());
-            user.setId(in.readInt());
 
-            return user;
+            return new User(in);
         }
 
         public User[] newArray(int size) {
@@ -127,11 +186,4 @@ public class User implements Parcelable {
         }
     };
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
 }

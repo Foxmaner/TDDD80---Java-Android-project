@@ -139,7 +139,7 @@ public class RegisterHandler implements VolleyResponseListener<String>, Completi
             jsonObject.put("username", username);
             jsonObject.put("email",email);
             jsonObject.put("gender",gender);
-            jsonObject.put("photo_url",account.getPhotoUrl());
+            jsonObject.put("photo_url", account.getPhotoUrl() == null ? JSONObject.NULL : account.getPhotoUrl());
             jsonObject.put("birthday",birthday);
             //The password is set the google id, then salted and hashed on the server side.
             jsonObject.put("password",password);

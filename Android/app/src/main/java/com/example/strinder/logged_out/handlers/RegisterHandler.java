@@ -112,8 +112,8 @@ public class RegisterHandler implements VolleyResponseListener<String>, Completi
             String firstName = "Unknown";
             String lastName = "Unknown";
             String email = "Unknown";
-            String gender = privateData[0] == null ? "Unknown" : privateData[0];
-            String birthday = privateData[1] == null ? "Unknown" : privateData[1];
+            String gender = privateData[0];
+            String birthday = privateData[1];
 
             //If these fail, we can sadly not create an account.
             String username = null;
@@ -133,14 +133,21 @@ public class RegisterHandler implements VolleyResponseListener<String>, Completi
                 password = account.getId();
             }
 
-
             jsonObject.put("first_name", firstName);
             jsonObject.put("last_name",lastName);
             jsonObject.put("username", username);
             jsonObject.put("email",email);
-            jsonObject.put("gender",gender);
-            jsonObject.put("photo_url", account.getPhotoUrl() == null ? JSONObject.NULL : account.getPhotoUrl());
-            jsonObject.put("birthday",birthday);
+
+            /*
+                After the ? is the code that runs if the statement is true, and after : is the
+                code that runs if it is false.
+            */
+
+            jsonObject.put("photo_url", account.getPhotoUrl() == null ? JSONObject.NULL :
+                    account.getPhotoUrl());
+            jsonObject.put("birthday", birthday == null ? JSONObject.NULL : birthday);
+            jsonObject.put("gender",gender == null ? JSONObject.NULL : gender);
+
             //The password is set the google id, then salted and hashed on the server side.
             jsonObject.put("password",password);
             //Send a request and let the listener (this) handle what to do.

@@ -83,16 +83,11 @@ def add():
     # If there are no usernames like this, we continue.
     if is_creatable:
         # Some accounts do not have these values set. So we need to check
-        formatted_birthday = None
-        if birthday != "Unknown":
-            formatted_birthday = datetime.strptime(birthday,"%Y/%m/%d")
-        print(formatted_birthday)
-        formatted_gender = None
-        if gender != "Unknown":
-            formatted_gender = gender
+        if birthday is not None:
+            birthday = datetime.strptime(birthday,"%Y/%m/%d")
 
         new_user = User(username=username, first_name=firstname, last_name=lastname, password=password,email=email,
-                        gender=formatted_gender,birthday=formatted_birthday,biography="",photo_url=photo_url)
+                        gender=gender,birthday=birthday,biography="",photo_url=photo_url)
 
         # Add it to the database and save.
         db.session.add(new_user)

@@ -6,6 +6,7 @@ from database_com import app, db, User, Post, Comment, TokenBlocklist
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import get_jwt_identity
+import os
 
 bcrypt = Bcrypt(app)
 
@@ -74,7 +75,8 @@ def add():
         gender = json_data["gender"]
         birthday = json_data["birthday"]
         photo_url = json_data["photo_url"]
-        password = bcrypt.generate_password_hash(json_data["password"])
+        password = bcrypt.generate_password_hash(json_data["password"]).decode('utf-8')
+
     except KeyError:
         return "", 400
 
@@ -84,10 +86,10 @@ def add():
     if is_creatable:
         # Some accounts do not have these values set. So we need to check
         if birthday is not None:
-            birthday = datetime.strptime(birthday,"%Y/%m/%d")
+            birthday = datetime.strptime(birthday, "%Y/%m/%d")
 
-        new_user = User(username=username, first_name=firstname, last_name=lastname, password=password,email=email,
-                        gender=gender,birthday=birthday,biography="",photo_url=photo_url)
+        new_user = User(username=username, first_name=firstname, last_name=lastname, password=password, email=email,
+                        gender=gender, birthday=birthday, biography="", photo_url=photo_url)
 
         # Add it to the database and save.
         db.session.add(new_user)
@@ -144,7 +146,7 @@ def logout():
         return "", 400
 
 
-@app.route("/user/set_data",methods=["POST"])
+@app.route("/user/set_data", methods=["POST"])
 @jwt_required()
 def set_data():
     """Sets the data that is allowed to change to the data that has been received."""
@@ -170,7 +172,7 @@ def set_data():
         user.first_name = firstname
         user.last_name = lastname
         user.email = email
-        user.birthday = datetime.strptime(birthday,"%Y/%m/%d")
+        user.birthday = datetime.strptime(birthday, "%Y/%m/%d")
         user.gender = gender
         user.biography = biography
 
@@ -247,15 +249,17 @@ def get_data(username):
     user = User.query.filter_by(username=username).first()
 
     if user is not None:
-        data = {"firstName" : user.first_name, "lastName" : user.last_name,
-                "gender" : user.gender, "birthday" : user.birthday.strftime("%Y/%m/%d"),
-                "biography" : user.biography}
+        data = {"firstName": user.first_name, "lastName": user.last_name,
+                "gender": user.gender, "birthday": user.birthday.strftime("%Y/%m/%d"),
+                "biography": user.biography}
 
-        return jsonify(data),200
+        return jsonify(data), 200
 
-    return "",400
+    return "", 400
 
-""" NOT USED ATM
+
+""" 
+NOT USED ATM
 @app.route("/user/get_id/<username>", methods=["GET"])
 def get_id(username):
     #No try/catch needed here
@@ -267,6 +271,7 @@ def get_id(username):
     else:
         return "", 400
 """
+
 
 @app.route("/befriended/<user_id>/<friend_id>", methods=["GET"])
 @jwt_required()
@@ -415,4 +420,5 @@ def remove_comment(comment_id):
 
 if __name__ == "__main__":
     app.debug = True
+    app.port = int(os.environ.get("PORT", 8080))
     app.run()

@@ -8,13 +8,13 @@ app = Flask(__name__)
 
 # Connection
 if 'NAMESPACE' in os.environ and os.environ['NAMESPACE'] == 'heroku':
-    db_uri = os.environ['DATABASE_URL']
-    address = "WE DO NOT HAVE A HEROKU YET"
+    db_uri = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
+    address = "https://strinder.herokuapp.com/"
     debug_flag = False
 
 else:
     # when running locally: use sqlite
-    address = "http://localhost:5000"
+    address = "http://localhost:8080"
     db_path = os.path.join(os.path.dirname(__file__), 'app.db')
     db_uri = 'sqlite:///{}'.format(db_path)
     debug_flag = True
@@ -51,12 +51,12 @@ class User(db.Model):
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
     password = db.Column(db.String(255), nullable=False)
-    #Might not need email.
+    # Might not need email.
     email = db.Column(db.String(50), nullable=False)
     birthday = db.Column(db.DateTime, nullable=True)
     gender = db.Column(db.String(6), nullable=True)
-    biography = db.Column(db.String(100),nullable=False)
-    photo_url = db.Column(db.String(200),nullable=True)
+    biography = db.Column(db.String(100), nullable=False)
+    photo_url = db.Column(db.String(200), nullable=True)
 
     # Relations
     friends = db.relationship("User", secondary=friend_to_friend, primaryjoin=id == friend_to_friend.c.user_id,
@@ -72,7 +72,7 @@ class User(db.Model):
             formatted = self.birthday.strftime("%Y-%m-%d")
 
         return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name,
-                "gender": self.gender, "birthday":formatted, "biography":self.biography, "email":self.email,
+                "gender": self.gender, "birthday": formatted, "biography":self.biography, "email":self.email,
                 "photoUrl": self.photo_url,
                 "friends": [friend.to_dict_friends() for friend in self.friends],
                 "posts": [post.to_dict() for post in self.posts]}

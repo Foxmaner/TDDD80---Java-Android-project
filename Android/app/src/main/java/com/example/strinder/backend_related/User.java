@@ -1,26 +1,15 @@
 package com.example.strinder.backend_related;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.widget.Toast;
-
-import com.android.volley.Request;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class User implements Parcelable {
 
     private final String firstName;
     private final String lastName;
     private final String email;
-    private final ArrayList<String> friends;
-    private final ArrayList<String> posts;
+    //private final ArrayList<String> friends;
+    //private final ArrayList<String> posts;
     private final String username;
     private final String birthday;
     private final String gender;
@@ -41,10 +30,11 @@ public class User implements Parcelable {
         this.biography = parcel.readString();
         this.photoUrl = parcel.readString();
         this.id = parcel.readInt();
-        friends = new ArrayList<>();
+        /*friends = new ArrayList<>();
         parcel.readList(friends,String.class.getClassLoader());
         posts = new ArrayList<>();
         parcel.readList(posts,String.class.getClassLoader());
+        */
         accessToken = parcel.readString();
     }
 
@@ -83,7 +73,7 @@ public class User implements Parcelable {
     public int getId() {
         return id;
     }
-
+    /*
     public List<String> getFriends() {
         return friends;
     }
@@ -91,6 +81,8 @@ public class User implements Parcelable {
     public List<String> getPosts() {
         return posts;
     }
+
+     */
 
     public String getBiography() {
         return biography;
@@ -169,8 +161,10 @@ public class User implements Parcelable {
         parcel.writeString(biography);
         parcel.writeString(photoUrl);
         parcel.writeInt(id);
+        /*
         parcel.writeList(friends);
         parcel.writeList(posts);
+        */
         parcel.writeString(accessToken);
     }
 

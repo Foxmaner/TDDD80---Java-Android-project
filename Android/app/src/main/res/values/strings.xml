@@ -25,5 +25,8 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="gender_base_text">Gender: \t</string>
+    <string name="birthday_base_text">Birthday: \t</string>
+    <string name="biography_base_text">Biography: \n</string>
 
 </resources>

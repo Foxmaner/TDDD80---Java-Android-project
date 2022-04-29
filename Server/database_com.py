@@ -50,7 +50,14 @@ class User(db.Model):
     username = db.Column(db.String(40), nullable=False)
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
-    password = db.Column(db.String(40), nullable=False)
+    password = db.Column(db.String(255), nullable=False)
+    #Might not need email.
+    email = db.Column(db.String(50), nullable=False)
+    birthday = db.Column(db.DateTime, nullable=True)
+    gender = db.Column(db.String(6), nullable=True)
+    biography = db.Column(db.String(100),nullable=False)
+    photo_url = db.Column(db.String(200),nullable=False)
+
     # Relations
     friends = db.relationship("User", secondary=friend_to_friend, primaryjoin=id == friend_to_friend.c.user_id,
                               secondaryjoin=id == friend_to_friend.c.friend_id)
@@ -60,7 +67,13 @@ class User(db.Model):
     liked_comments = db.relationship("Comment", secondary=liked_comments_table, back_populates="likes")
 
     def to_dict(self):
-        return {"id": self.id, "username": self.username, "first_name": self.first_name, "last_name": self.last_name,
+        formatted = None
+        if self.birthday is not None:
+            formatted = self.birthday.strftime("%Y-%m-%d")
+
+        return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name,
+                "gender": self.gender, "birthday":formatted, "biography":self.biography, "email":self.email,
+                "photoUrl": self.photo_url,
                 "friends": [friend.to_dict_friends() for friend in self.friends],
                 "posts": [post.to_dict() for post in self.posts]}
 

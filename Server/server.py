@@ -90,6 +90,7 @@ def add():
 @app.route("/add/<user_id>", methods=["POST"])
 @jwt_required()
 def add_post(user_id):
+    print("thoo")
     """This function adds a post to a user. """
     # Convert parameter to int
     try:
@@ -191,6 +192,20 @@ def add_comment(post_id):
 
 
 # ------- GET -------- #
+
+@app.route("/user/<username>", methods=["GET"])
+@jwt_required()
+def get_id(username):
+    #No try/catch needed here
+
+    user = User.query.filter_by(username=username).first()
+
+    if user is not None:
+        return str(user.id), 200
+    else:
+        return "", 400
+
+
 @app.route("/befriended/<user_id>/<friend_id>", methods=["GET"])
 @jwt_required()
 def are_friends(user_id, friend_id):

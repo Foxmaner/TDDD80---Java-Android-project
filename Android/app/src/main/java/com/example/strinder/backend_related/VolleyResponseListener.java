@@ -1,4 +1,4 @@
-package com.example.strinder;
+package com.example.strinder.backend_related;
 
 import com.android.volley.VolleyError;
 /** This listener interface is used when doing a request via Volley. */

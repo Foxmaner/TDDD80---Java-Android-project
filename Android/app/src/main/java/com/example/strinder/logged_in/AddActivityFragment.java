@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.example.strinder.LoggedInActivity;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.ServerConnection;
 import com.example.strinder.backend_related.User;
@@ -100,18 +101,20 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         connection.sendStringJsonRequest("/add/" + user.getId(), jsonObject,
                 Request.Method.POST, user.getAccessToken(), this);
 
-
     }
 
     @Override
     public void onResponse(String response) {
         //TODO Improve this
         System.out.println("Success" + response);
+        //Calls function in activity to change fragment and give conformation
+        ((LoggedInActivity)getActivity()).addedPost("Added post successfully");
     }
 
     @Override
     public void onError(VolleyError error) {
         //TODO Improve this
         System.out.println("Error" + error);
+        ((LoggedInActivity)getActivity()).addedPost("Failed to add post. Error: " + error);
     }
 }

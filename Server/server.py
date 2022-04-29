@@ -47,7 +47,9 @@ def login():
             # The password is correct
             # Return a token
             token = create_access_token(identity=user.username)
-            return jsonify(access_token=token), 200
+            data = user.to_dict()
+            data["accessToken"] = token
+            return data, 200
 
     # The user does not exist
     return jsonify(message="The provided password or username is wrong"), 403
@@ -69,6 +71,9 @@ def add():
         lastname = json_data["last_name"]
         username = json_data["username"]
         email = json_data["email"]
+        gender = json_data["gender"]
+        birthday = json_data["birthday"]
+        photo_url = json_data["photo_url"]
         password = bcrypt.generate_password_hash(json_data["password"])
     except KeyError:
         return "", 400
@@ -77,14 +82,23 @@ def add():
 
     # If there are no usernames like this, we continue.
     if is_creatable:
-        # We assume that the password is hashed.
-        new_user = User(username=username, first_name=firstname, last_name=lastname, password=password,email=email)
+        # Some accounts do not have these values set. So we need to check
+        formatted_birthday = None
+        if birthday != "Unknown":
+            formatted_birthday = datetime.strptime(birthday,"%Y/%m/%d")
+        print(formatted_birthday)
+        formatted_gender = None
+        if gender != "Unknown":
+            formatted_gender = gender
+
+        new_user = User(username=username, first_name=firstname, last_name=lastname, password=password,email=email,
+                        gender=formatted_gender,birthday=formatted_birthday,biography="",photo_url=photo_url)
 
         # Add it to the database and save.
         db.session.add(new_user)
         db.session.commit()
 
-        return new_user.to_dict(), 200
+        return "", 200
     else:
         return "", 409
 
@@ -238,15 +252,16 @@ def get_data(username):
     user = User.query.filter_by(username=username).first()
 
     if user is not None:
-        data = {"first_name" : user.first_name, "last_name" : user.last_name,
+        data = {"firstName" : user.first_name, "lastName" : user.last_name,
                 "gender" : user.gender, "birthday" : user.birthday.strftime("%Y/%m/%d"),
                 "biography" : user.biography}
 
         return jsonify(data),200
 
     return "",400
+
+""" NOT USED ATM
 @app.route("/user/get_id/<username>", methods=["GET"])
-@jwt_required()
 def get_id(username):
     #No try/catch needed here
 
@@ -256,7 +271,7 @@ def get_id(username):
         return str(user.id), 200
     else:
         return "", 400
-
+"""
 
 @app.route("/befriended/<user_id>/<friend_id>", methods=["GET"])
 @jwt_required()

@@ -6,7 +6,9 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+
 import org.json.JSONObject;
+
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -15,14 +17,13 @@ import java.util.Map;
 public class ServerConnection {
 
     private final RequestQueue requestQueue;
-    private final Context context;
+
     /**
      * Initializes a ServerConnection for a specific Context.
      *
      * @param context - the context in which the connection will operate from.
      */
     public ServerConnection(final Context context) {
-        this.context = context;
         requestQueue = Volley.newRequestQueue(context);
     }
 
@@ -45,7 +46,7 @@ public class ServerConnection {
     public void sendStringJsonRequest(final String route,
                                       final JSONObject json, final int method,
                                       final String token,
-                                      final VolleyResponseListener volleyResponseListener) {
+                                      final VolleyResponseListener<String> volleyResponseListener) {
 
         if (method != Request.Method.POST && method != Request.Method.GET &&
                 method != Request.Method.DELETE && method != Request.Method.PUT) {

@@ -1,16 +1,14 @@
 package com.example.strinder.logged_in;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.Toast;
+
+import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -18,7 +16,6 @@ import com.example.strinder.R;
 import com.example.strinder.backend_related.ServerConnection;
 import com.example.strinder.backend_related.User;
 import com.example.strinder.backend_related.VolleyResponseListener;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.material.textfield.TextInputLayout;
 
 import org.json.JSONObject;
@@ -28,13 +25,12 @@ import org.json.JSONObject;
  * Use the {@link AddActivityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddActivityFragment extends Fragment implements View.OnClickListener, VolleyResponseListener {
+public class AddActivityFragment extends Fragment implements View.OnClickListener, VolleyResponseListener<String> {
 
     private TextInputLayout titleInput;
     private TextInputLayout captionInput;
     private RadioGroup postSportTypeInput;
     private ServerConnection connection;
-    private String token;
     private User user;
 
 
@@ -44,11 +40,10 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
 
 
     // TODO: Rename and change types and number of parameters
-    public static AddActivityFragment newInstance(final User user, final String token) {
+    public static AddActivityFragment newInstance(final User user) {
         AddActivityFragment fragment = new AddActivityFragment();
         Bundle bundle = new Bundle();
         bundle.putParcelable("account",user);
-        bundle.putString("token",token);
         fragment.setArguments(bundle);
 
         return fragment;
@@ -71,16 +66,15 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
 
         if(bundle != null) {
             user =  bundle.getParcelable("account");
-            token = bundle.getString("token");
         }
 
         connection = new ServerConnection(view.getContext());
-        titleInput = (TextInputLayout) view.findViewById(R.id.textInputLayoutPostTitle);
-        captionInput = (TextInputLayout) view.findViewById(R.id.textInputLayoutPostCaption);
-        postSportTypeInput = (RadioGroup) view.findViewById(R.id.inputAddActivitySport);
+        titleInput = view.findViewById(R.id.textInputLayoutPostTitle);
+        captionInput =  view.findViewById(R.id.textInputLayoutPostCaption);
+        postSportTypeInput = view.findViewById(R.id.inputAddActivitySport);
 
-        Button addActivityButton = (Button) view.findViewById(R.id.addActivityButton);
-        addActivityButton.setOnClickListener((View.OnClickListener) this);
+        Button addActivityButton = view.findViewById(R.id.addActivityButton);
+        addActivityButton.setOnClickListener(this);
 
         return view;
     }
@@ -103,13 +97,14 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         }catch(Exception e){
             e.printStackTrace();
         }
-        connection.sendStringJsonRequest("/add/" + user.getId(), jsonObject, Request.Method.POST, token, this);
+        connection.sendStringJsonRequest("/add/" + user.getId(), jsonObject,
+                Request.Method.POST, user.getAccessToken(), this);
 
 
     }
 
     @Override
-    public void onResponse(Object response) {
+    public void onResponse(String response) {
         //TODO Improve this
         System.out.println("Success" + response);
     }

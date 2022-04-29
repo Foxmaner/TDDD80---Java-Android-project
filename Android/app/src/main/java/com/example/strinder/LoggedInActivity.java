@@ -11,6 +11,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -152,6 +153,27 @@ public class LoggedInActivity extends AppCompatActivity implements CompletionLis
 
             return false;
         });
+    }
+    /** This function is called after a post has been added
+     * it changes the fragment back to home, and gives a conformation,
+     * that a post has indeed been added
+     */
+    public void addedPost(String message){
+        Fragment homeFragment = new HomeFragment();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(R.id.loggedInView, homeFragment);
+        transaction.addToBackStack(null);
+
+        transaction.commit();
+
+        Toast.makeText(this,message,
+                Toast.LENGTH_SHORT).show();
+
+        BottomNavigationView menuBar = findViewById(R.id.navBar);
+        menuBar.setSelectedItemId(R.id.home);
+
+        setHeaderText(getString(R.string.navbar_home));
+
     }
 
     @Override

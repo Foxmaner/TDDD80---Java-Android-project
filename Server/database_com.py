@@ -56,7 +56,7 @@ class User(db.Model):
     birthday = db.Column(db.DateTime, nullable=True)
     gender = db.Column(db.String(6), nullable=True)
     biography = db.Column(db.String(100),nullable=False)
-    photo_url = db.Column(db.String(200),nullable=False)
+    photo_url = db.Column(db.String(200),nullable=True)
 
     # Relations
     friends = db.relationship("User", secondary=friend_to_friend, primaryjoin=id == friend_to_friend.c.user_id,

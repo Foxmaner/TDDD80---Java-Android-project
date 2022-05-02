@@ -2,12 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="62b4d9ff-816a-4847-82c3-ca219d31bafe" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/backend_related/ServerConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/backend_related/ServerConnection.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/backend_related/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/backend_related/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/logged_in/ProfileFragment.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/logged_in/ProfileFragment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/logged_out/handlers/LoginHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/logged_out/handlers/LoginHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/layout/fragment_profile.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Android/app/src/main/res/layout/fragment_profile.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/res/values/strings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../Android/app/src/main/res/values/strings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

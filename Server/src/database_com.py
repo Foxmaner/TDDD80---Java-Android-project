@@ -46,13 +46,13 @@ liked_comments_table = db.Table("liked_comments",
 
 class User(db.Model):
     __tablename__ = "User"
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(40), nullable=False)
+    id = db.Column(db.Integer, unique=True, primary_key=True)
+    username = db.Column(db.String(40), unique=True, nullable=False)
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
     password = db.Column(db.String(255), nullable=False)
     # Might not need email.
-    email = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), unique=True, nullable=False)
     birthday = db.Column(db.DateTime, nullable=True)
     gender = db.Column(db.String(6), nullable=True)
     biography = db.Column(db.String(100), nullable=False)
@@ -71,8 +71,8 @@ class User(db.Model):
         if self.birthday is not None:
             formatted = self.birthday.strftime("%Y-%m-%d")
 
-        return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name,
-                "gender": self.gender, "birthday": formatted, "biography":self.biography, "email":self.email,
+        return {"id": self.id, "firstName": self.first_name, "lastName": self.last_name,
+                "gender": self.gender, "birthday": formatted, "biography": self.biography, "email": self.email,
                 "photoUrl": self.photo_url,
                 "friends": [friend.to_dict_friends() for friend in self.friends],
                 "posts": [post.to_dict() for post in self.posts]}

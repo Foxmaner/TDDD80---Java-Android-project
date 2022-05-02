@@ -52,7 +52,6 @@ public class LoginHandler implements VolleyResponseListener<String> {
     @Override
     public void onResponse(String response) {
         Intent myIntent = new Intent(activity, LoggedInActivity.class);
-        System.out.println(response);
         //TODO WE NEED TO IMPLEMENT A POST AND FRIEND CLASS! See user.
         //Convert the response with GSON.
         Gson gson = new Gson();

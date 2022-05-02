@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -68,7 +69,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                requestIdToken(getString(R.string.web_client_id))
                 .requestProfile().requestEmail().requestId().requestScopes(
                         new Scope("https://www.googleapis.com/auth/user.addresses.read"),
                         new Scope("https://www.googleapis.com/auth/user.gender.read"),
@@ -101,6 +103,11 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
                                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
                                 handleSignInResult(task);
+                            }
+                            else {
+
+                                Toast.makeText(getContext(),"Failed to login with Google.",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
 

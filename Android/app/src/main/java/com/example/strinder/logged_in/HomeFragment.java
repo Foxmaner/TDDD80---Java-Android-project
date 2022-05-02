@@ -8,6 +8,9 @@ import android.view.ViewGroup;
 import androidx.fragment.app.Fragment;
 
 import com.example.strinder.R;
+import com.example.strinder.logged_in.handlers.PostModel;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,7 +18,7 @@ import com.example.strinder.R;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment {
-
+    ArrayList<PostModel> postModels = new ArrayList<>();
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -36,6 +39,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setUpPostModels();
     }
 
     @Override
@@ -43,6 +47,12 @@ public class HomeFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_home, container, false);
+    }
+
+    private void setUpPostModels(){
+        for (int i = 0; i < 2; i++) {
+            postModels.add(new PostModel("Eskil Cool","Cooler caption"));
+        }
     }
 
 

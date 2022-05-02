@@ -6,9 +6,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.strinder.R;
 import com.example.strinder.logged_in.handlers.PostModel;
+import com.example.strinder.logged_in.handlers.PostModel_RecyclerViewAdapter;
 
 import java.util.ArrayList;
 
@@ -39,19 +42,27 @@ public class HomeFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setUpPostModels();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        View v = inflater.inflate(R.layout.fragment_home, container, false);
+        RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
+        setUpPostModels();
+        PostModel_RecyclerViewAdapter adapter = new PostModel_RecyclerViewAdapter(this.getContext(),postModels);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+        recyclerView.setAdapter(adapter);
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        return v;
     }
 
     private void setUpPostModels(){
-        for (int i = 0; i < 2; i++) {
-            postModels.add(new PostModel("Eskil Cool","Cooler caption"));
+        for (int i = 0; i < 10; i++) {
+            postModels.add(new PostModel("Eskil Cool" + i*20,"Cooler caption" + i));
         }
     }
 

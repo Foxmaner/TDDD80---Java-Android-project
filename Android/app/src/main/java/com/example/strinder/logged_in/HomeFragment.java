@@ -89,7 +89,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
     private void setUpPostModels(){
         for (int i = 0; i < 10; i++) {
-            postModels.add(new PostModel("Eskil Cool" + i*20,"Cooler caption" + i));
+            postModels.add(new PostModel("Eskil Cool" + i*20,"Cooler caption" + i, "10","10","10"));
         }
     }
 

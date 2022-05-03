@@ -1,7 +1,6 @@
 package com.example.strinder.logged_in.handlers;
 
 import android.content.Context;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +34,10 @@ public class PostModel_RecyclerViewAdapter extends RecyclerView.Adapter<PostMode
     @Override
     public void onBindViewHolder(@NonNull PostModel_RecyclerViewAdapter.MyViewHolder holder, int position) {
         holder.postNameView.setText(postModels.get(position).getName());
-        holder.postCaptionView.setText(postModels.get(position).getCaption());
+        //holder.postCaptionView.setText(postModels.get(position).getCaption());
+        holder.postDistanceValueView.setText(postModels.get(position).getDistance());
+        holder.postTimeValueView.setText(postModels.get(position).getTime());
+        holder.postSpeedValueView.setText(postModels.get(position).getSpeed());
     }
 
     @Override
@@ -45,13 +47,19 @@ public class PostModel_RecyclerViewAdapter extends RecyclerView.Adapter<PostMode
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
         TextView postNameView;
-        TextView postCaptionView;
+        //TextView postCaptionView;
+        TextView postDistanceValueView;
+        TextView postTimeValueView;
+        TextView postSpeedValueView;
 
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             postNameView = itemView.findViewById(R.id.postNameView);
-            postCaptionView = itemView.findViewById(R.id.postCaptionView);
+            //postCaptionView = itemView.findViewById(R.id.postDistanceTextView);
+            postDistanceValueView = itemView.findViewById(R.id.postDistanceValueView);
+            postTimeValueView = itemView.findViewById(R.id.postTimeValueView);
+            postSpeedValueView = itemView.findViewById(R.id.postSpeedValueView);
 
         }
     }

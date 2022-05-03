@@ -81,18 +81,19 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         if(getActivity() != null && getContext() != null) {
             mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
-            mGoogleSignInClient.silentSignIn().addOnCompleteListener(this.getActivity(),
-                    this::handleSignInResult);
-
-
-            //Set SignInButton style programmatically.
             SignInButton signInButton = v.findViewById(R.id.googleSignIn);
             signInButton.setColorScheme(SignInButton.COLOR_LIGHT);
             signInButton.setSize(SignInButton.SIZE_WIDE);
-            signInButton.setVisibility(View.GONE);
+            signInButton.setVisibility(View.VISIBLE);
+
+            mGoogleSignInClient.silentSignIn().addOnCompleteListener(this.getActivity(),
+                    (result) -> {
+                        signInButton.setVisibility(View.GONE);
+                        handleSignInResult(result);
+                    });
+
 
             //This device is new. The user will have to login through the Google Sign In API.
-            signInButton.setVisibility(View.VISIBLE);
             signInButton.setOnClickListener(this);
 
             activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),

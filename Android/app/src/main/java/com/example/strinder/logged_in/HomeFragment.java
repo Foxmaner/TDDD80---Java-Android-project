@@ -9,9 +9,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.ServerConnection;
+import com.example.strinder.backend_related.User;
+import com.example.strinder.backend_related.VolleyResponseListener;
 import com.example.strinder.logged_in.handlers.PostModel;
 import com.example.strinder.logged_in.handlers.PostModel_RecyclerViewAdapter;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -20,8 +27,10 @@ import java.util.ArrayList;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
-    ArrayList<PostModel> postModels = new ArrayList<>();
+public class HomeFragment extends Fragment implements VolleyResponseListener<String> {
+    private ArrayList<PostModel> postModels = new ArrayList<>();
+    private ServerConnection connection;
+    private User user;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -32,10 +41,12 @@ public class HomeFragment extends Fragment {
      * @return A new instance of fragment HomeFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance() {
+    public static HomeFragment newInstance(final User user) {
         HomeFragment fragment = new HomeFragment();
-        Bundle args = new Bundle();
-        fragment.setArguments(args);
+
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("account",user);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -48,6 +59,19 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
+
+
+        System.out.println("hejhej!!!!!");
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            user =  bundle.getParcelable("account");
+            System.out.println(user);
+        }
+        System.out.println(user);
+
+        connection.sendStringJsonRequest("/add/" + user.getId(), new JSONObject(),
+                Request.Method.GET, user.getAccessToken(), this);
+
         RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
         setUpPostModels();
         PostModel_RecyclerViewAdapter adapter = new PostModel_RecyclerViewAdapter(this.getContext(),postModels);
@@ -67,4 +91,15 @@ public class HomeFragment extends Fragment {
     }
 
 
+    @Override
+    public void onResponse(String response) {
+        System.out.println("response success:");
+        System.out.println(response);
+    }
+
+    @Override
+    public void onError(VolleyError error) {
+        System.out.println("response fail:");
+        System.out.println(error);
+    }
 }

@@ -97,8 +97,8 @@ public class LoggedInActivity extends AppCompatActivity {
 
             //We can't convert this to a switch case due to the ids not being final.
             if (id == R.id.home) {
+                fragment = HomeFragment.newInstance(account);
                 setHeaderText(getString(R.string.navbar_home));
-                fragment = new HomeFragment();
             }
             else if (id == R.id.friends) {
                 fragment = new FriendsFragment();

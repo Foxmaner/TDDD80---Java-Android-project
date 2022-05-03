@@ -8,13 +8,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.fragment.app.Fragment;
 
 import com.example.strinder.R;
-import com.example.strinder.logged_out.handlers.RegisterHandler;
+import com.example.strinder.logged_out.handlers.AuthenticationHandler;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,7 +33,7 @@ import com.google.android.gms.tasks.Task;
  * Use the {@link LoginFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class LoginFragment extends Fragment implements View.OnClickListener {
+public class LoginFragment extends Fragment implements View.OnClickListener{
 
     private GoogleSignInClient mGoogleSignInClient;
     private ActivityResultLauncher<Intent> activityResultLauncher;
@@ -68,7 +69,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).
+                requestIdToken(getString(R.string.web_client_id))
                 .requestProfile().requestEmail().requestId().requestScopes(
                         new Scope("https://www.googleapis.com/auth/user.addresses.read"),
                         new Scope("https://www.googleapis.com/auth/user.gender.read"),
@@ -79,36 +81,35 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         if(getActivity() != null && getContext() != null) {
             mGoogleSignInClient = GoogleSignIn.getClient(getActivity(), gso);
 
-            //Check if the user was recently signed in through Google on this device.
-            GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getContext());
-
-            //Set SignInButton style programmatically.
             SignInButton signInButton = v.findViewById(R.id.googleSignIn);
             signInButton.setColorScheme(SignInButton.COLOR_LIGHT);
             signInButton.setSize(SignInButton.SIZE_WIDE);
-            signInButton.setVisibility(View.GONE);
+            signInButton.setVisibility(View.VISIBLE);
+            mGoogleSignInClient.silentSignIn().addOnCompleteListener(this.getActivity(),
+                    (result) -> {
+                        signInButton.setVisibility(View.GONE);
+                        handleSignInResult(result);
+                    });
 
-            if (account == null) {
-                //This device is new. The user will have to login through the Google Sign In API.
-                signInButton.setVisibility(View.VISIBLE);
-                signInButton.setOnClickListener(this);
 
-                activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
-                        result -> {
-                            if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                                Log.i("Google Sign In", "Recieved RESULT_OK");
-                                // The Task returned from this call is always completed.
+            //This device is new. The user will have to login through the Google Sign In API.
+            signInButton.setOnClickListener(this);
+            signInButton.setVisibility(View.VISIBLE);
+            activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                    result -> {
+                        if (result.getResultCode() == RESULT_OK && result.getData() != null) {
+                            Log.i("Google Sign In", "Recieved RESULT_OK");
+                            // The Task returned from this call is always completed.
 
-                                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
-                                handleSignInResult(task);
-                            }
-                        });
+                            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                            handleSignInResult(task);
+                        }
+                        else {
+                            Toast.makeText(getContext(),"Failed to login with Google.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
 
-            }
-            else {
-                //This user has been logged in earlier on this device.
-                login(account);
-            }
 
         }
 
@@ -159,15 +160,12 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * @param account - the logged in GoogleSignInAccount that contains all the information we need.
      */
     private void login(final GoogleSignInAccount account) {
-        Log.i("Google Sign In", "Logged in. Sending user to main.");
-        //Connect to OUR server.
-        RegisterHandler registerHandler = new RegisterHandler(account,this.getActivity());
-        registerHandler.tryRegister();
+        Log.i("Google Sign In", "Logged in. Authentication with backend in process...");
+
+        AuthenticationHandler authenticationHandler = new AuthenticationHandler(account,
+                this.getActivity());
+        authenticationHandler.tryAuthentication();
 
     }
-
-
-
-
 
 }

@@ -13,7 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.strinder.backend_related.User;
+import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.AddActivityFragment;
 import com.example.strinder.logged_in.FriendsFragment;
 import com.example.strinder.logged_in.HomeFragment;
@@ -41,9 +41,16 @@ public class LoggedInActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar bar =  getSupportActionBar();
 
+        HomeFragment fragment;
+        fragment = HomeFragment.newInstance(account);
+
+        getSupportFragmentManager().beginTransaction().
+                replace(R.id.loggedInView, fragment).commit();
+
+
         //Remove app name from top nav.
         if(bar != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            bar.setDisplayShowTitleEnabled(false);
         }
 
         TextView view = toolbar.findViewById(R.id.fragmentName);
@@ -91,14 +98,15 @@ public class LoggedInActivity extends AppCompatActivity {
      * @param menuBar -  the BottomNavigationView object that the listener will be added to.
      */
     private void setBottomNavListener(final BottomNavigationView menuBar) {
+        System.out.println("account =  "  + account);
+        System.out.println(account.getId());
         menuBar.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             final int id = item.getItemId();
-
             //We can't convert this to a switch case due to the ids not being final.
             if (id == R.id.home) {
+                fragment = HomeFragment.newInstance(account);
                 setHeaderText(getString(R.string.navbar_home));
-                fragment = new HomeFragment();
             }
             else if (id == R.id.friends) {
                 fragment = new FriendsFragment();
@@ -129,6 +137,8 @@ public class LoggedInActivity extends AppCompatActivity {
             return false;
         });
     }
+
+    //TODO Move this to HomeFragment
     /** This function is called after a post has been added
      * it changes the fragment back to home, and gives a conformation,
      * that a post has indeed been added

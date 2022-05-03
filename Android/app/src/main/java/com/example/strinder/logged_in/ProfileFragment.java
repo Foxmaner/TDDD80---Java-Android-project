@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.example.strinder.R;
-import com.example.strinder.backend_related.User;
+import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.private_data.CompletionListener;
 import com.squareup.picasso.Picasso;
 
@@ -71,10 +71,23 @@ public class ProfileFragment extends Fragment implements CompletionListener {
             }
 
             TextView gender = v.findViewById(R.id.gender);
-            gender.setText(user.getGender());
+            gender.setText(R.string.gender_base_text);
+            if(user.getGender() != null)
+                gender.append(user.getGender());
+            else
+                gender.append("Unknown");
 
             TextView birthday = v.findViewById(R.id.birthday);
-            birthday.setText(user.getBirthday());
+            birthday.setText(R.string.birthday_base_text);
+            if(user.getBirthday() != null)
+                birthday.append(user.getBirthday());
+            else
+                birthday.append("Unknown");
+
+            TextView biography = v.findViewById(R.id.biography);
+            biography.setText(R.string.biography_base_text);
+            //Biography is never null.
+            biography.append(user.getBiography());
 
 
         }

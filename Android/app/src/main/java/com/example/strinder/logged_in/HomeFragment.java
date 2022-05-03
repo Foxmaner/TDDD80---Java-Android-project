@@ -29,6 +29,7 @@ import java.util.ArrayList;
  */
 public class HomeFragment extends Fragment implements VolleyResponseListener<String> {
     private ArrayList<PostModel> postModels = new ArrayList<>();
+    private PostModel_RecyclerViewAdapter adapter;
     private ServerConnection connection;
     private User user;
     public HomeFragment() {
@@ -61,20 +62,22 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
 
-        System.out.println("hejhej!!!!!");
+
         Bundle bundle = getArguments();
         if(bundle != null) {
             user =  bundle.getParcelable("account");
-            System.out.println(user);
         }
-        System.out.println(user);
 
-        connection.sendStringJsonRequest("/add/" + user.getId(), new JSONObject(),
-                Request.Method.GET, user.getAccessToken(), this);
+        if (user != null){
+            connection = new ServerConnection(this.getContext());
+            connection.sendStringJsonRequest("/posts/" + user.getId() + "/-1" , new JSONObject(),
+                    Request.Method.GET, user.getAccessToken(), this);
+        }
+
 
         RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
         setUpPostModels();
-        PostModel_RecyclerViewAdapter adapter = new PostModel_RecyclerViewAdapter(this.getContext(),postModels);
+        adapter = new PostModel_RecyclerViewAdapter(this.getContext(),postModels);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -93,7 +96,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
     @Override
     public void onResponse(String response) {
-        System.out.println("response success:");
+        System.out.println("response from postFetch success:");
         System.out.println(response);
     }
 

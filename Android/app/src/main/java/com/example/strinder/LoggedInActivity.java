@@ -41,6 +41,13 @@ public class LoggedInActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         ActionBar bar =  getSupportActionBar();
 
+        HomeFragment fragment;
+        fragment = HomeFragment.newInstance(account);
+
+        getSupportFragmentManager().beginTransaction().
+                replace(R.id.loggedInView, fragment).commit();
+
+
         //Remove app name from top nav.
         if(bar != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -91,10 +98,11 @@ public class LoggedInActivity extends AppCompatActivity {
      * @param menuBar -  the BottomNavigationView object that the listener will be added to.
      */
     private void setBottomNavListener(final BottomNavigationView menuBar) {
+        System.out.println("account =  "  + account);
+        System.out.println(account.getId());
         menuBar.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             final int id = item.getItemId();
-
             //We can't convert this to a switch case due to the ids not being final.
             if (id == R.id.home) {
                 fragment = HomeFragment.newInstance(account);

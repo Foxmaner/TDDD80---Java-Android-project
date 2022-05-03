@@ -52,7 +52,7 @@ public class LoginHandler implements VolleyResponseListener<String> {
     @Override
     public void onResponse(String response) {
         Intent myIntent = new Intent(activity, LoggedInActivity.class);
-        System.out.println(response);
+        //System.out.println(response);
         //Convert the response with GSON.
         Gson gson = new Gson();
         User user = gson.fromJson(response,User.class);

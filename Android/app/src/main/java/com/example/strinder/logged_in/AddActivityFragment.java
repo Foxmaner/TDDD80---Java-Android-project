@@ -106,7 +106,7 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
     @Override
     public void onResponse(String response) {
         //TODO Improve this
-        System.out.println("Success" + response);
+        //System.out.println("Success" + response);
         //Calls function in activity to change fragment and give conformation
         ((LoggedInActivity)getActivity()).addedPost("Added post successfully");
     }

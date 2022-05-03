@@ -30,11 +30,13 @@ public class User implements Parcelable {
         this.biography = parcel.readString();
         this.photoUrl = parcel.readString();
         this.id = parcel.readInt();
+
         /*friends = new ArrayList<>();
         parcel.readList(friends,String.class.getClassLoader());
         posts = new ArrayList<>();
         parcel.readList(posts,String.class.getClassLoader());
         */
+
         accessToken = parcel.readString();
     }
 
@@ -73,8 +75,8 @@ public class User implements Parcelable {
     public int getId() {
         return id;
     }
-    /*
-    public List<String> getFriends() {
+
+    /*public List<String> getFriends() {
         return friends;
     }
 
@@ -161,10 +163,12 @@ public class User implements Parcelable {
         parcel.writeString(biography);
         parcel.writeString(photoUrl);
         parcel.writeInt(id);
+
         /*
         parcel.writeList(friends);
         parcel.writeList(posts);
         */
+
         parcel.writeString(accessToken);
     }
 

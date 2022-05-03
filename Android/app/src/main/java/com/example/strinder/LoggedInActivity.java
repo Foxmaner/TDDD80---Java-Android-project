@@ -129,6 +129,8 @@ public class LoggedInActivity extends AppCompatActivity {
             return false;
         });
     }
+
+    //TODO Move this to HomeFragment
     /** This function is called after a post has been added
      * it changes the fragment back to home, and gives a conformation,
      * that a post has indeed been added

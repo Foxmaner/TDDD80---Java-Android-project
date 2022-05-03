@@ -50,7 +50,6 @@ class User(db.Model):
     username = db.Column(db.String(40), unique=True, nullable=False)
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
-    password = db.Column(db.String(255), nullable=False)
     # Might not need email.
     email = db.Column(db.String(50), unique=True, nullable=False)
     birthday = db.Column(db.DateTime, nullable=True)

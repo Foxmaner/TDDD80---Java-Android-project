@@ -23,12 +23,12 @@
     <string name="web_client_id">960100179212-4f9co6hv8aogedarvvdi732j147bb53p.apps.googleusercontent.com</string>
     <!-- Settings -->
     <string name="sign_out">Sign Out</string>
+    <string name="gender_base_text">Gender: \t</string>
+    <string name="birthday_base_text">Birthday: \t</string>
+    <string name="biography_base_text">Biography: \n</string>
 
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="gender_base_text">Gender: \t</string>
-    <string name="birthday_base_text">Birthday: \t</string>
-    <string name="biography_base_text">Biography: \n</string>
 
 </resources>

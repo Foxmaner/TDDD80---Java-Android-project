@@ -1,3 +1,5 @@
+import traceback
+
 from flask import jsonify, request
 from sqlalchemy import desc
 from datetime import timedelta, datetime, timezone
@@ -6,6 +8,8 @@ from database_com import app, db, User, Post, Comment, TokenBlocklist
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import get_jwt_identity
+from google.oauth2 import id_token
+from google.auth.transport import requests
 import os
 
 bcrypt = Bcrypt(app)
@@ -26,78 +30,56 @@ def check_if_token_revoked(_, jwt_payload: dict) -> bool:
 
 
 # ----- POST ----- #
-# Login
-@app.route("/user/login", methods=["POST"])
-def login():
+
+@app.route("/authenticate", methods=["POST"])
+def authenticate():
     post_input = request.get_json()
+    token = post_input["idToken"]
+    # TODO Hide somewhere!
+    client_id = "960100179212-4f9co6hv8aogedarvvdi732j147bb53p.apps.googleusercontent.com"
 
     try:
-        password = post_input["password"]
-        username = post_input["username"]
+        google_request = requests.Request()
+        # Specify the CLIENT_ID of the app that accesses the backend:
+        info = id_token.verify_oauth2_token(token, google_request, client_id)
 
-    except KeyError:
-        return "", 400
+        if info["iss"] == "https://accounts.google.com":
+            # ID token is valid. Get the user's Google Account ID and other information.
+            username = info["sub"]
+            email = info["email"]
+            first_name = info["given_name"]
+            last_name = info["family_name"]
+            photo_url = info["picture"]
+            # From Post Request
+            birthday = post_input["birthday"]
+            gender = post_input["gender"]
+            user = User.query.filter_by(username=username).first()
 
-    user = User.query.filter_by(username=username).first()
+            # If there are no usernames like this, we continue.
+            if user is None:
+                # Some accounts do not have these values set. So we need to check
+                if birthday is not None:
+                    birthday = datetime.strptime(birthday, "%Y/%m/%d")
 
-    if user is not None:
-        # The user exists
-        db_pass = user.password
+                user = User(username=username, first_name=first_name, last_name=last_name,
+                            email=email, gender=gender, birthday=birthday, biography="", photo_url=photo_url)
 
-        if bcrypt.check_password_hash(db_pass, password):
-            # The password is correct
-            # Return a token
+                # Add it to the database and save.
+                db.session.add(user)
+                db.session.commit()
+
             token = create_access_token(identity=user.username)
             data = user.to_dict()
             data["accessToken"] = token
             return data, 200
 
-    # The user does not exist
-    return jsonify(message="The provided password or username is wrong"), 403
+        else:
+            return "", 400
 
-
-# Register
-@app.route("/add", methods=["POST"])
-def add():
-    """This function adds a new user."""
-    json_data = request.get_json()
-
-    if json_data is None:
+    except(ValueError, KeyError):
+        # Print the exception.
+        print(traceback.format_exc())
         return "", 400
-
-    # Get the json data, if it is not available - return error code 400.
-    try:
-        # Try to convert the dictionary to variables. If it fails,then return error code 400.
-        firstname = json_data["first_name"]
-        lastname = json_data["last_name"]
-        username = json_data["username"]
-        email = json_data["email"]
-        gender = json_data["gender"]
-        birthday = json_data["birthday"]
-        photo_url = json_data["photo_url"]
-        password = bcrypt.generate_password_hash(json_data["password"]).decode('utf-8')
-
-    except KeyError:
-        return "", 400
-
-    is_creatable = User.query.filter_by(username=username).first() is None
-
-    # If there are no usernames like this, we continue.
-    if is_creatable:
-        # Some accounts do not have these values set. So we need to check
-        if birthday is not None:
-            birthday = datetime.strptime(birthday, "%Y/%m/%d")
-
-        new_user = User(username=username, first_name=firstname, last_name=lastname, password=password, email=email,
-                        gender=gender, birthday=birthday, biography="", photo_url=photo_url)
-
-        # Add it to the database and save.
-        db.session.add(new_user)
-        db.session.commit()
-
-        return "", 200
-    else:
-        return "", 409
 
 
 @app.route("/add/<user_id>", methods=["POST"])

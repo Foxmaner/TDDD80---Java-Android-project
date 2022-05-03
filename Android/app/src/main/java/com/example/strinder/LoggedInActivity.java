@@ -50,7 +50,7 @@ public class LoggedInActivity extends AppCompatActivity {
 
         //Remove app name from top nav.
         if(bar != null) {
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            bar.setDisplayShowTitleEnabled(false);
         }
 
         TextView view = toolbar.findViewById(R.id.fragmentName);

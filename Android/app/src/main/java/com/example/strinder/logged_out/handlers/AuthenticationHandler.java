@@ -96,7 +96,7 @@ public class AuthenticationHandler implements VolleyResponseListener<String>, Co
 
     @Override
     public void onError(VolleyError error) {
-        Log.e("Volley Error",error.getMessage());
+        Log.e("Volley Error",error.toString());
         Toast.makeText(activity,"Could not authenticate account with the " +
                 activity.getString(R.string.app_name) + "server. " +
                 "Please try again later.",Toast.LENGTH_SHORT).show();

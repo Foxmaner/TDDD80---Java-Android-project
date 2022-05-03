@@ -15,10 +15,11 @@ import com.android.volley.VolleyError;
 import com.example.strinder.LoggedInActivity;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.ServerConnection;
-import com.example.strinder.backend_related.User;
+import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.backend_related.VolleyResponseListener;
 import com.google.android.material.textfield.TextInputLayout;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -85,30 +86,51 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         String postTitle = titleInput.getEditText().getText().toString();
         String postCaption = captionInput.getEditText().getText().toString();
         int selectedRadioId = postSportTypeInput.getCheckedRadioButtonId();
-        RadioButton selectedButton = (RadioButton) postSportTypeInput.findViewById(selectedRadioId);
-        String postSport = selectedButton.getText().toString();
-
-
+        RadioButton selectedButton =  postSportTypeInput.findViewById(selectedRadioId);
 
 
         JSONObject jsonObject = new JSONObject();
         try {
             jsonObject.put("title", postTitle);
             jsonObject.put("caption", postCaption);
-        }catch(Exception e){
+        }
+        catch(Exception e){
             e.printStackTrace();
         }
-        connection.sendStringJsonRequest("/add/" + user.getId(), jsonObject,
+        connection.sendStringJsonRequest("/post/add", jsonObject,
                 Request.Method.POST, user.getAccessToken(), this);
+
 
     }
 
     @Override
     public void onResponse(String response) {
         //TODO Improve this
-        //System.out.println("Success" + response);
-        //Calls function in activity to change fragment and give conformation
-        ((LoggedInActivity)getActivity()).addedPost("Added post successfully");
+        //TrainingSession
+        JSONObject object = new JSONObject();
+        try {
+            object.put("time",5.5f);
+            object.put("postId",1);
+            object.put("speedUnit", "km/h");
+            object.put("speed",5f);
+            object.put("exercise","Running");
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        connection.sendStringJsonRequest("/session/set", object, Request.Method.POST, user.getAccessToken(), new VolleyResponseListener<String>() {
+            @Override
+            public void onResponse(String response) {
+                ((LoggedInActivity)getActivity()).addedPost("Added Post");
+            }
+
+            @Override
+            public void onError(VolleyError error) {
+                System.out.println(error);
+            }
+        });
+
     }
 
     @Override

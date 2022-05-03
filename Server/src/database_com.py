@@ -46,7 +46,7 @@ liked_comments_table = db.Table("liked_comments",
 
 class User(db.Model):
     __tablename__ = "User"
-    id = db.Column(db.Integer, unique=True, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
     username = db.Column(db.String(40), unique=True, nullable=False)
     first_name = db.Column(db.String(40), nullable=False)
     last_name = db.Column(db.String(40), nullable=False)
@@ -82,7 +82,7 @@ class User(db.Model):
 
 class Post(db.Model):
     __tablename__ = "Post"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=False)
     title = db.Column(db.String(40), nullable=False)
     caption = db.Column(db.String(140), nullable=False)
@@ -95,13 +95,16 @@ class Post(db.Model):
     training_session = db.relationship("TrainingSession", uselist=False, backref="post")
 
     def to_dict(self):
-        return {"id": self.id, "title": self.title, "caption": self.caption, "likes": self.likes,
-                "comments": self.comments, "training_session": self.training_session, "date_time": self.date_time}
+        session = None
+        if self.training_session is not None:
+            session = self.training_session.to_dict();
+        return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption, "likes": self.likes,
+                "comments": self.comments, "trainingSession": session, "date": self.date_time}
 
 
 class TrainingSession(db.Model):
     __tablename__ = "Training_session"
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
     time = db.Column(db.Float, nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
     speed_unit = db.Column(db.String(40), nullable=False)
@@ -109,8 +112,8 @@ class TrainingSession(db.Model):
     exercise = db.Column(db.String(40), nullable=False)
 
     def to_dict(self):
-        return {"id": self.id, "time": self.time, "speed_unit": self.speed_unit, "speed": self.speed,
-                "exercise": self.exercise}
+        return {"id": self.id, "postId": self.post_id, "elapsedTime": self.time, "speedUnit": self.speed_unit,
+                "speed": self.speed, "exercise": self.exercise}
 
 
 class Comment(db.Model):
@@ -123,7 +126,7 @@ class Comment(db.Model):
     likes = db.relationship("User", secondary=liked_comments_table, back_populates="liked_comments")
 
     def to_dict(self):
-        return {"id": self.id, "post_id": self.post_id, "text": self.text, "user_id": self.user_id,
+        return {"id": self.id, "postId": self.post_id, "text": self.text, "userId": self.user_id,
                 "likes": self.likes}
 
 

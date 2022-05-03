@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 import com.example.strinder.R;
-import com.example.strinder.backend_related.User;
+import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.private_data.CompletionListener;
 import com.squareup.picasso.Picasso;
 

@@ -13,7 +13,7 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.ServerConnection;
-import com.example.strinder.backend_related.User;
+import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.backend_related.VolleyResponseListener;
 import com.example.strinder.logged_in.handlers.PostModel;
 import com.example.strinder.logged_in.handlers.PostModel_RecyclerViewAdapter;

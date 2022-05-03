@@ -85,7 +85,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             signInButton.setColorScheme(SignInButton.COLOR_LIGHT);
             signInButton.setSize(SignInButton.SIZE_WIDE);
             signInButton.setVisibility(View.VISIBLE);
-
             mGoogleSignInClient.silentSignIn().addOnCompleteListener(this.getActivity(),
                     (result) -> {
                         signInButton.setVisibility(View.GONE);
@@ -95,7 +94,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
             //This device is new. The user will have to login through the Google Sign In API.
             signInButton.setOnClickListener(this);
-
+            signInButton.setVisibility(View.VISIBLE);
             activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     result -> {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
@@ -106,7 +105,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                             handleSignInResult(task);
                         }
                         else {
-
                             Toast.makeText(getContext(),"Failed to login with Google.",
                                     Toast.LENGTH_SHORT).show();
                         }

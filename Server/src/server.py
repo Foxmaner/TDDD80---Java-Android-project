@@ -4,7 +4,7 @@ from flask import jsonify, request
 from sqlalchemy import desc
 from datetime import timedelta, datetime, timezone
 
-from database_com import app, db, User, Post, Comment, TokenBlocklist
+from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingSession
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import get_jwt_identity
@@ -68,7 +68,7 @@ def authenticate():
                 db.session.add(user)
                 db.session.commit()
 
-            token = create_access_token(identity=user.username)
+            token = create_access_token(identity=user.id)
             data = user.to_dict()
             data["accessToken"] = token
             return data, 200
@@ -82,13 +82,13 @@ def authenticate():
         return "", 400
 
 
-@app.route("/add/<user_id>", methods=["POST"])
+@app.route("/post/add", methods=["POST"])
 @jwt_required()
-def add_post(user_id):
+def add_post():
     """This function adds a post to a user. """
     # Convert parameter to int
     try:
-        user_id = int(user_id)
+        user_id = get_jwt_identity()
     # If the user_id is incorrect, return error code.
     except(ValueError, TypeError):
         return "", 400
@@ -115,6 +115,45 @@ def add_post(user_id):
         return "", 400
 
 
+@app.route("/session/set", methods=["POST"])
+@jwt_required()
+def set_session():
+    post_input = request.get_json()
+    try:
+        user_id = get_jwt_identity()
+        time = post_input["time"]
+        post_id = post_input["postId"]
+        speed_unit = post_input["speedUnit"]
+        speed = post_input["speed"]
+        exercise = post_input["exercise"]
+    # If the user_id is incorrect, return error code.
+    except(ValueError, TypeError):
+        return "", 400
+
+    post = Post.query.filter_by(id=post_id).first()
+    # Make sure that we are editing our own post.
+    if post is not None and post.user_id == user_id:
+        training = TrainingSession(time=time, post_id=post_id, speed_unit=speed_unit,
+                                   speed=speed, exercise=exercise)
+        # Update the training_session attribute.
+        if post.training_session is None:
+            post.training_session = training
+        else:
+            # Could not replace the session as such: training_session = training.
+            post.training_session.speed = training.speed
+            post.training_session.post_id = training.post_id
+            post.training_session.time = training.time
+            post.training_session.exercise = training.exercise
+            post.training_session.speed_unit = training.speed_unit
+
+        db.session.commit()
+
+        return jsonify(training.to_dict()), 200
+
+    else:
+        return "", 400
+
+
 @app.route("/user/logout", methods=["POST"])
 @jwt_required()
 def logout():
@@ -127,11 +166,12 @@ def logout():
     except KeyError:
         return "", 400
 
-
+"""
+NOT USED
 @app.route("/user/set_data", methods=["POST"])
 @jwt_required()
 def set_data():
-    """Sets the data that is allowed to change to the data that has been received."""
+   
     json_data = request.get_json()
     if json_data is None:
         return "", 400
@@ -163,6 +203,8 @@ def set_data():
         return "", 200
 
     return "", 400
+
+"""
 
 
 @app.route("/befriend/<friend_id>/<user_id>", methods=["POST"])

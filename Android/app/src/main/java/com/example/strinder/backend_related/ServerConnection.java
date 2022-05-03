@@ -27,7 +27,7 @@ public class ServerConnection {
         requestQueue = Volley.newRequestQueue(context);
     }
 
-    private static final String BASE_URL = "https://strinder.herokuapp.com"; //Emulator: 10.0.2.2:5000
+    private static final String BASE_URL = "http://10.0.2.2:5000"; //"https://strinder.herokuapp.com"; //Emulator: 10.0.2.2:5000
 
     /**
      * Send a StringRequest with a bound JsonObject.

@@ -1,15 +1,18 @@
-package com.example.strinder.backend_related;
+package com.example.strinder.backend_related.tables;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class User implements Parcelable {
 
     private final String firstName;
     private final String lastName;
     private final String email;
-    //private final ArrayList<String> friends;
-    //private final ArrayList<String> posts;
+    private final ArrayList<User> friends;
+    private final ArrayList<Post> posts;
     private final String username;
     private final String birthday;
     private final String gender;
@@ -31,11 +34,11 @@ public class User implements Parcelable {
         this.photoUrl = parcel.readString();
         this.id = parcel.readInt();
 
-        /*friends = new ArrayList<>();
-        parcel.readList(friends,String.class.getClassLoader());
+        friends = new ArrayList<>();
+        parcel.readList(friends,User.class.getClassLoader());
         posts = new ArrayList<>();
-        parcel.readList(posts,String.class.getClassLoader());
-        */
+        parcel.readList(posts,Post.class.getClassLoader());
+
 
         accessToken = parcel.readString();
     }
@@ -76,15 +79,13 @@ public class User implements Parcelable {
         return id;
     }
 
-    /*public List<String> getFriends() {
+    public List<User> getFriends() {
         return friends;
     }
 
-    public List<String> getPosts() {
+    public List<Post> getPosts() {
         return posts;
     }
-
-     */
 
     public String getBiography() {
         return biography;
@@ -163,12 +164,8 @@ public class User implements Parcelable {
         parcel.writeString(biography);
         parcel.writeString(photoUrl);
         parcel.writeInt(id);
-
-        /*
         parcel.writeList(friends);
         parcel.writeList(posts);
-        */
-
         parcel.writeString(accessToken);
     }
 

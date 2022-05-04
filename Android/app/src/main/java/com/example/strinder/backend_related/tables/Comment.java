@@ -21,6 +21,26 @@ public class Comment implements Parcelable {
         parcel.readList(likes,User.class.getClassLoader());
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public int getPostId() {
+        return postId;
+    }
+
+    public String getText() {
+        return text;
+    }
+
+    public List<User> getLikes() {
+        return likes;
+    }
+
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
         @Override
         public Comment createFromParcel(Parcel in) {

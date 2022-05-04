@@ -15,12 +15,9 @@ import com.example.strinder.R;
 import com.example.strinder.backend_related.ServerConnection;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.backend_related.VolleyResponseListener;
-import com.example.strinder.logged_in.handlers.PostModel;
-import com.example.strinder.logged_in.handlers.PostModel_RecyclerViewAdapter;
+import com.example.strinder.logged_in.handlers.PostRecyclerViewAdapter;
 
 import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -28,9 +25,6 @@ import java.util.ArrayList;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment implements VolleyResponseListener<String> {
-    private ArrayList<PostModel> postModels = new ArrayList<>();
-    private PostModel_RecyclerViewAdapter adapter;
-    private ServerConnection connection;
     private User user;
     public HomeFragment() {
         // Required empty public constructor
@@ -66,31 +60,28 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         Bundle bundle = getArguments();
         if(bundle != null) {
             user =  bundle.getParcelable("account");
-        }
+            /*
+            ServerConnection connection = new ServerConnection(this.getContext());
 
-        if (user != null){
-            connection = new ServerConnection(this.getContext());
-            connection.sendStringJsonRequest("/posts/" + user.getId() + "/-1" , new JSONObject(),
+            connection.sendStringJsonRequest("/posts/" + user.getId() + "/-1" ,
+                    new JSONObject(),
                     Request.Method.GET, user.getAccessToken(), this);
+
+
+             */
+            RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
+
+            PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(this.getContext(),
+                    user.getPosts());
+
+            recyclerView.setAdapter(adapter);
+            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+            recyclerView.setAdapter(adapter);
         }
 
-
-        RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
-        setUpPostModels();
-        adapter = new PostModel_RecyclerViewAdapter(this.getContext(),postModels);
-
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-
-        recyclerView.setAdapter(adapter);
         // Inflate the layout for this fragment
         return v;
-    }
-
-    private void setUpPostModels(){
-        for (int i = 0; i < 10; i++) {
-            postModels.add(new PostModel("Eskil Cool" + i*20,"Cooler caption" + i, "10","10","10"));
-        }
     }
 
 

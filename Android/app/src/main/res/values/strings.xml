@@ -30,5 +30,9 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="amountOfActivities">Posts:</string>
+    <string name="amountOfLikesText">Likes:</string>
+    <string name="amountOfHours">Hours:</string>
+    <string name="my_posts_text">My Posts</string>
 
 </resources>

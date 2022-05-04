@@ -68,7 +68,8 @@ def authenticate():
                     birthday = datetime.strptime(birthday, "%Y/%m/%d")
 
                 user = User(username=username, first_name=first_name, last_name=last_name,
-                            email=email, gender=gender, birthday=birthday, biography="", photo_url=photo_url)
+                            email=email, gender=gender, birthday=birthday, biography="I am new to Strinder!",
+                            photo_url=photo_url)
 
                 # Add it to the database and save.
                 db.session.add(user)
@@ -127,7 +128,8 @@ def set_session():
     post_input = request.get_json()
     try:
         user_id = get_jwt_identity()
-        time = post_input["time"]
+        # Get the hour and minutes: HH:MM (e.g 16:56)
+        time = datetime.strptime(post_input["time"], "%H:%M")
         post_id = post_input["postId"]
         speed_unit = post_input["speedUnit"]
         speed = post_input["speed"]
@@ -139,7 +141,7 @@ def set_session():
     post = Post.query.filter_by(id=post_id).first()
     # Make sure that we are editing our own post.
     if post is not None and post.user_id == user_id:
-        training = TrainingSession(time=time, post_id=post_id, speed_unit=speed_unit,
+        training = TrainingSession(time=time,post_id=post_id, speed_unit=speed_unit,
                                    speed=speed, exercise=exercise)
         # Update the training_session attribute.
         if post.training_session is None:
@@ -343,10 +345,10 @@ def get_posts(user_id, nr_of_posts):
 
     if nr_of_posts == -1:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
-            order_by(desc(Post.date_time)).all()]
+                 order_by(desc(Post.date_time)).all()]
     elif nr_of_posts >= 0:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
-            order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
+                 order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
     else:
         return "", 400
 
@@ -415,7 +417,7 @@ def get_friends(user_id, nr_of_friends):
 def remove_user(user_id):
     user = User.query.filter_by(id=user_id)
 
-    if user.first() is not None:
+    if user.first() is not None and user.id == get_jwt_identity():
         user.delete()
         db.session.commit()
         return "", 200
@@ -428,7 +430,7 @@ def remove_user(user_id):
 def remove_post(post_id):
     post = Post.query.filter_by(id=post_id)
 
-    if post.first() is not None:
+    if post.first() is not None and post.user_id == get_jwt_identity():
         post.delete()
         db.session.commit()
         return "", 200
@@ -441,7 +443,7 @@ def remove_post(post_id):
 def remove_comment(comment_id):
     comment = Comment.query.filter_by(id=comment_id)
 
-    if comment.first() is not None:
+    if comment.first() is not None and comment.user_id == get_jwt_identity():
         comment.delete()
         db.session.commit()
         return "", 200

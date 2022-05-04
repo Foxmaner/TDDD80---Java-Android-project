@@ -10,39 +10,47 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.strinder.R;
+import com.example.strinder.backend_related.tables.Post;
+import com.example.strinder.backend_related.tables.TrainingSession;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class PostModel_RecyclerViewAdapter extends RecyclerView.Adapter<PostModel_RecyclerViewAdapter.MyViewHolder>{
-    Context context;
-    ArrayList<PostModel> postModels;
+public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerViewAdapter.MyViewHolder>{
+    private final Context context;
+    private final List<Post> posts;
 
 
-    public PostModel_RecyclerViewAdapter(Context context, ArrayList<PostModel> postModels){
+    public PostRecyclerViewAdapter(Context context, List<Post> posts){
         this.context=context;
-        this.postModels = postModels;
+        this.posts = posts;
     }
 
     @NonNull
     @Override
-    public PostModel_RecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PostRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.post_card,parent,false);
-        return new PostModel_RecyclerViewAdapter.MyViewHolder(view);
+        return new PostRecyclerViewAdapter.MyViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull PostModel_RecyclerViewAdapter.MyViewHolder holder, int position) {
-        holder.postNameView.setText(postModels.get(position).getName());
+    public void onBindViewHolder(@NonNull PostRecyclerViewAdapter.MyViewHolder holder, int position) {
+        holder.postNameView.setText(posts.get(position).getUsername());
         //holder.postCaptionView.setText(postModels.get(position).getCaption());
-        holder.postDistanceValueView.setText(postModels.get(position).getDistance());
-        holder.postTimeValueView.setText(postModels.get(position).getTime());
-        holder.postSpeedValueView.setText(postModels.get(position).getSpeed());
+        TrainingSession session = posts.get(position).getTrainingSession();
+
+        if(session != null) {
+            //FIXME We do not know the distance field atm.
+            holder.postDistanceValueView.setText("NOT KNOWN");
+            holder.postTimeValueView.setText(session.getElapsedTime());
+            holder.postSpeedValueView.setText(String.format("%s %s", session.getSpeed(), session.getSpeedUnit()));
+        }
     }
 
     @Override
     public int getItemCount() {
-        return postModels.size();
+        return posts.size();
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{

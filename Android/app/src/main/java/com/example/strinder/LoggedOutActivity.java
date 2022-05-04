@@ -21,7 +21,6 @@ public class LoggedOutActivity extends AppCompatActivity {
         //Set the FragmentContainerView to a LoginFragment.
         LoginFragment fragment = LoginFragment.newInstance();
         getSupportFragmentManager().beginTransaction().replace(R.id.mainView,fragment).commit();
-
         //Connect FireBase to Google API
         // Your server's client ID, not your Android client ID.
         // Only show accounts previously used to sign in.

@@ -5,8 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
@@ -83,29 +83,31 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        String postTitle = titleInput.getEditText().getText().toString();
-        String postCaption = captionInput.getEditText().getText().toString();
-        int selectedRadioId = postSportTypeInput.getCheckedRadioButtonId();
-        RadioButton selectedButton =  postSportTypeInput.findViewById(selectedRadioId);
+        TextView postTitle = titleInput.getEditText();
+        TextView postCaption = captionInput.getEditText();
+        if(postTitle != null & postCaption != null) {
+            String postTitleText = postTitle.getText().toString();
+            String postCaptionText = postCaption.getText().toString();
+            //int selectedRadioId = postSportTypeInput.getCheckedRadioButtonId();
+            //RadioButton selectedButton = postSportTypeInput.findViewById(selectedRadioId);
 
+            JSONObject jsonObject = new JSONObject();
+            try {
+                jsonObject.put("title", postTitleText);
+                jsonObject.put("caption", postCaptionText);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            connection.sendStringJsonRequest("/post/add", jsonObject,
+                    Request.Method.POST, user.getAccessToken(), this);
 
-        JSONObject jsonObject = new JSONObject();
-        try {
-            jsonObject.put("title", postTitle);
-            jsonObject.put("caption", postCaption);
         }
-        catch(Exception e){
-            e.printStackTrace();
-        }
-        connection.sendStringJsonRequest("/post/add", jsonObject,
-                Request.Method.POST, user.getAccessToken(), this);
-
-
     }
 
     @Override
     public void onResponse(String response) {
         //TODO Improve this
+        //FIXME The code below is just a test
         //TrainingSession
         JSONObject object = new JSONObject();
         try {
@@ -122,12 +124,17 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         connection.sendStringJsonRequest("/session/set", object, Request.Method.POST, user.getAccessToken(), new VolleyResponseListener<String>() {
             @Override
             public void onResponse(String response) {
-                ((LoggedInActivity)getActivity()).addedPost("Added Post");
+
+                LoggedInActivity activity = (LoggedInActivity) getActivity();
+
+                if(activity != null) {
+                    activity.jumpToHome("Added post!");
+                }
             }
 
             @Override
             public void onError(VolleyError error) {
-                System.out.println(error);
+                System.out.println(error.networkResponse);
             }
         });
 
@@ -137,6 +144,10 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
     public void onError(VolleyError error) {
         //TODO Improve this
         System.out.println("Error" + error);
-        ((LoggedInActivity)getActivity()).addedPost("Failed to add post. Error: " + error);
+        LoggedInActivity activity = (LoggedInActivity) getActivity();
+
+        if(activity != null) {
+            activity.jumpToHome("Failed to add post. Error: " + error);
+        }
     }
 }

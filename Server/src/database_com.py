@@ -46,10 +46,10 @@ liked_comments_table = db.Table("liked_comments",
 
 class User(db.Model):
     __tablename__ = "User"
-    id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(40), unique=True, nullable=False)
-    first_name = db.Column(db.String(40), nullable=False)
-    last_name = db.Column(db.String(40), nullable=False)
+    first_name = db.Column(db.String(40), nullable=True)
+    last_name = db.Column(db.String(40), nullable=True)
     # Might not need email.
     email = db.Column(db.String(50), unique=True, nullable=False)
     birthday = db.Column(db.DateTime, nullable=True)
@@ -91,7 +91,6 @@ class Post(db.Model):
     likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")
 
     comments = db.relationship("Comment", backref="post", lazy=True)
-    # Inte nullable?
     training_session = db.relationship("TrainingSession", uselist=False, backref="post")
 
     def to_dict(self):
@@ -99,7 +98,8 @@ class Post(db.Model):
         if self.training_session is not None:
             session = self.training_session.to_dict();
         return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption, "likes": self.likes,
-                "comments": self.comments, "trainingSession": session, "date": self.date_time}
+                "comments": [comment.to_dict() for comment in self.comments], "trainingSession": session,
+                "date": self.date_time}
 
 
 class TrainingSession(db.Model):

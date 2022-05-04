@@ -55,9 +55,9 @@ public class ProfileFragment extends Fragment implements CompletionListener {
             User user =  bundle.getParcelable("account");
             //First and last name
             TextView firstLastName = v.findViewById(R.id.firstLastName);
-            firstLastName.setText(user.getFirstName());
+            firstLastName.setText(user.getFirstName() == null ? "Unknown" : user.getFirstName());
             firstLastName.append(" ");
-            firstLastName.append(user.getLastName());
+            firstLastName.append(user.getLastName() == null ? "Umknown" : user.getLastName());
 
             //Profile image
             ImageView profileImage = v.findViewById(R.id.profileImage);
@@ -88,7 +88,6 @@ public class ProfileFragment extends Fragment implements CompletionListener {
             biography.setText(R.string.biography_base_text);
             //Biography is never null.
             biography.append(user.getBiography());
-
 
         }
 

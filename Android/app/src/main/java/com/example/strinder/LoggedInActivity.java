@@ -13,6 +13,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
+import com.example.strinder.backend_related.ServerConnection;
+import com.example.strinder.backend_related.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.AddActivityFragment;
 import com.example.strinder.logged_in.FriendsFragment;
@@ -21,6 +25,8 @@ import com.example.strinder.logged_in.MessagesFragment;
 import com.example.strinder.logged_in.ProfileFragment;
 import com.example.strinder.logged_in.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+
+import org.json.JSONObject;
 
 /** This Activity class handles all the fragments and backend code that is used when a user
  * is logged in to the server.
@@ -138,12 +144,11 @@ public class LoggedInActivity extends AppCompatActivity {
         });
     }
 
-    //TODO Move this to HomeFragment
     /** This function is called after a post has been added
      * it changes the fragment back to home, and gives a conformation,
      * that a post has indeed been added
      */
-    public void addedPost(String message){
+    public void jumpToHome(final String message){
         Fragment homeFragment = new HomeFragment();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(R.id.loggedInView, homeFragment);

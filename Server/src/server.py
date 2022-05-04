@@ -47,9 +47,15 @@ def authenticate():
             # ID token is valid. Get the user's Google Account ID and other information.
             username = info["sub"]
             email = info["email"]
-            first_name = info["given_name"]
-            last_name = info["family_name"]
-            photo_url = info["picture"]
+            first_name = None
+            if "given_name" in info:
+                first_name = info["given_name"]
+            last_name = None
+            if "family_name" in info:
+                last_name = info["family_name"]
+            photo_url = None
+            if "picture" in info:
+                photo_url = info["picture"]
             # From Post Request
             birthday = post_input["birthday"]
             gender = post_input["gender"]
@@ -166,6 +172,7 @@ def logout():
     except KeyError:
         return "", 400
 
+
 """
 NOT USED
 @app.route("/user/set_data", methods=["POST"])
@@ -207,15 +214,15 @@ def set_data():
 """
 
 
-@app.route("/befriend/<friend_id>/<user_id>", methods=["POST"])
+@app.route("/befriend/<friend_id>", methods=["POST"])
 @jwt_required()
-def add_friend(friend_id, user_id):
+def add_friend(friend_id):
     """Befriends two existing users. """
 
     # Try to convert to integer.
     try:
         friend_id = int(friend_id)
-        user_id = int(user_id)
+        user_id = get_jwt_identity()
 
     except(ValueError, TypeError):
         return "", 400
@@ -224,19 +231,19 @@ def add_friend(friend_id, user_id):
     friend = User.query.filter_by(id=friend_id).first()
     user = User.query.filter_by(id=user_id).first()
 
-    if user is not None and friend is not None:
+    if user is not None and friend is not None and user != friend:
         user.friends.append(friend)
         friend.friends.append(user)
 
         db.session.commit()
 
-        # Don't return any json.
-        return "", 200
+        # Return the user we added as a friend.
+        return jsonify(friend.to_dict()), 200
 
     return "", 400
 
 
-@app.route("/comments/<post_id>", methods=["POST"])
+@app.route("/comment/add/<post_id>", methods=["POST"])
 @jwt_required()
 def add_comment(post_id):
     """Adds a comment to a post. """
@@ -252,7 +259,7 @@ def add_comment(post_id):
         post_data = request.get_json()
         try:
             # Create a comment
-            comment = Comment(post_id=post_id, text=post_data["text"], user_id=post_data["user_id"])
+            comment = Comment(post_id=post_id, text=post_data["text"], user_id=get_jwt_identity())
             post.comments.append(comment)
             db.session.commit()
         except KeyError:
@@ -336,10 +343,10 @@ def get_posts(user_id, nr_of_posts):
 
     if nr_of_posts == -1:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
-                 order_by(desc(Post.date_time)).all()]
+            order_by(desc(Post.date_time)).all()]
     elif nr_of_posts >= 0:
         posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
-                 order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
+            order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
     else:
         return "", 400
 

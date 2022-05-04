@@ -187,8 +187,6 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
         ImageView profileImage = v.findViewById(R.id.profileImage);
 
         if(user.getPhotoUrl() != null) {
-            System.out.println("IMAGE SET");
-            System.out.println(user.getPhotoUrl());
             //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
             if(getActivity() != null) {
                 Picasso.with(getActivity().getApplicationContext()).

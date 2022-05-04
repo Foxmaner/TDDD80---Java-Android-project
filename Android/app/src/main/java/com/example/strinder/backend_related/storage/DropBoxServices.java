@@ -100,7 +100,6 @@ public class DropBoxServices {
 
         Thread thread = new Thread(() -> {
             try {
-                System.out.println(user.getUsername());
                 client.files().uploadBuilder("/"+user.getUsername()+".png").
                         withMode(WriteMode.OVERWRITE).
                         uploadAndFinish(stream);

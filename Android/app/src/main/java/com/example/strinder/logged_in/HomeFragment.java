@@ -83,7 +83,6 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
     @Override
     public void onResponse(String response) {
-        System.out.println("response from postFetch success:");
         System.out.println(response);
     }
 

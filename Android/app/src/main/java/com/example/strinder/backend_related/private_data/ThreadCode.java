@@ -1,4 +1,4 @@
-package com.example.strinder.private_data;
+package com.example.strinder.backend_related.private_data;
 
 import com.google.api.services.people.v1.model.Person;
 

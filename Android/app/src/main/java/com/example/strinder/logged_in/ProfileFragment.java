@@ -21,13 +21,18 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.dropbox.core.v2.sharing.SharedLinkMetadata;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.storage.DbxCompletionListener;
+import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.handlers.PostRecyclerViewAdapter;
-import com.example.strinder.private_data.CompletionListener;
+import com.example.strinder.backend_related.private_data.CompletionListener;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -37,9 +42,11 @@ import java.util.List;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements CompletionListener {
+public class ProfileFragment extends Fragment implements CompletionListener, DbxCompletionListener {
 
     private ActivityResultLauncher<Intent> activityLauncher;
+    private User user;
+
     public ProfileFragment() {
         // Required empty public constructor
     }
@@ -70,56 +77,11 @@ public class ProfileFragment extends Fragment implements CompletionListener {
         View v = inflater.inflate(R.layout.fragment_profile, container, false);
         Bundle bundle = getArguments();
         if(bundle != null) {
-            User user =  bundle.getParcelable("account");
+            user =  bundle.getParcelable("account");
             //The "core" part of the profile.
-
-            //First and last name
-            TextView firstLastName = v.findViewById(R.id.firstLastName);
-            firstLastName.setText(user.getFirstName() == null ? "Unknown" : user.getFirstName());
-            firstLastName.append(" ");
-            firstLastName.append(user.getLastName() == null ? "Unknown" : user.getLastName());
-
-            //Profile image
-            ImageView profileImage = v.findViewById(R.id.profileImage);
-
-            if(user.getPhotoUrl() != null) {
-                Picasso.with(getContext())
-                        .load(user.getPhotoUrl())
-                        .placeholder(android.R.drawable.sym_def_app_icon)
-                        .error(android.R.drawable.sym_def_app_icon)
-                        .into(profileImage);
-            }
-
-            TextView gender = v.findViewById(R.id.gender);
-            gender.setText(R.string.gender_base_text);
-            if(user.getGender() != null)
-                gender.append(user.getGender());
-            else
-                gender.append("Unknown");
-
-            TextView birthday = v.findViewById(R.id.birthday);
-            birthday.setText(R.string.birthday_base_text);
-            if(user.getBirthday() != null)
-                birthday.append(user.getBirthday());
-            else
-                birthday.append("Unknown");
-
-            TextView biography = v.findViewById(R.id.biography);
-            biography.setText(R.string.biography_base_text);
-            //Biography is never null. (It is initially set in database)
-            biography.append(user.getBiography());
-
-            //The part that displays the user stats.
-            TextView activities = v.findViewById(R.id.amountOfActivities);
-            activities.setText(getString(R.string.amountOfActivities));
-            activities.append(Integer.toString(user.getPosts().size()));
-            TextView hours = v.findViewById(R.id.amountOfHours);
-            hours.setText(getString(R.string.amountOfHours));
-            hours.append(Integer.toString(sumHours(user.getPosts())));
-
-            TextView likes = v.findViewById(R.id.amountOfLikes);
-            likes.setText(getString(R.string.amountOfLikesText));
-            likes.append(Integer.toString(sumLikes(user.getPosts())));
+            setCoreDetails(v);
+            //The stats (shown below the details part)
+            setStats(v);
 
             ImageButton cameraButton = v.findViewById(R.id.cameraButton);
             cameraButton.setOnClickListener(this::onCameraClick);
@@ -140,6 +102,7 @@ public class ProfileFragment extends Fragment implements CompletionListener {
 
             //Camera intent launcher
             setCameraIntentLauncher();
+
 
         }
 
@@ -178,6 +141,57 @@ public class ProfileFragment extends Fragment implements CompletionListener {
         return sum;
     }
 
+    private void setStats(final View v) {
+        TextView biography = v.findViewById(R.id.biography);
+        biography.setText(R.string.biography_base_text);
+        //Biography is never null. (It is initially set in database)
+        biography.append(user.getBiography());
+
+        //The part that displays the user stats.
+        TextView activities = v.findViewById(R.id.amountOfActivities);
+        activities.setText(getString(R.string.amountOfActivities));
+        activities.append(Integer.toString(user.getPosts().size()));
+        TextView hours = v.findViewById(R.id.amountOfHours);
+        hours.setText(getString(R.string.amountOfHours));
+        hours.append(Integer.toString(sumHours(user.getPosts())));
+
+        TextView likes = v.findViewById(R.id.amountOfLikes);
+        likes.setText(getString(R.string.amountOfLikesText));
+        likes.append(Integer.toString(sumLikes(user.getPosts())));
+    }
+
+    private void setCoreDetails(final View v) {
+        //First and last name
+        TextView firstLastName = v.findViewById(R.id.firstLastName);
+        firstLastName.setText(user.getFirstName() == null ? "Unknown" : user.getFirstName());
+        firstLastName.append(" ");
+        firstLastName.append(user.getLastName() == null ? "Unknown" : user.getLastName());
+
+        ImageView profileImage = v.findViewById(R.id.profileImage);
+
+        if(user.getPhotoUrl() != null) {
+            Picasso.with(getContext())
+                    .load(user.getPhotoUrl())
+                    .placeholder(android.R.drawable.sym_def_app_icon)
+                    .error(android.R.drawable.sym_def_app_icon)
+                    .into(profileImage);
+        }
+
+        TextView gender = v.findViewById(R.id.gender);
+        gender.setText(R.string.gender_base_text);
+        if(user.getGender() != null)
+            gender.append(user.getGender());
+        else
+            gender.append("Unknown");
+
+        TextView birthday = v.findViewById(R.id.birthday);
+        birthday.setText(R.string.birthday_base_text);
+        if(user.getBirthday() != null)
+            birthday.append(user.getBirthday());
+        else
+            birthday.append("Unknown");
+    }
+
     /** Handles what happens when you press the button with a camera on it */
     private void onCameraClick(View cameraView) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -202,7 +216,13 @@ public class ProfileFragment extends Fragment implements CompletionListener {
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Bundle bundle = result.getData().getExtras();
                         Bitmap bitmap = (Bitmap) bundle.get("data");
-                        System.out.println("Opened Camera!");
+                        //Convert to InputStream
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
+                        byte[] bitMapData = bos.toByteArray();
+                        ByteArrayInputStream bs = new ByteArrayInputStream(bitMapData);
+
+                        DropBoxServices.getInstance().saveImage(bs,user,this);
 
                     }
                     else {
@@ -214,5 +234,37 @@ public class ProfileFragment extends Fragment implements CompletionListener {
 
     @Override
     public void onCompletion() {
+
+    }
+
+    @Override
+    public void onFinish(Object object) {
+
+        Boolean wasUploaded = (Boolean)object;
+
+        if(wasUploaded) {
+            DropBoxServices.getInstance().getLinkToImage(user, result -> {
+                String response = (String) result;
+                if(response != null) {
+                    System.out.println(response);
+
+                    user.setPhotoUrl(response);
+                    getParentFragmentManager().beginTransaction().replace(R.id.loggedInView,
+                            ProfileFragment.newInstance(user)).
+                            commit();
+                }
+                else {
+                    Toast.makeText(getContext(),"Could not find path to the uploaded image.",
+                            Toast.LENGTH_SHORT).show();
+                }
+
+            });
+        }
+        else {
+            Toast.makeText(this.getContext(),"Failed to upload image.",Toast.LENGTH_SHORT).
+                    show();
+        }
+
+
     }
 }

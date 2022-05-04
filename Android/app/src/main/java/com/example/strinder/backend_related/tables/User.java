@@ -18,7 +18,7 @@ public class User implements Parcelable {
     private final String gender;
     //TODO Implement photoUrl in database, not sure how this will work out right now. We need a
     //TODO solution for the uploading of images before this.
-    private final String photoUrl;
+    private String photoUrl;
     private final String biography;
     private final int id;
     private final String accessToken;
@@ -147,6 +147,10 @@ public class User implements Parcelable {
 
     }
     */
+
+    public void setPhotoUrl(final String photoUrl) {
+        this.photoUrl = photoUrl;
+    }
 
     @Override
     public int describeContents() {

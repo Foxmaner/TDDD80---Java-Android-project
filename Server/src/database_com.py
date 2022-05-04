@@ -72,7 +72,7 @@ class User(db.Model):
 
         return {"id": self.id, "firstName": self.first_name, "lastName": self.last_name,
                 "gender": self.gender, "birthday": formatted, "biography": self.biography, "email": self.email,
-                "photoUrl": self.photo_url,
+                "photoUrl": self.photo_url, "username": self.username,
                 "friends": [friend.to_dict_friends() for friend in self.friends],
                 "posts": [post.to_dict() for post in self.posts]}
 
@@ -97,9 +97,9 @@ class Post(db.Model):
         session = None
         if self.training_session is not None:
             session = self.training_session.to_dict();
-        return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption, "likes": self.likes,
-                "comments": [comment.to_dict() for comment in self.comments], "trainingSession": session,
-                "date": self.date_time}
+        return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption,
+                "likes": self.likes, "comments": [comment.to_dict() for comment in self.comments],
+                "trainingSession": session, "date": self.date_time}
 
 
 class TrainingSession(db.Model):

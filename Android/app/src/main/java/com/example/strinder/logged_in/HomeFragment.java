@@ -9,15 +9,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
-import com.example.strinder.backend_related.ServerConnection;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.backend_related.VolleyResponseListener;
+import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.logged_in.handlers.PostRecyclerViewAdapter;
-
-import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.

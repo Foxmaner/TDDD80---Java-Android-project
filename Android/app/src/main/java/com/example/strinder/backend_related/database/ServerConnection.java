@@ -1,4 +1,4 @@
-package com.example.strinder.backend_related;
+package com.example.strinder.backend_related.database;
 
 import android.content.Context;
 

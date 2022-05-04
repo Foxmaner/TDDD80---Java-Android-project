@@ -9,17 +9,16 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.LoggedInActivity;
 import com.example.strinder.R;
-import com.example.strinder.backend_related.ServerConnection;
+import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.backend_related.VolleyResponseListener;
-import com.example.strinder.private_data.CompletionListener;
-import com.example.strinder.private_data.GoogleServices;
+import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.private_data.CompletionListener;
+import com.example.strinder.backend_related.private_data.GoogleServices;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.common.Scopes;
 import com.google.api.services.people.v1.model.Date;
 import com.google.api.services.people.v1.model.Gender;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,6 +89,7 @@ public class AuthenticationHandler implements VolleyResponseListener<String>, Co
         Gson gson = new Gson();
 
         User user = gson.fromJson(response,User.class);
+
         //Send account to the intent
         myIntent.putExtra("account",user);
 

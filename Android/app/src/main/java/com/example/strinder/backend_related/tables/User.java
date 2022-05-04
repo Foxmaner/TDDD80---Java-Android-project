@@ -1,7 +1,16 @@
 package com.example.strinder.backend_related.tables;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.Toast;
+
+import com.android.volley.Request;
+import com.example.strinder.backend_related.database.ServerConnection;
+import com.example.strinder.backend_related.database.VolleyResponseListener;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +25,6 @@ public class User implements Parcelable {
     private final String username;
     private final String birthday;
     private final String gender;
-    //TODO Implement photoUrl in database, not sure how this will work out right now. We need a
-    //TODO solution for the uploading of images before this.
     private String photoUrl;
     private final String biography;
     private final int id;
@@ -91,47 +98,21 @@ public class User implements Parcelable {
         return biography;
     }
 
-    /*
-    public void setAndUploadData(final Context context, final String token,
-                                 final VolleyResponseListener<String> listener, final String firstName,
-                                 final String lastName, final String email,
-                                 final String birthday, final String gender,
-                                 final String biography){
 
-        if(context == null || token == null || listener == null) {
+    public void uploadData(final Context context,
+                           final VolleyResponseListener<String> listener){
+
+        if(context == null || accessToken == null || listener == null) {
             throw new IllegalArgumentException("The context,token or the listener was null," +
                     " not a valid argument.");
-        }
-        if(firstName != null) {
-            this.firstName = firstName;
-        }
-
-        if(lastName != null) {
-            this.lastName = lastName;
-        }
-
-        if(email != null) {
-            this.email = email;
-        }
-
-        if(birthday != null) {
-            this.birthday = birthday;
-        }
-
-        if(gender != null) {
-            this.gender = gender;
-        }
-
-        if(biography != null) {
-            this.biography = biography;
         }
 
         ServerConnection connection = new ServerConnection(context);
         JSONObject object = new JSONObject();
         try {
+            object.put("photo_url",this.photoUrl);
             object.put("first_name", this.firstName);
             object.put("last_name", this.lastName);
-            object.put("email", this.email);
             object.put("birthday", this.birthday);
             object.put("gender", this.gender);
             object.put("biography", this.biography);
@@ -142,11 +123,10 @@ public class User implements Parcelable {
                     show();
         }
 
-        connection.sendStringJsonRequest("/user/set_data",object, Request.Method.POST,token,
-                listener);
+        connection.sendStringJsonRequest("/user/set_data",object, Request.Method.POST,
+                getAccessToken(), listener);
 
     }
-    */
 
     public void setPhotoUrl(final String photoUrl) {
         this.photoUrl = photoUrl;

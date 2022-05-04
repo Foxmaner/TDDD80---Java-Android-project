@@ -175,8 +175,6 @@ def logout():
         return "", 400
 
 
-"""
-NOT USED
 @app.route("/user/set_data", methods=["POST"])
 @jwt_required()
 def set_data():
@@ -188,32 +186,37 @@ def set_data():
     # Get the json data, if it is not available - return error code 400.
     try:
         # Try to convert the dictionary to variables. If it fails,then return error code 400.
-        username = get_jwt_identity()
+        id = get_jwt_identity()
         firstname = json_data["first_name"]
         lastname = json_data["last_name"]
-        email = json_data["email"]
         birthday = json_data["birthday"]
         gender = json_data["gender"]
         biography = json_data["biography"]
+        photo_url = json_data["photo_url"]
     except KeyError:
         return "", 400
 
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(id=id).first()
+
     if user is not None:
-        user.first_name = firstname
-        user.last_name = lastname
-        user.email = email
-        user.birthday = datetime.strptime(birthday, "%Y/%m/%d")
-        user.gender = gender
-        user.biography = biography
+        if firstname is not None:
+            user.first_name = firstname
+        if lastname is not None:
+            user.last_name = lastname
+        if birthday is not None:
+            user.birthday = datetime.strptime(birthday, "%Y/%m/%d")
+        if gender is not None:
+            user.gender = gender
+        if biography is not None:
+            user.biography = biography
+        if photo_url is not None:
+            user.photo_url = photo_url
 
         db.session.commit()
 
         return "", 200
 
     return "", 400
-
-"""
 
 
 @app.route("/befriend/<friend_id>", methods=["POST"])

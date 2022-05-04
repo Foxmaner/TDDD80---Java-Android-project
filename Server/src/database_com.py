@@ -68,7 +68,7 @@ class User(db.Model):
     def to_dict(self):
         formatted = None
         if self.birthday is not None:
-            formatted = self.birthday.strftime("%Y-%m-%d")
+            formatted = self.birthday.strftime("%Y/%m/%d")
 
         return {"id": self.id, "firstName": self.first_name, "lastName": self.last_name,
                 "gender": self.gender, "birthday": formatted, "biography": self.biography, "email": self.email,

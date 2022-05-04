@@ -189,7 +189,13 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
         if(user.getPhotoUrl() != null) {
             System.out.println("IMAGE SET");
             System.out.println(user.getPhotoUrl());
-            Picasso.with(this.getActivity()).load(user.getPhotoUrl())
+            //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
+            if(getActivity() != null) {
+                Picasso.with(getActivity().getApplicationContext()).
+                        invalidate("https://www.dropbox.com/s/g3ybnjebb26s51t/"+
+                                user.getUsername()+".png?raw=1");
+            }
+            Picasso.with(getActivity()).load(user.getPhotoUrl())
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .networkPolicy(NetworkPolicy.NO_CACHE)
                     .placeholder(android.R.drawable.sym_def_app_icon)
@@ -314,8 +320,7 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
                 if(response != null) {
 
                     user.setPhotoUrl(response);
-                    getParentFragmentManager().beginTransaction().
-                            replace(R.id.loggedInView,ProfileFragment.newInstance(user)).commit();
+
                     user.uploadData(getContext(), this);
                 }
                 else {
@@ -336,12 +341,14 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
     @Override
     public void onResponse(String response) {
         Log.i("Upload Success", "Image was successfully uploaded");
+        getParentFragmentManager().beginTransaction().
+                replace(R.id.loggedInView,ProfileFragment.newInstance(user)).commit();
     }
 
     @Override
     public void onError(VolleyError error) {
         Log.e("Upload Image Error", error.toString());
-        Toast.makeText(getContext(),"Failed to upload image url to " +
+        Toast.makeText(getContext(),"Failed to upload image to " +
                 "database",Toast.LENGTH_SHORT).show();
     }
 }

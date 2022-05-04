@@ -82,6 +82,7 @@
         android:paddingHorizontal="10px"
         android:paddingVertical="10px"
         android:text="Spara inlägg"
+        android:textColor="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

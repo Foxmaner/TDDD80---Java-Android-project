@@ -110,12 +110,12 @@ public class User implements Parcelable {
         ServerConnection connection = new ServerConnection(context);
         JSONObject object = new JSONObject();
         try {
-            object.put("photo_url",this.photoUrl);
-            object.put("first_name", this.firstName);
-            object.put("last_name", this.lastName);
-            object.put("birthday", this.birthday);
-            object.put("gender", this.gender);
-            object.put("biography", this.biography);
+            object.put("photo_url",this.photoUrl == null ? JSONObject.NULL : this.photoUrl);
+            object.put("first_name", this.firstName == null ? JSONObject.NULL : this.firstName);
+            object.put("last_name", this.lastName == null ? JSONObject.NULL : this.lastName);
+            object.put("birthday", this.birthday == null ? JSONObject.NULL : this.birthday);
+            object.put("gender", this.gender == null ? JSONObject.NULL : this.gender);
+            object.put("biography", this.biography == null ? JSONObject.NULL : this.biography);
         }
         catch (JSONException e) {
             e.printStackTrace();

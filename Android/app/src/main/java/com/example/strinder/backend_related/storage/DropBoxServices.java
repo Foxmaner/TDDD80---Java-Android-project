@@ -97,6 +97,7 @@ public class DropBoxServices {
 
     public void saveImage(final ByteArrayInputStream stream, final User user,
                           final DbxCompletionListener listener) {
+
         Thread thread = new Thread(() -> {
             try {
                 System.out.println(user.getUsername());

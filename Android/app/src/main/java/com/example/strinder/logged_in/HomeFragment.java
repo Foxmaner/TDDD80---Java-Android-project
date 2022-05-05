@@ -9,11 +9,21 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.handlers.PostRecyclerViewAdapter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -56,24 +66,13 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         Bundle bundle = getArguments();
         if(bundle != null) {
             user =  bundle.getParcelable("account");
-            /*
+
             ServerConnection connection = new ServerConnection(this.getContext());
 
             connection.sendStringJsonRequest("/posts/" + user.getId() + "/-1" ,
                     new JSONObject(),
                     Request.Method.GET, user.getAccessToken(), this);
 
-
-             */
-            RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
-
-            PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(this.getContext(),
-                    user.getPosts());
-
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
-
-            recyclerView.setAdapter(adapter);
         }
 
         // Inflate the layout for this fragment
@@ -83,7 +82,19 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
     @Override
     public void onResponse(String response) {
-        System.out.println(response);
+        Gson gson=new Gson();
+        TypeToken<List<Post>> token = new TypeToken<List<Post>>(){};
+        List<Post> postList = gson.fromJson(response, token.getType());
+
+        RecyclerView recyclerView = this.getView().findViewById(R.id.homeFeedRecycleView);
+
+        PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(this.getContext(),
+                postList);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

@@ -103,5 +103,18 @@ public class Post implements Parcelable {
         parcel.writeParcelable(trainingSession,i);
     }
 
-
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", title='" + title + '\'' +
+                ", caption='" + caption + '\'' +
+                ", username='" + username + '\'' +
+                ", date='" + date + '\'' +
+                ", likes=" + likes +
+                ", comments=" + comments +
+                ", trainingSession=" + trainingSession +
+                '}';
+    }
 }

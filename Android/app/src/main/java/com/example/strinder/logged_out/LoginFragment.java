@@ -87,9 +87,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             signInButton.setVisibility(View.VISIBLE);
 
             mGoogleSignInClient.silentSignIn().addOnCompleteListener(this.getActivity(),
-                    (result) -> {
-                        handleSignInResult(result);
-                    });
+                    this::handleSignInResult);
 
 
             //This device is new. The user will have to login through the Google Sign In API.
@@ -97,7 +95,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                     result -> {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
-                            Log.i("Google Sign In", "Recieved RESULT_OK");
+                            Log.i("Google Sign In", "Received RESULT_OK");
                             // The Task returned from this call is always completed.
 
                             Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());

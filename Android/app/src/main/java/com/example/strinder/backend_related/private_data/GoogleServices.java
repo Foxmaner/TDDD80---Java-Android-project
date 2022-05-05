@@ -1,7 +1,8 @@
-package com.example.strinder.private_data;
+package com.example.strinder.backend_related.private_data;
 
 import android.accounts.Account;
 import android.app.Activity;
+import android.util.Log;
 
 import com.example.strinder.R;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
@@ -53,38 +54,40 @@ public class GoogleServices {
     public void requestPrivateData(final GoogleSignInAccount account,
                                    List<String> scopes, String fields, ThreadCode completionCode,
                                    Object obj, final CompletionListener listener) {
-
-            Thread thread = new Thread(() -> {
-                Person person = null;
-
-                if (activity != null) {
-
-                    HttpTransport httpTransport = new NetHttpTransport();
-                    JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-
-                    GoogleAccountCredential credential =
-                            GoogleAccountCredential.usingOAuth2(activity, scopes);
-                    credential.setSelectedAccount(
-                            new Account(account.getEmail(), "com.google"));
-
-                    PeopleService service = new PeopleService.Builder(httpTransport, jsonFactory, credential)
-                            .setApplicationName(activity.getString(R.string.app_name))
-                            .build();
+            if(activity != null) {
+                Thread thread = new Thread(() -> {
+                    Person person = null;
 
 
-                    try {
-                        person = service.people().get("people/me").setPersonFields(fields).execute();
-                    }
-                    catch (IOException e) {
-                        //TODO Improve error handling
-                        e.printStackTrace();
-                    }
-                }
+                        HttpTransport httpTransport = new NetHttpTransport();
+                        JacksonFactory jsonFactory = JacksonFactory.getDefaultInstance();
 
-                onComplete(person,completionCode,obj,listener);
-            });
+                        GoogleAccountCredential credential =
+                                GoogleAccountCredential.usingOAuth2(activity, scopes);
+                        credential.setSelectedAccount(
+                                new Account(account.getEmail(), "com.google"));
 
-        thread.start();
+                        PeopleService service = new PeopleService.Builder(httpTransport, jsonFactory, credential)
+                                .setApplicationName(activity.getString(R.string.app_name))
+                                .build();
+
+
+                        try {
+                            person = service.people().get("people/me").setPersonFields(fields).execute();
+                        } catch (IOException e) {
+                            Log.e("People API Request Failed",
+                                    "Request to Google's People API failed.");
+                            e.printStackTrace();
+                        }
+
+                    onComplete(person, completionCode, obj, listener);
+                });
+
+                thread.start();
+            }
+            else {
+                throw new IllegalArgumentException("Activity was null in GoogleServices.");
+            }
 
     }
 

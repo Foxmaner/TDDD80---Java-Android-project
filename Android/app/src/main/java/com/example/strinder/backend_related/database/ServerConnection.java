@@ -1,4 +1,4 @@
-package com.example.strinder.backend_related;
+package com.example.strinder.backend_related.database;
 
 import android.content.Context;
 
@@ -24,7 +24,11 @@ public class ServerConnection {
      * @param context - the context in which the connection will operate from.
      */
     public ServerConnection(final Context context) {
-        requestQueue = Volley.newRequestQueue(context);
+        if(context != null)
+            requestQueue = Volley.newRequestQueue(context);
+        else
+            requestQueue = null;
+
     }
 
     private static final String BASE_URL = "http://10.0.2.2:5000"; //"https://strinder.herokuapp.com"; //Emulator: 10.0.2.2:5000
@@ -57,26 +61,28 @@ public class ServerConnection {
         String url = BASE_URL + route;
         String jsonString = json.toString();
 
-        StringRequest request = new StringRequest(method, url, (volleyResponseListener::onResponse), volleyResponseListener::onError) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> params = new HashMap<>();
-                if (token != null) {
-                    params.put("Authorization", "Bearer " + token);
+        if(requestQueue != null) {
+            StringRequest request = new StringRequest(method, url, (volleyResponseListener::onResponse), volleyResponseListener::onError) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> params = new HashMap<>();
+                    if (token != null) {
+                        params.put("Authorization", "Bearer " + token);
+                    }
+
+                    params.put("Content-Type", "application/json");
+
+
+                    return params;
                 }
 
-                params.put("Content-Type", "application/json");
-
-
-                return params;
-            }
-
-            @Override
-            public byte[] getBody() {
-                return jsonString.getBytes(StandardCharsets.UTF_8);
-            }
-        };
-        requestQueue.add(request);
+                @Override
+                public byte[] getBody() {
+                    return jsonString.getBytes(StandardCharsets.UTF_8);
+                }
+            };
+            requestQueue.add(request);
+        }
 
 
     }

@@ -14,10 +14,13 @@ import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.LoggedInActivity;
 import com.example.strinder.R;
-import com.example.strinder.backend_related.ServerConnection;
+import com.example.strinder.backend_related.database.ServerConnection;
+import com.example.strinder.backend_related.tables.Post;
+import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.backend_related.VolleyResponseListener;
+import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.gson.Gson;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -27,7 +30,8 @@ import org.json.JSONObject;
  * Use the {@link AddActivityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddActivityFragment extends Fragment implements View.OnClickListener, VolleyResponseListener<String> {
+public class AddActivityFragment extends Fragment implements View.OnClickListener,
+        VolleyResponseListener<String> {
 
     private TextInputLayout titleInput;
     private TextInputLayout captionInput;
@@ -95,7 +99,8 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
             try {
                 jsonObject.put("title", postTitleText);
                 jsonObject.put("caption", postCaptionText);
-            } catch (Exception e) {
+            }
+            catch (Exception e) {
                 e.printStackTrace();
             }
             connection.sendStringJsonRequest("/post/add", jsonObject,
@@ -108,11 +113,15 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
     public void onResponse(String response) {
         //TODO Improve this
         //FIXME The code below is just a test
+        Gson gson = new Gson();
+        Post post = gson.fromJson(response,Post.class);
+        user.getPosts().add(post);
+
         //TrainingSession
         JSONObject object = new JSONObject();
         try {
-            object.put("time",5.5f);
-            object.put("postId",1);
+            object.put("time","01:05");
+            object.put("postId",post.getId());
             object.put("speedUnit", "km/h");
             object.put("speed",5f);
             object.put("exercise","Running");
@@ -121,9 +130,12 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
             e.printStackTrace();
         }
 
-        connection.sendStringJsonRequest("/session/set", object, Request.Method.POST, user.getAccessToken(), new VolleyResponseListener<String>() {
+        connection.sendStringJsonRequest("/session/set", object, Request.Method.POST,
+                user.getAccessToken(), new VolleyResponseListener<String>() {
             @Override
             public void onResponse(String response) {
+                TrainingSession session = gson.fromJson(response,TrainingSession.class);
+                post.setTrainingSession(session);
 
                 LoggedInActivity activity = (LoggedInActivity) getActivity();
 

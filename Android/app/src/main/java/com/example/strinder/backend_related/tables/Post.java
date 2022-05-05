@@ -14,7 +14,7 @@ public class Post implements Parcelable {
     private final String date;
     private final List<User> likes;
     private final List<Comment> comments;
-    private final TrainingSession trainingSession;
+    private TrainingSession trainingSession;
 
     public Post(final Parcel parcel) {
         id = parcel.readInt();
@@ -30,6 +30,46 @@ public class Post implements Parcelable {
 
         trainingSession = parcel.readParcelable(TrainingSession.class.getClassLoader());
 
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getCaption() {
+        return caption;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public List<User> getLikes() {
+        return likes;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public TrainingSession getTrainingSession() {
+        return trainingSession;
+    }
+
+    public void setTrainingSession(final TrainingSession trainingSession) {
+        this.trainingSession = trainingSession;
     }
 
     public static final Creator<Post> CREATOR = new Creator<Post>() {
@@ -61,5 +101,6 @@ public class Post implements Parcelable {
         parcel.writeList(comments);
         parcel.writeParcelable(trainingSession,i);
     }
+
 
 }

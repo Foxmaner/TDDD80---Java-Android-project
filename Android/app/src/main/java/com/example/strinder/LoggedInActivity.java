@@ -13,10 +13,11 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
-import com.example.strinder.backend_related.ServerConnection;
-import com.example.strinder.backend_related.VolleyResponseListener;
+import com.dropbox.core.DbxException;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.users.FullAccount;
+import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.AddActivityFragment;
 import com.example.strinder.logged_in.FriendsFragment;
@@ -25,8 +26,6 @@ import com.example.strinder.logged_in.MessagesFragment;
 import com.example.strinder.logged_in.ProfileFragment;
 import com.example.strinder.logged_in.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import org.json.JSONObject;
 
 /** This Activity class handles all the fragments and backend code that is used when a user
  * is logged in to the server.
@@ -65,7 +64,9 @@ public class LoggedInActivity extends AppCompatActivity {
         BottomNavigationView menuBar = findViewById(R.id.navBar);
         menuBar.setSelectedItemId(R.id.home);
 
+        DropBoxServices.getInstance().initialize(this);
         setBottomNavListener(menuBar);
+
 
     }
 
@@ -104,8 +105,6 @@ public class LoggedInActivity extends AppCompatActivity {
      * @param menuBar -  the BottomNavigationView object that the listener will be added to.
      */
     private void setBottomNavListener(final BottomNavigationView menuBar) {
-        System.out.println("account =  "  + account);
-        System.out.println(account.getId());
         menuBar.setOnItemSelectedListener(item -> {
             Fragment fragment = null;
             final int id = item.getItemId();

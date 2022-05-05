@@ -68,11 +68,11 @@ class User(db.Model):
     def to_dict(self):
         formatted = None
         if self.birthday is not None:
-            formatted = self.birthday.strftime("%Y-%m-%d")
+            formatted = self.birthday.strftime("%Y/%m/%d")
 
         return {"id": self.id, "firstName": self.first_name, "lastName": self.last_name,
                 "gender": self.gender, "birthday": formatted, "biography": self.biography, "email": self.email,
-                "photoUrl": self.photo_url,
+                "photoUrl": self.photo_url, "username": self.username,
                 "friends": [friend.to_dict_friends() for friend in self.friends],
                 "posts": [post.to_dict() for post in self.posts]}
 
@@ -97,23 +97,24 @@ class Post(db.Model):
         session = None
         if self.training_session is not None:
             session = self.training_session.to_dict();
-        return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption, "likes": self.likes,
-                "comments": [comment.to_dict() for comment in self.comments], "trainingSession": session,
-                "date": self.date_time}
+        return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption,
+                "likes": self.likes, "comments": [comment.to_dict() for comment in self.comments],
+                "trainingSession": session, "date": self.date_time}
 
 
 class TrainingSession(db.Model):
     __tablename__ = "Training_session"
     id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
-    time = db.Column(db.Float, nullable=False)
+    time = db.Column(db.DateTime, nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
     speed_unit = db.Column(db.String(40), nullable=False)
     speed = db.Column(db.Float, nullable=False)
     exercise = db.Column(db.String(40), nullable=False)
 
     def to_dict(self):
-        return {"id": self.id, "postId": self.post_id, "elapsedTime": self.time, "speedUnit": self.speed_unit,
-                "speed": self.speed, "exercise": self.exercise}
+        return {"id": self.id, "postId": self.post_id, "elapsedTime": "{:02d}:{:02d}".format(self.time.hour,
+                                                                                             self.time.minute),
+                "speedUnit": self.speed_unit, "speed": self.speed, "exercise": self.exercise}
 
 
 class Comment(db.Model):

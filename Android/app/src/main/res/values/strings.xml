@@ -32,11 +32,4 @@
     <string name="amountOfHours">Hours:</string>
     <string name="my_posts_text">My Posts</string>
 
-    <!-- TOKENS -->
-    <string name="dropbox_token">sl.BG_LjzdeMajDhuPIxLITi8jG9XB3g64I5GxDLjGS3gsQclxG7IE_p5Dg2IyZIApWnU8mZAQM0sOulvyoZoamm1kMXctgdHX2PGZ3z58LQtIOWhXTv65B3olgHn_2gxW_u-MbCv2r</string>
-    <!-- Client id -->
-    <string name="client_id">960100179212-vsh7i7ja5r93a1l8373t94m9b7cr3opo.apps.googleusercontent.com</string>
-    <!--- I know that this string below is yellow, but DO NOT change it! Google needs this exact string -->
-    <string name="web_client_id">960100179212-4f9co6hv8aogedarvvdi732j147bb53p.apps.googleusercontent.com</string>
-
 </resources>

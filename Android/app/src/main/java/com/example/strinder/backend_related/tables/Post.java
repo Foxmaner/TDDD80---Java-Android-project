@@ -2,6 +2,7 @@ package com.example.strinder.backend_related.tables;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import org.w3c.dom.Comment;
 
 import java.util.ArrayList;

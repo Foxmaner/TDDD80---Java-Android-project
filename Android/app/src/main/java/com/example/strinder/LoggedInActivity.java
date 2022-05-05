@@ -13,10 +13,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.dropbox.core.DbxException;
-import com.dropbox.core.DbxRequestConfig;
-import com.dropbox.core.v2.DbxClientV2;
-import com.dropbox.core.v2.users.FullAccount;
 import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.AddActivityFragment;

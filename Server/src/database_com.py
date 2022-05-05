@@ -48,8 +48,8 @@ class User(db.Model):
     __tablename__ = "User"
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(40), unique=True, nullable=False)
-    first_name = db.Column(db.String(40), nullable=True)
-    last_name = db.Column(db.String(40), nullable=True)
+    first_name = db.Column(db.String(20), nullable=True)
+    last_name = db.Column(db.String(20), nullable=True)
     # Might not need email.
     email = db.Column(db.String(50), unique=True, nullable=False)
     birthday = db.Column(db.DateTime, nullable=True)

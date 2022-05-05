@@ -32,4 +32,8 @@
     <string name="amountOfHours">Hours:</string>
     <string name="my_posts_text">My Posts</string>
 
+    <!--- DO NOT CHANGE THIS -->
+    <!--- I know that this string below is yellow, but DO NOT change it! Google needs this exact string -->
+    <string name="web_client_id">960100179212-4f9co6hv8aogedarvvdi732j147bb53p.apps.googleusercontent.com</string>
+    <string name="accountText">Account</string>
 </resources>

@@ -3,11 +3,6 @@ package com.example.strinder.backend_related.tables;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.Date;
-
 public class TrainingSession implements Parcelable {
     private final int id,postId;
     private final String elapsedTime;

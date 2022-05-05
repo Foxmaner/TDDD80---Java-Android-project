@@ -11,8 +11,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
-import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.handlers.PostRecyclerViewAdapter;
 
 /**

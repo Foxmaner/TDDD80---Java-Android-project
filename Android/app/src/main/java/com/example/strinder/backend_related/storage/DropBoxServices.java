@@ -7,10 +7,7 @@ import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
 import com.dropbox.core.v2.DbxClientV2;
 import com.dropbox.core.v2.files.DeleteResult;
-import com.dropbox.core.v2.files.GetTemporaryLinkResult;
 import com.dropbox.core.v2.files.WriteMode;
-import com.dropbox.core.v2.sharing.CreateSharedLinkWithSettingsErrorException;
-import com.dropbox.core.v2.sharing.ListSharedLinksBuilder;
 import com.dropbox.core.v2.sharing.ListSharedLinksResult;
 import com.dropbox.core.v2.sharing.SharedLinkMetadata;
 import com.example.strinder.R;
@@ -18,6 +15,15 @@ import com.example.strinder.backend_related.tables.User;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+
+//FIXME
+//  This is a note for the developers, and if it has not been completed before the hand in,
+//  the professors. DropBox API is not intended to be used in this way. It is meant to use
+//  people's DropBox accounts in order to upload files to that specific account. What is happening
+//  below is that we have a central dropbox account - which is not ideal for security and production
+//  reasons. Thus, an ideal solution would be to use Google Cloud and store files there as a central
+//  database.
+//  // Liam
 
 
 /*
@@ -46,8 +52,10 @@ public class DropBoxServices {
     public void initialize(final Context context) {
         // Create Dropbox client
         if(context != null) {
-            DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/strinder").build();
+            DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/strinder").
+                    build();
             client = new DbxClientV2(config, context.getString(R.string.dropbox_token));
+
         }
         else {
             throw new IllegalArgumentException("Context was null during DropBoxServices " +

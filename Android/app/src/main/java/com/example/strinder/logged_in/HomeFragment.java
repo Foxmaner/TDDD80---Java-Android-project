@@ -83,14 +83,10 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                // Your code to refresh the list here.
-                // Make sure you call swipeContainer.setRefreshing(false)
-                // once the network request has completed successfully.
                 fetchData();
                 swipeContainer.setRefreshing(false);
-                //fetchTimelineAsync(0);
-
             }
+
         });
 
         // Inflate the layout for this fragment

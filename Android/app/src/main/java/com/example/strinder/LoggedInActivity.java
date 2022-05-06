@@ -78,7 +78,7 @@ public class LoggedInActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         if(item.getItemId() == R.id.action_settings) {
-            SettingsFragment fragment = SettingsFragment.newInstance(account.getAccessToken());
+            SettingsFragment fragment = SettingsFragment.newInstance(account);
             getSupportFragmentManager().beginTransaction().replace(R.id.loggedInView,fragment).commit();
             setHeaderText(getString(R.string.settings));
             return true;

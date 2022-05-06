@@ -133,6 +133,8 @@ def set_session():
         post_id = post_input["postId"]
         speed_unit = post_input["speedUnit"]
         speed = post_input["speed"]
+        distance = post_input["distance"]
+        distance_unit = post_input["distanceUnit"]
         exercise = post_input["exercise"]
     # If the user_id is incorrect, return error code.
     except(ValueError, TypeError):
@@ -141,8 +143,8 @@ def set_session():
     post = Post.query.filter_by(id=post_id).first()
     # Make sure that we are editing our own post.
     if post is not None and post.user_id == user_id:
-        training = TrainingSession(time=time,post_id=post_id, speed_unit=speed_unit,
-                                   speed=speed, exercise=exercise)
+        training = TrainingSession(time=time, post_id=post_id, speed_unit=speed_unit,
+                                   speed=speed, distance=distance, distance_unit=distance_unit, exercise=exercise)
         # Update the training_session attribute.
         if post.training_session is None:
             post.training_session = training
@@ -153,6 +155,8 @@ def set_session():
             post.training_session.time = training.time
             post.training_session.exercise = training.exercise
             post.training_session.speed_unit = training.speed_unit
+            post.training_session.distance_unit = training.distance_unit
+            post.training_session.distance = training.distance
 
         db.session.commit()
 

@@ -125,6 +125,8 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
             object.put("speedUnit", "km/h");
             object.put("speed",5f);
             object.put("exercise","Running");
+            object.put("distance",5);
+            object.put("distanceUnit","km");
 
         } catch (JSONException e) {
             e.printStackTrace();

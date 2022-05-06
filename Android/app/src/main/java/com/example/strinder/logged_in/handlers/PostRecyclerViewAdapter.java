@@ -35,13 +35,14 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull PostRecyclerViewAdapter.MyViewHolder holder, int position) {
-        holder.postNameView.setText(posts.get(position).getUsername());
+        holder.postNameView.setText(String.format("%s",posts.get(position).getId()));
         //holder.postCaptionView.setText(postModels.get(position).getCaption());
         TrainingSession session = posts.get(position).getTrainingSession();
 
         if(session != null) {
             //FIXME We do not know the distance field atm.
-            holder.postDistanceValueView.setText("NOT KNOWN");
+            holder.postDistanceValueView.setText(String.format("%s %s",session.getDistance(),
+                    session.getDistanceUnit()));
             holder.postTimeValueView.setText(session.getElapsedTime());
             holder.postSpeedValueView.setText(String.format("%s %s", session.getSpeed(), session.getSpeedUnit()));
         }

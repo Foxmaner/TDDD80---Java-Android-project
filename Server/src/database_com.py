@@ -109,12 +109,15 @@ class TrainingSession(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
     speed_unit = db.Column(db.String(40), nullable=False)
     speed = db.Column(db.Float, nullable=False)
+    distance = db.Column(db.Float, nullable=False)
+    distance_unit = db.Column(db.String(5), nullable=False)
     exercise = db.Column(db.String(40), nullable=False)
 
     def to_dict(self):
         return {"id": self.id, "postId": self.post_id, "elapsedTime": "{:02d}:{:02d}".format(self.time.hour,
                                                                                              self.time.minute),
-                "speedUnit": self.speed_unit, "speed": self.speed, "exercise": self.exercise}
+                "speedUnit": self.speed_unit, "speed": self.speed, "distance": self.distance,
+                "distanceUnit": self.distance_unit, "exercise": self.exercise}
 
 
 class Comment(db.Model):

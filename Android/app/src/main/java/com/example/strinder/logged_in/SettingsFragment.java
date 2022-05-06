@@ -1,16 +1,21 @@
 package com.example.strinder.logged_in;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.handlers.LogoutHandler;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 
 
 /**
@@ -19,10 +24,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
  * create an instance of this fragment.
  */
 public class SettingsFragment extends Fragment implements View.OnClickListener {
-    private GoogleSignInClient client;
-    private String token;
+    private User user;
     private LogoutHandler logoutHandler;
-
+    private  EditText firstName,lastName,gender,biography, birthday;
     public SettingsFragment() {
         // Required empty public constructor
     }
@@ -30,13 +34,13 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @param token - the authentication token needed when logged in.
+     * @param user - the authentication token needed when logged in.
      * @return A new instance of fragment SettingsFragment.
      */
-    public static SettingsFragment newInstance(final String token) {
+    public static SettingsFragment newInstance(final User user) {
         SettingsFragment settingsFragment = new SettingsFragment();
         Bundle bundle = new Bundle();
-        bundle.putString("token",token);
+        bundle.putParcelable("account",user);
         settingsFragment.setArguments(bundle);
         return settingsFragment;
     }
@@ -54,18 +58,88 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         View v = inflater.inflate(R.layout.fragment_settings, container, false);
         Bundle bundle = getArguments();
         if(bundle != null) {
-            token = bundle.getString("token");
+            user = bundle.getParcelable("account");
         }
 
         Button signOut = v.findViewById(R.id.signOutBtn);
         signOut.setOnClickListener(this);
+
+        firstName = v.findViewById(R.id.editFirstName);
+        lastName = v.findViewById(R.id.editLastName);
+        gender = v.findViewById(R.id.editGender);
+        biography = v.findViewById(R.id.editBiography);
+        birthday = v.findViewById(R.id.editBirthday);
+
+        Button submitButton = v.findViewById(R.id.submitButton);
+        submitButton.setOnClickListener(this::onSubmit);
+
+        firstName.setText(user.getFirstName());
+        lastName.setText(user.getLastName());
+        gender.setText(user.getGender());
+        biography.setText(user.getBiography());
+
+        /*
+            Set the hint to the existing birthday, but if it is null set it so that
+            the user understands the format.
+         */
+
+        birthday.setText(user.getBirthday() == null ? "????/??/??" : user.getBirthday());
+
+
         return v;
+    }
+
+    private void onSubmit(final View view) {
+        String newFirstName = firstName.getText().toString();
+        String newLastName = lastName.getText().toString();
+        String newGender = gender.getText().toString();
+        String newBiography = biography.getText().toString();
+        String newBirthday = birthday.getText().toString();
+
+        if(newFirstName.length() > 0 && newLastName.length() > 0 && newGender.length() > 0 &&
+            newBiography.length() > 0 && newBirthday.length() > 0 &&
+                newBirthday.matches("^\\d{4}/\\d{2}/\\d{2}$")) {
+
+            user.setFirstName(newFirstName);
+            user.setLastName(newLastName);
+            user.setBiography(newBiography);
+            user.setBirthday(newBirthday);
+            user.setGender(newGender);
+
+            user.uploadData(getContext(), new VolleyResponseListener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    Log.i("Upload Details", "Successfully uploaded details.");
+                    Toast.makeText(getContext(),"Successfully uploaded details",
+                            Toast.LENGTH_SHORT).show();
+
+                    firstName.setText(user.getFirstName());
+                    lastName.setText(user.getLastName());
+                    birthday.setText(user.getBirthday());
+                    biography.setText(user.getBiography());
+                    gender.setText(user.getGender());
+
+
+                }
+
+                @Override
+                public void onError(VolleyError error) {
+                    Log.e("Upload Details",error.toString());
+                    Toast.makeText(getContext(),"Details were correctly formatted, " +
+                            "but failed to upload to the database",Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+        else {
+            Toast.makeText(getContext(),"Some details are wrong formatted. Can't be saved.",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.signOutBtn) {
-            logoutHandler.tryLogout(token);
+            logoutHandler.tryLogout(user.getAccessToken());
         }
     }
 

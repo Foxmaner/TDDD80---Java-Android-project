@@ -9,6 +9,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -33,6 +34,7 @@ import java.util.List;
  */
 public class HomeFragment extends Fragment implements VolleyResponseListener<String> {
     private User user;
+    private SwipeRefreshLayout swipeContainer;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -64,17 +66,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
 
 
-        Bundle bundle = getArguments();
-        if(bundle != null) {
-            user =  bundle.getParcelable("account");
-
-            ServerConnection connection = new ServerConnection(this.getContext());
-
-            connection.sendStringJsonRequest("/posts/" + user.getId() + "/-1" ,
-                    new JSONObject(),
-                    Request.Method.GET, user.getAccessToken(), this);
-
-        }
+        fetchData();
         //Loads recyclerview with empty list
         RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
         List<Post> emptyPostList = new ArrayList<Post>();
@@ -85,6 +77,21 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
         recyclerView.setAdapter(adapter);
+
+        swipeContainer = (SwipeRefreshLayout) v.findViewById(R.id.swipeContainer);
+        // Setup refresh listener which triggers new data loading
+        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                // Your code to refresh the list here.
+                // Make sure you call swipeContainer.setRefreshing(false)
+                // once the network request has completed successfully.
+                fetchData();
+                swipeContainer.setRefreshing(false);
+                //fetchTimelineAsync(0);
+
+            }
+        });
 
         // Inflate the layout for this fragment
         return v;
@@ -119,5 +126,19 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
     public void onError(VolleyError error) {
         System.out.println("response fail:");
         System.out.println(error);
+    }
+
+    public void fetchData(){
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            user =  bundle.getParcelable("account");
+
+            ServerConnection connection = new ServerConnection(this.getContext());
+
+            connection.sendStringJsonRequest("/posts/" + user.getId() + "/-1" ,
+                    new JSONObject(),
+                    Request.Method.GET, user.getAccessToken(), this);
+
+        }
     }
 }

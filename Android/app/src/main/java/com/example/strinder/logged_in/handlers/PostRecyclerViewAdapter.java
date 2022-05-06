@@ -35,8 +35,7 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
 
     @Override
     public void onBindViewHolder(@NonNull PostRecyclerViewAdapter.MyViewHolder holder, int position) {
-        System.out.println("Username!"  + posts.get(position).getUsername());
-        holder.postNameView.setText(posts.get(position).getUsername());
+        holder.postNameView.setText(String.format("%s",posts.get(position).getId()));
         //holder.postCaptionView.setText(postModels.get(position).getCaption());
         TrainingSession session = posts.get(position).getTrainingSession();
 

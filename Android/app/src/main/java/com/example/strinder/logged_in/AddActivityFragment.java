@@ -73,7 +73,7 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         if(bundle != null) {
             user =  bundle.getParcelable("account");
         }
-
+        /*
         connection = new ServerConnection(view.getContext());
         titleInput = view.findViewById(R.id.textInputLayoutPostTitle);
         captionInput =  view.findViewById(R.id.textInputLayoutPostCaption);
@@ -81,7 +81,7 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
 
         Button addActivityButton = view.findViewById(R.id.addActivityButton);
         addActivityButton.setOnClickListener(this);
-
+        */
         return view;
     }
 

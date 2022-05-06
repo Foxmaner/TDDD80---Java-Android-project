@@ -20,20 +20,29 @@
 
     <!-- Settings -->
     <string name="sign_out">Sign Out</string>
+    <string name="submitButtonText">Save Details</string>
+    <string name="accountText">Account</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--- Profile -->
+    <string name="amountOfActivities">Posts:</string>
+    <string name="amountOfLikesText">Likes:</string>
+    <string name="amountOfHours">Hours:</string>
+    <string name="myPostsText">My Posts</string>
     <string name="gender_base_text">Gender: \t</string>
     <string name="birthday_base_text">Birthday: \t</string>
     <string name="biography_base_text">Biography: \n</string>
 
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="amountOfActivities">Posts:</string>
-    <string name="amountOfLikesText">Likes:</string>
-    <string name="amountOfHours">Hours:</string>
-    <string name="my_posts_text">My Posts</string>
-
-    <!--- DO NOT CHANGE THIS -->
-    <!--- I know that this string below is yellow, but DO NOT change it! Google needs this exact string -->
-    <string name="web_client_id">960100179212-4f9co6hv8aogedarvvdi732j147bb53p.apps.googleusercontent.com</string>
-    <string name="accountText">Account</string>
+    <!-- Add Post -->
+    <string name="activityStatsText">Activity Stats</string>
+    <string name="savePostButtonText">Save Post</string>
+    <!-- For the dropdown -->
+    <string-array name="languages">
+        <item>Run</item>
+        <item>Cycling</item>
+        <item>Walk</item>
+    </string-array>
 </resources>

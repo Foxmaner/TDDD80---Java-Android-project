@@ -78,12 +78,18 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         gender.setText(user.getGender());
         biography.setText(user.getBiography());
 
+        firstName.setHint(user.getFirstName());
+        lastName.setHint(user.getLastName());
+        gender.setHint(user.getGender());
+        biography.setHint(user.getBiography());
+
         /*
             Set the hint to the existing birthday, but if it is null set it so that
             the user understands the format.
          */
 
         birthday.setText(user.getBirthday() == null ? "????/??/??" : user.getBirthday());
+        birthday.setHint(user.getBirthday() == null ? "????/??/??" : user.getBirthday());
 
 
         return v;

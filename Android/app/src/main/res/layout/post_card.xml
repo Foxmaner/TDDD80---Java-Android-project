@@ -26,7 +26,7 @@
             android:layout_height="382dp">
 
             <ImageView
-                android:id="@+id/postCardImageView"
+                android:id="@+id/postCardProfileImage"
                 android:layout_width="0dp"
                 android:layout_height="55dp"
                 android:layout_marginEnd="8dp"
@@ -56,27 +56,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.19999999" />
 
-            <ImageButton
-                android:id="@+id/likeButton"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/guideline30"
-                app:layout_constraintStart_toStartOf="parent"
-                app:srcCompat="@drawable/like" />
-
-            <ImageButton
-                android:id="@+id/commentButton"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:srcCompat="@drawable/comment" />
-
             <TextView
-                android:id="@+id/textView11"
+                android:id="@+id/postCardDate"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder"
@@ -152,7 +133,7 @@
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/textView16"
+                android:id="@+id/postCardDistance"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -186,7 +167,7 @@
                 app:layout_constraintVertical_bias="1.0" />
 
             <TextView
-                android:id="@+id/textView18"
+                android:id="@+id/postCardTime"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -240,7 +221,7 @@
                 app:layout_constraintGuide_begin="120dp" />
 
             <TextView
-                android:id="@+id/textView20"
+                android:id="@+id/postCardSpeed"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
@@ -289,28 +270,28 @@
                 app:layout_constraintGuide_begin="178dp" />
 
             <ImageButton
-                android:id="@+id/imageButton3"
+                android:id="@+id/likeButton"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Like the post."
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline58"
                 app:layout_constraintStart_toStartOf="@+id/guideline47"
                 app:layout_constraintTop_toTopOf="@+id/guideline59"
-                app:srcCompat="@drawable/like"
-                android:background="?attr/selectableItemBackgroundBorderless"
-            />
+                app:srcCompat="@drawable/like" />
 
             <ImageButton
-                android:id="@+id/imageButton4"
+                android:id="@+id/commentButton"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Comment on the post."
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline58"
                 app:layout_constraintTop_toTopOf="@+id/guideline59"
-                app:srcCompat="@drawable/comment"
-                android:background="?attr/selectableItemBackgroundBorderless"
-            />
+                app:srcCompat="@drawable/comment" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline59"

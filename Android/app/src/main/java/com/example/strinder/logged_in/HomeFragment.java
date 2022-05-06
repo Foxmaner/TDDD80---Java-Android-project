@@ -4,16 +4,27 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.logged_in.handlers.PostRecyclerViewAdapter;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -21,7 +32,7 @@ import com.example.strinder.logged_in.handlers.PostRecyclerViewAdapter;
  * create an instance of this fragment.
  */
 public class HomeFragment extends Fragment implements VolleyResponseListener<String> {
-    private User user;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -55,25 +66,38 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
         Bundle bundle = getArguments();
         if(bundle != null) {
-            user =  bundle.getParcelable("account");
-            /*
+            User user =  bundle.getParcelable("account");
+
             ServerConnection connection = new ServerConnection(this.getContext());
 
-            connection.sendStringJsonRequest("/posts/" + user.getId() + "/-1" ,
+            connection.sendStringJsonRequest("/posts/latest/-1",
                     new JSONObject(),
-                    Request.Method.GET, user.getAccessToken(), this);
+                    Request.Method.GET, user.getAccessToken(), new VolleyResponseListener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Gson gson = new Gson();
+                            FetchedPosts fetchedPosts = gson.fromJson(response,
+                                    FetchedPosts.class);
 
+                            RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
 
-             */
-            RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
+                            PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(getContext(),
+                                    fetchedPosts.getPosts(), fetchedPosts.getUsers());
 
-            PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(this.getContext(),
-                    user.getPosts());
+                            recyclerView.setAdapter(adapter);
+                            recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
-            recyclerView.setAdapter(adapter);
-            recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+                            recyclerView.setAdapter(adapter);
 
-            recyclerView.setAdapter(adapter);
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                            Toast.makeText(getContext(),"Failed to load posts. Try refreshing.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
         }
 
         // Inflate the layout for this fragment

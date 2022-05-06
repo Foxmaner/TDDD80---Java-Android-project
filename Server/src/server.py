@@ -281,36 +281,19 @@ def add_comment(post_id):
 
 
 # ------- GET -------- #
-@app.route("/user/get_data/<username>", methods=["GET"])
+@app.route("/user/get_data/<user_id>", methods=["GET"])
 @jwt_required()
-def get_data(username):
+def get_data(user_id):
     # No try/catch needed here
 
-    user = User.query.filter_by(username=username).first()
+    user = User.query.filter_by(id=user_id).first()
 
     if user is not None:
-        data = {"firstName": user.first_name, "lastName": user.last_name,
-                "gender": user.gender, "birthday": user.birthday.strftime("%Y/%m/%d"),
-                "biography": user.biography}
+        data = user.to_dict()
 
         return jsonify(data), 200
 
     return "", 400
-
-
-""" 
-NOT USED ATM
-@app.route("/user/get_id/<username>", methods=["GET"])
-def get_id(username):
-    #No try/catch needed here
-
-    user = User.query.filter_by(username=username).first()
-
-    if user is not None:
-        return str(user.id), 200
-    else:
-        return "", 400
-"""
 
 
 @app.route("/befriended/<user_id>/<friend_id>", methods=["GET"])
@@ -338,28 +321,53 @@ def are_friends(user_id, friend_id):
     return "", 400
 
 
-@app.route("/posts/<user_id>/<nr_of_posts>", methods=["GET"])
+@app.route("/user/get_user/<user_id>")
 @jwt_required()
-def get_posts(user_id, nr_of_posts):
+def get_user(user_id):
+    try:
+        user_id = int(user_id)
+    except (TypeError, ValueError):
+        return "", 400
+
+    user = User.query.filter_by(id=user_id).first()
+
+    if user is not None:
+        return user.to_dict(), 200
+    else:
+        return "", 400
+
+
+@app.route("/posts/latest/<nr_of_posts>", methods=["GET"])
+@jwt_required()
+def get_posts(nr_of_posts):
     """Fetch selected nr of posts. -1 = ALL"""
 
     try:
-        user_id = int(user_id)
         nr_of_posts = int(nr_of_posts)
 
     except(ValueError, TypeError):
         return "", 400
 
     if nr_of_posts == -1:
-        posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
+        posts = [post.to_dict() for post in Post.query.
                  order_by(desc(Post.date_time)).all()]
     elif nr_of_posts >= 0:
-        posts = [post.to_dict() for post in Post.query.filter_by(user_id=user_id).
+        posts = [post.to_dict() for post in Post.query.
                  order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
     else:
         return "", 400
 
-    return jsonify(posts), 200
+    users = []
+    for post in posts:
+        user_id = post.get("userId")
+        print(user_id)
+        user = get_user(user_id)[0]
+        if isinstance(user, dict):
+            print(user)
+            users.append(user)
+
+    data = {"posts": posts, "users": users}
+    return data, 200
 
 
 @app.route("/comments/<post_id>/<nr_of_comments>", methods=["GET"])

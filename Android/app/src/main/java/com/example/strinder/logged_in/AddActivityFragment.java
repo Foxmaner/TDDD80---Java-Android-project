@@ -207,6 +207,12 @@ public class AddActivityFragment extends Fragment {
                     });
 
         }
+        else {
+            Log.e("Form Fields Error", "Fields are not correctly formatted," +
+                    " thus a post could not be made");
+            Toast.makeText(getContext(),"The form is not formatted correctly, please alter" +
+                    " the fields and try again!",Toast.LENGTH_SHORT).show();
+        }
 
     }
 

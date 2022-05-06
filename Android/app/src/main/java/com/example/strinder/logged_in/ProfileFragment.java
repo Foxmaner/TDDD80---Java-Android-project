@@ -31,7 +31,6 @@ import com.example.strinder.backend_related.storage.DbxCompletionListener;
 import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.logged_in.handlers.PostRecyclerViewAdapter;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -41,6 +40,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -101,7 +101,7 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
             RecyclerView recyclerView = v.findViewById(R.id.myPosts);
 
             PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(this.getContext(),
-                    user.getPosts());
+                    user.getPosts(), Collections.singletonList(user));
 
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));

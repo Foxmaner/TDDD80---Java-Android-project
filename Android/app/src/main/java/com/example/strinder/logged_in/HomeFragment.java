@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -74,6 +75,16 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                     Request.Method.GET, user.getAccessToken(), this);
 
         }
+        //Loads recyclerview with empty list
+        RecyclerView recyclerView = v.findViewById(R.id.homeFeedRecycleView);
+        List<Post> emptyPostList = new ArrayList<Post>();
+        PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(this.getContext(),
+                emptyPostList);
+
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
+
+        recyclerView.setAdapter(adapter);
 
         // Inflate the layout for this fragment
         return v;
@@ -82,6 +93,8 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
     @Override
     public void onResponse(String response) {
+
+        //Loads recyclerview with list of all posts
         Gson gson=new Gson();
         TypeToken<List<Post>> token = new TypeToken<List<Post>>(){};
         List<Post> postList = gson.fromJson(response, token.getType());
@@ -95,6 +108,11 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
 
         recyclerView.setAdapter(adapter);
+        if(postList.size()==0){
+            Toast.makeText(this.getContext(), "There are no posts",
+                    Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     @Override

@@ -85,7 +85,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=False)
     title = db.Column(db.String(40), nullable=False)
-    caption = db.Column(db.String(140), nullable=False)
+    caption = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime, default=func.now(), nullable=False)
     # Here we need a relationship! We need to know which user liked what post.
     likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")

@@ -39,10 +39,28 @@
     <!-- Add Post -->
     <string name="activityStatsText">Activity Stats</string>
     <string name="savePostButtonText">Save Post</string>
+    <string name="title">Title</string>
+    <string name="caption">Caption</string>
+    <string name="elapsedTime">Elapsed Time (HH:MM)</string>
+    <string name="postActivityText">Chooses activity.</string>
+    <string name="speed">Speed</string>
+    <string name="distance">Distance</string>
     <!-- For the dropdown -->
-    <string-array name="languages">
+    <string-array name="activities">
         <item>Run</item>
         <item>Cycling</item>
         <item>Walk</item>
     </string-array>
+
+    <string-array name="speedUnits">
+        <item>km/h</item>
+        <item>min/km</item>
+    </string-array>
+
+    <string-array name="distanceUnits">
+        <item>km</item>
+        <item>meter</item>
+    </string-array>
+
+
 </resources>

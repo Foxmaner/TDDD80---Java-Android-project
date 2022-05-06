@@ -7,7 +7,7 @@
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="420dp"
         app:cardBackgroundColor="#F4F3F3"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
@@ -23,160 +23,301 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/postNameView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="Firstname Lastname"
-                android:textSize="20sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/postImageView"
-                app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="382dp">
 
             <ImageView
-                android:id="@+id/postImageView"
+                android:id="@+id/postCardImageView"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline6"
-                app:layout_constraintEnd_toStartOf="@+id/guideline8"
-                app:layout_constraintStart_toStartOf="parent"
+                android:layout_height="55dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline41"
+                app:layout_constraintEnd_toStartOf="@+id/guideline30"
+                app:layout_constraintStart_toStartOf="@+id/guideline47"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/friends"
                 tools:srcCompat="@tools:sample/avatars" />
 
-            <TextView
-                android:id="@+id/postDistanceTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Distance"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toStartOf="@+id/postTimeTextView"
-                app:layout_constraintHorizontal_bias="0.561"
-                app:layout_constraintStart_toEndOf="@+id/postImageView"
-                app:layout_constraintTop_toBottomOf="@+id/postNameView" />
-
-            <TextView
-                android:id="@+id/postDistanceValueView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline6"
-                app:layout_constraintEnd_toStartOf="@+id/postTimeValueView"
-                app:layout_constraintStart_toStartOf="@+id/guideline8"
-                app:layout_constraintTop_toBottomOf="@+id/postDistanceTextView" />
-
-            <TextView
-                android:id="@+id/postTimeValueView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.552"
-                app:layout_constraintStart_toEndOf="@+id/postImageView"
-                app:layout_constraintTop_toBottomOf="@+id/postTimeTextView"
-                app:layout_constraintVertical_bias="0.493" />
-
-            <TextView
-                android:id="@+id/postSpeedValueView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="..."
-                android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline6"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/postTimeValueView"
-                app:layout_constraintTop_toBottomOf="@+id/postSpeedTextView" />
-
-            <TextView
-                android:id="@+id/postTimeTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Time"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.561"
-                app:layout_constraintStart_toEndOf="@+id/postImageView"
-                app:layout_constraintTop_toBottomOf="@+id/postNameView" />
-
-            <TextView
-                android:id="@+id/postSpeedTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
-                android:text="Speed"
-                android:textSize="16sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.666"
-                app:layout_constraintStart_toEndOf="@+id/postTimeTextView"
-                app:layout_constraintTop_toBottomOf="@+id/postNameView" />
-
-            <ImageView
-                android:id="@+id/postGPSImageView"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toTopOf="@+id/guideline7"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline6"
-                app:srcCompat="@drawable/login_pic" />
-
-            <Button
-                android:id="@+id/buttonLikeView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/papaya"
-                android:text="Gilla"
-                android:textColor="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/buttonCommentView"
-                app:layout_constraintHorizontal_bias="0.558"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/buttonCommentView"
-                app:layout_constraintVertical_bias="0.0" />
-
-            <Button
-                android:id="@+id/buttonCommentView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@color/papaya"
-                android:text="Kommentera"
-                android:textColor="#FFFFFF"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.774"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/guideline7"
-                app:layout_constraintVertical_bias="0.0" />
-
             <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline6"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="150dp" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline7"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="296dp" />
-
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline8"
+                android:id="@+id/guideline30"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="150dp" />
+                app:layout_constraintGuide_begin="77dp" />
+
+            <TextView
+                android:id="@+id/postCardName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline41"
+                app:layout_constraintEnd_toStartOf="@+id/guideline46"
+                app:layout_constraintStart_toStartOf="@+id/guideline30"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.19999999" />
+
+            <ImageButton
+                android:id="@+id/likeButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline30"
+                app:layout_constraintStart_toStartOf="parent"
+                app:srcCompat="@drawable/like" />
+
+            <ImageButton
+                android:id="@+id/commentButton"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:srcCompat="@drawable/comment" />
+
+            <TextView
+                android:id="@+id/textView11"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline41"
+                app:layout_constraintEnd_toStartOf="@+id/guideline46"
+                app:layout_constraintStart_toStartOf="@+id/guideline30"
+                app:layout_constraintTop_toBottomOf="@+id/postCardName"
+                app:layout_constraintVertical_bias="0.25" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline41"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="58dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline31"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="80dp" />
+
+            <TextView
+                android:id="@+id/postCardTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/title"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline31"
+                app:layout_constraintEnd_toStartOf="@+id/guideline46"
+                app:layout_constraintStart_toStartOf="@+id/guideline47"
+                app:layout_constraintTop_toTopOf="@+id/guideline41" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline46"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="248dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline47"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="8dp" />
+
+            <TextView
+                android:id="@+id/postCardCaption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/placeholder"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline50"
+                app:layout_constraintEnd_toStartOf="@+id/guideline46"
+                app:layout_constraintStart_toStartOf="@+id/guideline47"
+                app:layout_constraintTop_toTopOf="@+id/guideline31"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <TextView
+                android:id="@+id/distanceLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/distance"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline51"
+                app:layout_constraintEnd_toStartOf="@+id/guideline53"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline47"
+                app:layout_constraintTop_toBottomOf="@+id/postCardCaption"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <TextView
+                android:id="@+id/textView16"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="10km"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline50"
+                app:layout_constraintEnd_toStartOf="@+id/guideline53"
+                app:layout_constraintStart_toStartOf="@+id/guideline47"
+                app:layout_constraintTop_toBottomOf="@+id/distanceLabel"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline50"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="128dp" />
+
+            <TextView
+                android:id="@+id/timeLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Elapsed Time"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline51"
+                app:layout_constraintEnd_toStartOf="@+id/guideline52"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline53"
+                app:layout_constraintTop_toBottomOf="@+id/postCardCaption"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <TextView
+                android:id="@+id/textView18"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="01:50"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline50"
+                app:layout_constraintEnd_toStartOf="@+id/guideline54"
+                app:layout_constraintStart_toStartOf="@+id/guideline53"
+                app:layout_constraintTop_toBottomOf="@+id/timeLabel"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline51"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="112dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline52"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="156dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline53"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="60dp" />
+
+            <TextView
+                android:id="@+id/speedLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/speed"
+                android:textSize="8sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline51"
+                app:layout_constraintEnd_toStartOf="@+id/guideline52"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline54"
+                app:layout_constraintTop_toBottomOf="@+id/postCardCaption"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline54"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="120dp" />
+
+            <TextView
+                android:id="@+id/textView20"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:text="5.4 min/km"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline50"
+                app:layout_constraintEnd_toStartOf="@+id/guideline55"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline54"
+                app:layout_constraintTop_toTopOf="@+id/guideline51"
+                app:layout_constraintVertical_bias="1.0" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline55"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="186dp" />
+
+            <ImageView
+                android:id="@+id/postCardMap"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline56"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline47"
+                app:layout_constraintTop_toTopOf="@+id/guideline50"
+                app:srcCompat="@drawable/login_pic"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:paddingTop="10dp"
+            />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline56"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="314dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline58"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="178dp" />
+
+            <ImageButton
+                android:id="@+id/imageButton3"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/guideline58"
+                app:layout_constraintStart_toStartOf="@+id/guideline47"
+                app:layout_constraintTop_toTopOf="@+id/guideline59"
+                app:srcCompat="@drawable/like"
+                android:background="?attr/selectableItemBackgroundBorderless"
+            />
+
+            <ImageButton
+                android:id="@+id/imageButton4"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline58"
+                app:layout_constraintTop_toTopOf="@+id/guideline59"
+                app:srcCompat="@drawable/comment"
+                android:background="?attr/selectableItemBackgroundBorderless"
+            />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline59"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="344dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

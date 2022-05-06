@@ -63,11 +63,13 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            /*
             postNameView = itemView.findViewById(R.id.postNameView);
             //postCaptionView = itemView.findViewById(R.id.postDistanceTextView);
             postDistanceValueView = itemView.findViewById(R.id.postDistanceValueView);
             postTimeValueView = itemView.findViewById(R.id.postTimeValueView);
             postSpeedValueView = itemView.findViewById(R.id.postSpeedValueView);
+            */
 
         }
     }

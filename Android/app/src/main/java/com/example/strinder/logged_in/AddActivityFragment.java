@@ -1,13 +1,21 @@
 package com.example.strinder.logged_in;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioGroup;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
@@ -19,6 +27,7 @@ import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
@@ -26,16 +35,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * A simple {@link Fragment} subclass.
+ * This Fragment handles the process of adding posts/activities to the logged in user's account.
  * Use the {@link AddActivityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddActivityFragment extends Fragment implements View.OnClickListener,
-        VolleyResponseListener<String> {
+public class AddActivityFragment extends Fragment {
 
-    private TextInputLayout titleInput;
-    private TextInputLayout captionInput;
-    private RadioGroup postSportTypeInput;
+    private EditText title, caption,elapsedTime,distance,speed;
+    private Spinner activities,speedUnit,distanceUnit;
     private ServerConnection connection;
     private User user;
 
@@ -45,7 +52,6 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
     }
 
 
-    // TODO: Rename and change types and number of parameters
     public static AddActivityFragment newInstance(final User user) {
         AddActivityFragment fragment = new AddActivityFragment();
         Bundle bundle = new Bundle();
@@ -68,100 +74,165 @@ public class AddActivityFragment extends Fragment implements View.OnClickListene
         View view;
         view =  inflater.inflate(R.layout.fragment_add_activity, container, false);
 
+
+        connection = new ServerConnection(getContext());
+
         Bundle bundle = getArguments();
 
         if(bundle != null) {
             user =  bundle.getParcelable("account");
-        }
-        /*
-        connection = new ServerConnection(view.getContext());
-        titleInput = view.findViewById(R.id.textInputLayoutPostTitle);
-        captionInput =  view.findViewById(R.id.textInputLayoutPostCaption);
-        postSportTypeInput = view.findViewById(R.id.inputAddActivitySport);
 
-        Button addActivityButton = view.findViewById(R.id.addActivityButton);
-        addActivityButton.setOnClickListener(this);
-        */
+            //Get the fields.
+            title = view.findViewById(R.id.postTitle);
+            caption = view.findViewById(R.id.postCaption);
+            activities = view.findViewById(R.id.postActivity);
+            elapsedTime = view.findViewById(R.id.postElapsedTime);
+            distance = view.findViewById(R.id.postDistance);
+            distanceUnit = view.findViewById(R.id.postDistanceUnit);
+            speed = view.findViewById(R.id.postSpeed);
+            speedUnit = view.findViewById(R.id.postSpeedUnit);
+
+            Button addPostButton = view.findViewById(R.id.addPostButton);
+            addPostButton.setOnClickListener(this::onSubmit);
+
+            ArrayAdapter<CharSequence> activityAdapter = ArrayAdapter.createFromResource(getContext(),
+                    R.array.activities, R.layout.spinner_item);
+
+            ArrayAdapter<CharSequence> speedUnitAdapter = ArrayAdapter.createFromResource(getContext(),
+                    R.array.speedUnits, R.layout.spinner_item);
+
+            ArrayAdapter<CharSequence> distanceUnitAdapter = ArrayAdapter.
+                    createFromResource(getContext(), R.array.distanceUnits, R.layout.spinner_item);
+
+            //set the view for the Drop down list
+            activityAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            speedUnitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            distanceUnitAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            //set the ArrayAdapter to the spinner
+            activities.setAdapter(activityAdapter);
+            distanceUnit.setAdapter(distanceUnitAdapter);
+            speedUnit.setAdapter(speedUnitAdapter);
+
+        }
+
+
         return view;
     }
+    /** Is executed when the user presses the "Save Post" button.
+     * @param view - the View object.
+     * */
+    private void onSubmit(View view) {
+        String postTitle = title.getText().toString();
+        String postCaption = caption.getText().toString();
+        String postActivity = activities.getSelectedItem().toString();
+        String postDistance = distance.getText().toString();
+        String postDistanceUnit = distanceUnit.getSelectedItem().toString();
+        String postSpeed = speed.getText().toString();
+        String postSpeedUnit = speedUnit.getSelectedItem().toString();
+        String postElapsedTime = elapsedTime.getText().toString();
 
-    @Override
-    public void onClick(View view) {
-        TextView postTitle = titleInput.getEditText();
-        TextView postCaption = captionInput.getEditText();
-        if(postTitle != null & postCaption != null) {
-            String postTitleText = postTitle.getText().toString();
-            String postCaptionText = postCaption.getText().toString();
-            //int selectedRadioId = postSportTypeInput.getCheckedRadioButtonId();
-            //RadioButton selectedButton = postSportTypeInput.findViewById(selectedRadioId);
+        if(isDataFormattedCorrect(postTitle,postCaption,postActivity,postDistance,postDistanceUnit,
+                postSpeed,postSpeedUnit,postElapsedTime)) {
 
-            JSONObject jsonObject = new JSONObject();
+            //The data is formatted correctly
+            JSONObject object = new JSONObject();
             try {
-                jsonObject.put("title", postTitleText);
-                jsonObject.put("caption", postCaptionText);
+                object.put("title",postTitle);
+                object.put("caption",postCaption);
             }
-            catch (Exception e) {
+            catch (JSONException e) {
                 e.printStackTrace();
             }
-            connection.sendStringJsonRequest("/post/add", jsonObject,
-                    Request.Method.POST, user.getAccessToken(), this);
+
+            connection.sendStringJsonRequest("/post/add", object,
+                    Request.Method.POST, user.getAccessToken(), new VolleyResponseListener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Gson gson = new Gson();
+                            Post post = gson.fromJson(response,Post.class);
+                            user.getPosts().add(post);
+
+                            //TrainingSession
+                            JSONObject object = new JSONObject();
+                            try {
+                                object.put("time",postElapsedTime);
+                                object.put("postId",post.getId());
+                                object.put("speedUnit", postSpeedUnit);
+                                object.put("speed",postSpeed);
+                                object.put("exercise",postActivity);
+                                object.put("distance",postDistance);
+                                object.put("distanceUnit",postDistanceUnit);
+
+                            }
+                            catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                            connection.sendStringJsonRequest("/session/set", object,
+                                    Request.Method.POST, user.getAccessToken(),
+                                    new VolleyResponseListener<String>() {
+                                        @Override
+                                        public void onResponse(String response) {
+                                            TrainingSession session = gson.fromJson(response,
+                                                    TrainingSession.class);
+                                            post.setTrainingSession(session);
+
+                                            //FIXME Fix this later on? Make a listener or something.
+                                            LoggedInActivity activity = (LoggedInActivity) getActivity();
+
+                                            if(activity != null) {
+                                                activity.jumpToHome("Your Post Was Successfully" +
+                                                        "Added!");
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onError(VolleyError error) {
+                                            Log.e("Adding activity", error.toString());
+                                            user.getPosts().remove(post);
+                                            Toast.makeText(getContext(),"Failed to add activity" +
+                                                            "stats to the post.",
+                                                    Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                            Log.e("Adding Post", error.toString());
+                            Toast.makeText(getContext(),"Failed To Add Post",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    });
 
         }
-    }
-
-    @Override
-    public void onResponse(String response) {
-        //TODO Improve this
-        //FIXME The code below is just a test
-        Gson gson = new Gson();
-        Post post = gson.fromJson(response,Post.class);
-        user.getPosts().add(post);
-
-        //TrainingSession
-        JSONObject object = new JSONObject();
-        try {
-            object.put("time","01:05");
-            object.put("postId",post.getId());
-            object.put("speedUnit", "km/h");
-            object.put("speed",5f);
-            object.put("exercise","Running");
-            object.put("distance",5);
-            object.put("distanceUnit","km");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        connection.sendStringJsonRequest("/session/set", object, Request.Method.POST,
-                user.getAccessToken(), new VolleyResponseListener<String>() {
-            @Override
-            public void onResponse(String response) {
-                TrainingSession session = gson.fromJson(response,TrainingSession.class);
-                post.setTrainingSession(session);
-
-                LoggedInActivity activity = (LoggedInActivity) getActivity();
-
-                if(activity != null) {
-                    activity.jumpToHome("Added post!");
-                }
-            }
-
-            @Override
-            public void onError(VolleyError error) {
-                System.out.println(error.networkResponse);
-            }
-        });
 
     }
 
-    @Override
-    public void onError(VolleyError error) {
-        //TODO Improve this
-        System.out.println("Error" + error);
-        LoggedInActivity activity = (LoggedInActivity) getActivity();
+    /** Returns if the data is correctly formatted or not
+     *
+     * @param postTitle - the title as a String
+     * @param postCaption - the caption as a String
+     * @param postActivity - the activity as a String
+     * @param postDistance - the distance as a String
+     * @param postDistanceUnit - the distance unit as a String
+     * @param postSpeed - the speed as a String
+     * @param postSpeedUnit - the speed unit as a String
+     * @param postElapsedTime - the elapsed time as a String
+     * @return true or false depending on if they are correctly formatted or not.
+     */
+    private boolean isDataFormattedCorrect(final String postTitle, final String postCaption,
+                                           final String postActivity,
+                                           final String postDistance, final String postDistanceUnit,
+                                           final String postSpeed, final String postSpeedUnit,
+                                           final String postElapsedTime) {
 
-        if(activity != null) {
-            activity.jumpToHome("Failed to add post. Error: " + error);
-        }
+        return !postTitle.isEmpty() && !postCaption.isEmpty() && !postActivity.isEmpty()
+                && !postDistance.isEmpty() && !postDistanceUnit.isEmpty() && !postSpeed.isEmpty()
+                && !postSpeedUnit.isEmpty() && !postElapsedTime.isEmpty() &&
+                postElapsedTime.matches("^\\d{2}:\\d{2}$");
     }
+
+
 }

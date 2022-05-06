@@ -35,6 +35,7 @@ import java.util.List;
 public class HomeFragment extends Fragment implements VolleyResponseListener<String> {
     private User user;
     private SwipeRefreshLayout swipeContainer;
+    private Boolean isAtEndOfScroll = false;
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -87,6 +88,20 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                 swipeContainer.setRefreshing(false);
             }
 
+        });
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                if (!recyclerView.canScrollVertically(1) && !isAtEndOfScroll) {
+                    System.out.println("Slutet av listan");
+                    isAtEndOfScroll = true;
+                }else{
+                    isAtEndOfScroll = false;
+                }
+
+            }
         });
 
         // Inflate the layout for this fragment

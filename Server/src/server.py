@@ -360,10 +360,8 @@ def get_posts(nr_of_posts):
     users = []
     for post in posts:
         user_id = post.get("userId")
-        print(user_id)
         user = get_user(user_id)[0]
         if isinstance(user, dict):
-            print(user)
             users.append(user)
 
     data = {"posts": posts, "users": users}

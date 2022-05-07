@@ -79,8 +79,8 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
         holder.postTitleView.setText(post.getTitle());
         holder.postDate.setText(post.getDate());
 
-
         if (session != null) {
+            holder.postExercise.setText(session.getExercise());
             holder.postDistanceValueView.setText(String.format("%s %s", session.getDistance(),
                     session.getDistanceUnit()));
             holder.postTimeValueView.setText(session.getElapsedTime());
@@ -96,6 +96,7 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
+        private final TextView postExercise;
         private final TextView postNameView;
         private final TextView postCaptionView;
         private final TextView postTitleView;
@@ -117,6 +118,7 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
             postTitleView = itemView.findViewById(R.id.postCardTitle);
             postDate = itemView.findViewById(R.id.postCardDate);
             profileImage = itemView.findViewById(R.id.postCardProfileImage);
+            postExercise = itemView.findViewById(R.id.postCardActivity);
 
 
         }

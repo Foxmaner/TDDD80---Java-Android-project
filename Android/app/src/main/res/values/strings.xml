@@ -45,6 +45,8 @@
     <string name="postActivityText">Chooses activity.</string>
     <string name="speed">Speed</string>
     <string name="distance">Distance</string>
+    <string name="select_speed_unit">Select speed unit.</string>
+    <string name="select_distance_unit">Select distance unit.</string>
     <!-- For the dropdown -->
     <string-array name="activities">
         <item>Run</item>

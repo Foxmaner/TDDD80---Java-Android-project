@@ -85,7 +85,7 @@ class Post(db.Model):
     id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
     user_id = db.Column(db.Integer, db.ForeignKey("User.id"), nullable=False)
     title = db.Column(db.String(40), nullable=False)
-    caption = db.Column(db.String(140), nullable=False)
+    caption = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime, default=func.now(), nullable=False)
     # Here we need a relationship! We need to know which user liked what post.
     likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")
@@ -109,12 +109,15 @@ class TrainingSession(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
     speed_unit = db.Column(db.String(40), nullable=False)
     speed = db.Column(db.Float, nullable=False)
+    distance = db.Column(db.Float, nullable=False)
+    distance_unit = db.Column(db.String(5), nullable=False)
     exercise = db.Column(db.String(40), nullable=False)
 
     def to_dict(self):
         return {"id": self.id, "postId": self.post_id, "elapsedTime": "{:02d}:{:02d}".format(self.time.hour,
                                                                                              self.time.minute),
-                "speedUnit": self.speed_unit, "speed": self.speed, "exercise": self.exercise}
+                "speedUnit": self.speed_unit, "speed": self.speed, "distance": self.distance,
+                "distanceUnit": self.distance_unit, "exercise": self.exercise}
 
 
 class Comment(db.Model):

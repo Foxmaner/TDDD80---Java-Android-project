@@ -5,9 +5,8 @@ import android.os.Parcelable;
 
 public class TrainingSession implements Parcelable {
     private final int id,postId;
-    private final String elapsedTime;
-    private final String speedUnit,exercise;
-    private final float speed;
+    private final String elapsedTime,speedUnit,distanceUnit, exercise;
+    private final float speed,distance;
 
     protected TrainingSession(Parcel in) {
         id = in.readInt();
@@ -16,6 +15,8 @@ public class TrainingSession implements Parcelable {
         speedUnit = in.readString();
         speed = in.readFloat();
         exercise = in.readString();
+        distance = in.readFloat();
+        distanceUnit = in.readString();
     }
 
 
@@ -43,6 +44,14 @@ public class TrainingSession implements Parcelable {
         return speed;
     }
 
+    public String getDistanceUnit() {
+        return distanceUnit;
+    }
+
+    public float getDistance() {
+        return distance;
+    }
+
     public static final Creator<TrainingSession> CREATOR = new Creator<TrainingSession>() {
         @Override
         public TrainingSession createFromParcel(Parcel in) {
@@ -68,5 +77,7 @@ public class TrainingSession implements Parcelable {
         parcel.writeString(speedUnit);
         parcel.writeFloat(speed);
         parcel.writeString(exercise);
+        parcel.writeFloat(distance);
+        parcel.writeString(distanceUnit);
     }
 }

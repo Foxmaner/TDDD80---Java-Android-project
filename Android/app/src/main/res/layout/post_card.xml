@@ -30,7 +30,7 @@
                 android:layout_width="0dp"
                 android:layout_height="55dp"
                 android:layout_marginEnd="8dp"
-                android:contentDescription="The user's profile image."
+                android:contentDescription="@string/profileImageDescription"
                 app:layout_constraintBottom_toTopOf="@+id/guideline41"
                 app:layout_constraintEnd_toStartOf="@+id/guideline30"
                 app:layout_constraintStart_toStartOf="@+id/guideline47"
@@ -50,7 +50,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline41"
                 app:layout_constraintEnd_toStartOf="@+id/guideline46"
                 app:layout_constraintStart_toStartOf="@+id/guideline30"
@@ -62,7 +62,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline41"
                 app:layout_constraintEnd_toStartOf="@+id/guideline46"
                 app:layout_constraintStart_toStartOf="@+id/guideline30"
@@ -99,7 +99,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="248dp" />
+                app:layout_constraintGuide_begin="279dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline47"
@@ -111,14 +111,13 @@
             <TextView
                 android:id="@+id/postCardCaption"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:text="@string/placeholder"
                 android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline50"
+                app:layout_constraintBottom_toTopOf="@+id/guideline32"
                 app:layout_constraintEnd_toStartOf="@+id/guideline46"
                 app:layout_constraintStart_toStartOf="@+id/guideline47"
-                app:layout_constraintTop_toTopOf="@+id/guideline31"
-                app:layout_constraintVertical_bias="0.0" />
+                app:layout_constraintTop_toTopOf="@+id/guideline31" />
 
             <TextView
                 android:id="@+id/distanceLabel"
@@ -139,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="10km"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline50"
                 app:layout_constraintEnd_toStartOf="@+id/guideline53"
                 app:layout_constraintStart_toStartOf="@+id/guideline47"
@@ -151,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="128dp" />
+                app:layout_constraintGuide_begin="145dp" />
 
             <TextView
                 android:id="@+id/timeLabel"
@@ -172,7 +171,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="@string/placeholder"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline50"
                 app:layout_constraintEnd_toStartOf="@+id/guideline54"
                 app:layout_constraintStart_toStartOf="@+id/guideline53"
@@ -184,21 +183,21 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="112dp" />
+                app:layout_constraintGuide_begin="131dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline52"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="156dp" />
+                app:layout_constraintGuide_begin="158dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline53"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="60dp" />
+                app:layout_constraintGuide_begin="77dp" />
 
             <TextView
                 android:id="@+id/speedLabel"
@@ -207,9 +206,9 @@
                 android:text="@string/speed"
                 android:textSize="8sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline51"
-                app:layout_constraintEnd_toStartOf="@+id/guideline52"
+                app:layout_constraintEnd_toStartOf="@+id/guideline55"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/guideline54"
+                app:layout_constraintStart_toStartOf="@+id/guideline52"
                 app:layout_constraintTop_toBottomOf="@+id/postCardCaption"
                 app:layout_constraintVertical_bias="1.0" />
 
@@ -218,7 +217,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="120dp" />
+                app:layout_constraintGuide_begin="147dp" />
 
             <TextView
                 android:id="@+id/postCardSpeed"
@@ -226,11 +225,11 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
                 android:text="@string/placeholder"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline50"
                 app:layout_constraintEnd_toStartOf="@+id/guideline55"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="@+id/guideline54"
+                app:layout_constraintStart_toStartOf="@+id/guideline52"
                 app:layout_constraintTop_toTopOf="@+id/guideline51"
                 app:layout_constraintVertical_bias="1.0" />
 
@@ -239,14 +238,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="186dp" />
+                app:layout_constraintGuide_begin="250dp" />
 
             <ImageView
                 android:id="@+id/postCardMap"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:adjustViewBounds="true"
-                android:contentDescription="The activity map."
+                android:contentDescription="@string/activityDescription"
                 android:paddingTop="10dp"
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toTopOf="@+id/guideline56"
@@ -260,7 +259,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="314dp" />
+                app:layout_constraintGuide_begin="321dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline58"
@@ -274,7 +273,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Like the post."
+                android:contentDescription="@string/likeDescription"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@+id/guideline58"
                 app:layout_constraintStart_toStartOf="@+id/guideline47"
@@ -286,7 +285,7 @@
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:contentDescription="Comment on the post."
+                android:contentDescription="@string/contentDescription"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline58"
@@ -304,7 +303,7 @@
                 android:id="@+id/activityLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Activity"
+                android:text="@string/activityText"
                 android:textSize="8sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline51"
                 app:layout_constraintEnd_toStartOf="@+id/guideline46"
@@ -318,12 +317,19 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/placeholder"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline50"
                 app:layout_constraintEnd_toStartOf="@+id/guideline46"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/guideline55"
                 app:layout_constraintTop_toTopOf="@+id/guideline51" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline32"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_end="272dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

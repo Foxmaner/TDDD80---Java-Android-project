@@ -47,6 +47,16 @@
     <string name="distance">Distance</string>
     <string name="select_speed_unit">Select speed unit.</string>
     <string name="select_distance_unit">Select distance unit.</string>
+    <string name="birthdayPlaceholder">YYYY/MM/DD</string>
+    <string name="genderPlaceholder">Gender</string>
+    <string name="firstnamePlaceholder">Firstname</string>
+    <string name="lastnamePlaceholder">Lastname</string>
+    <string name="biographyPlaceholder">Biography</string>
+    <string name="profileImageDescription">The user\'s profile image.</string>
+    <string name="activityDescription">The activity map.</string>
+    <string name="likeDescription">Like the post.</string>
+    <string name="contentDescription">Comment on the post.</string>
+    <string name="activityText">Activity</string>
     <!-- For the dropdown -->
     <string-array name="activities">
         <item>Run</item>

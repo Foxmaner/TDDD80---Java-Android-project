@@ -1,7 +1,6 @@
 package com.example.strinder.logged_in;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,22 +10,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
-import com.android.volley.VolleyError;
 import com.example.strinder.R;
-import com.example.strinder.backend_related.database.ServerConnection;
-import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
-import com.google.gson.Gson;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerViewAdapter.MyViewHolder>{

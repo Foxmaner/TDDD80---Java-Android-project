@@ -3,19 +3,14 @@ package com.example.strinder.logged_in;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
@@ -27,8 +22,6 @@ import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
-import com.google.android.material.navigation.NavigationBarView;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.gson.Gson;
 
 import org.json.JSONException;

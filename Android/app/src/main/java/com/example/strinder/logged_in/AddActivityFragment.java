@@ -175,7 +175,7 @@ public class AddActivityFragment extends Fragment {
 
                                             if(activity != null) {
                                                 activity.jumpToHome("Your Post Was Successfully" +
-                                                        "Added!");
+                                                        " Added!");
                                             }
                                         }
 

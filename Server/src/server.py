@@ -280,7 +280,44 @@ def add_comment(post_id):
     return "", 200
 
 
+@app.route("/post/like/<post_id>", methods=["POST"])
+@jwt_required()
+def like(post_id):
+
+    try:
+        post_id = int(post_id)
+        user_id = int(get_jwt_identity())
+    except (ValueError, TypeError):
+        return "", 400
+
+    post = Post.query.filter_by(id=post_id).first()
+    user = User.query.filter_by(id=user_id).first()
+    if post is not None and user is not None:
+        post.likes.append(user)
+        data = [user.to_dict_friends() for user in post.likes]
+        return jsonify(data), 200
+    else:
+        return "", 400
+
+
 # ------- GET -------- #
+@app.route("/post/get_likes/<post_id>", methods=["GET"])
+@jwt_required()
+def get_likes(post_id):
+    try:
+        post_id = int(post_id)
+    except(ValueError, TypeError):
+        return "", 400
+
+    post = Post.query.filter_by(id=post_id).first()
+
+    if post is not None:
+        data = [user.to_dict_friends() for user in post.likes]
+        return jsonify(data), 200
+    else:
+        return "", 400
+
+
 @app.route("/user/get_data/<user_id>", methods=["GET"])
 @jwt_required()
 def get_data(user_id):

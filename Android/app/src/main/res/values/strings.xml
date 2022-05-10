@@ -57,6 +57,7 @@
     <string name="likeDescription">Like the post.</string>
     <string name="contentDescription">Comment on the post.</string>
     <string name="activityText">Activity</string>
+    <string name="likesPlaceholder">None have liked this yet</string>
     <!-- For the dropdown -->
     <string-array name="activities">
         <item>Run</item>

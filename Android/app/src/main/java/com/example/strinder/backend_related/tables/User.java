@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class User implements Parcelable {
 
@@ -185,4 +186,16 @@ public class User implements Parcelable {
         }
     };
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return id == user.id && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && email.equals(user.email) && friends.equals(user.friends) && posts.equals(user.posts) && username.equals(user.username) && Objects.equals(birthday, user.birthday) && Objects.equals(gender, user.gender) && Objects.equals(photoUrl, user.photoUrl) && biography.equals(user.biography);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstName, lastName, email, friends, posts, username, birthday, gender, photoUrl, biography, id);
+    }
 }

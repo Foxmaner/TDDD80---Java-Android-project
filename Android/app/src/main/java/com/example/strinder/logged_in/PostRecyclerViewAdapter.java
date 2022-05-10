@@ -1,20 +1,31 @@
 package com.example.strinder.logged_in;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.database.ServerConnection;
+import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -22,17 +33,22 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
     private final Context context;
     private final List<Post> posts;
     private final List<User> users;
+    private final User currentUser;
+    private final ServerConnection connection;
 
-    public PostRecyclerViewAdapter(Context context, List<Post> posts, List<User> users){
-        this.context=context;
+    public PostRecyclerViewAdapter(Context context, List<Post> posts, List<User> users,
+                                   final User currentUser){
+        this.context = context;
         this.posts = posts;
         this.users = users;
+        this.currentUser = currentUser;
+        connection = new ServerConnection(context);
     }
-
 
     @NonNull
     @Override
-    public PostRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public PostRecyclerViewAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
+                                                                   int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.post_card,parent,false);
         return new PostRecyclerViewAdapter.MyViewHolder(view);
@@ -52,7 +68,66 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
         else {
             user = users.get(position);
         }
+        //TODO Add removal of likes
+        holder.likeButton.setOnClickListener(view ->
+                connection.sendStringJsonRequest("/post/like/" + post.getId(),
+                        new JSONObject(), Request.Method.POST, currentUser.getAccessToken(),
+                new VolleyResponseListener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        TypeToken<List<User>> token = new TypeToken<List<User>>(){};
+                        //The users that have liked the post.
+                        List<User> users = gson.fromJson(response, token.getType());
 
+                        holder.likes.setText(String.format("You and %s other people have liked " +
+                                " this post",users.size() - 1));
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        Log.e("Like Post Error", "Error occurred when liking post.");
+                        Toast.makeText(context,"Failed to like post.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                }));
+
+
+        connection.sendStringJsonRequest("/post/get_likes/" + post.getId(), new JSONObject(),
+                Request.Method.GET, currentUser.getAccessToken(),
+                new VolleyResponseListener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Gson gson = new Gson();
+                        TypeToken<List<User>> token = new TypeToken<List<User>>(){};
+                        //The users that have liked the post.
+                        List<User> users = gson.fromJson(response, token.getType());
+
+
+                        String text;
+                        int likes = users.size();
+                        if(users.contains(currentUser)) {
+                            likes--;
+
+                            text = String.format("You and %s other people have liked " +
+                                    " this post", likes);
+                        }
+                        else {
+                            text = String.format("%s people have liked" +
+                                    " this post", likes);
+                        }
+
+                        holder.likes.setText(text);
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        Log.e("Like Post Error", "Error occurred when fetching likes.");
+                        Toast.makeText(context,"Failed to get amount of likes on post.",
+                                Toast.LENGTH_SHORT).show();
+                    }
+
+                });
         TrainingSession session = post.getTrainingSession();
 
         holder.postNameView.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
@@ -85,15 +160,11 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
     }
 
     public static class MyViewHolder extends RecyclerView.ViewHolder{
-        private final TextView postExercise;
-        private final TextView postNameView;
-        private final TextView postCaptionView;
-        private final TextView postTitleView;
-        private final TextView postDistanceValueView;
-        private final TextView postTimeValueView;
-        private final TextView postSpeedValueView;
-        private final TextView postDate;
+        private final TextView postExercise,postNameView,postCaptionView,postTitleView,
+        postDistanceValueView, postTimeValueView, postSpeedValueView, postDate,likes;
         private final ImageView profileImage;
+        private final ImageButton likeButton;
+        private final ImageButton commentButton;
 
 
         public MyViewHolder(@NonNull View itemView) {
@@ -108,8 +179,15 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
             postDate = itemView.findViewById(R.id.postCardDate);
             profileImage = itemView.findViewById(R.id.postCardProfileImage);
             postExercise = itemView.findViewById(R.id.postCardActivity);
+            likeButton = itemView.findViewById(R.id.likeButton);
+            commentButton = itemView.findViewById(R.id.commentButton);
+            likes = itemView.findViewById(R.id.postCardLikes);
 
 
         }
+    }
+
+    private void onLike(final View v) {
+
     }
 }

@@ -137,7 +137,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
-                android:text="10km"
+                android:text="@string/placeholder"
                 android:textSize="11sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline50"
                 app:layout_constraintEnd_toStartOf="@+id/guideline53"
@@ -259,7 +259,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="321dp" />
+                app:layout_constraintGuide_begin="308dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline58"
@@ -297,7 +297,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_begin="330dp" />
+                app:layout_constraintGuide_begin="329dp" />
 
             <TextView
                 android:id="@+id/activityLabel"
@@ -330,6 +330,18 @@
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 app:layout_constraintGuide_end="272dp" />
+
+            <TextView
+                android:id="@+id/postCardLikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/likesPlaceholder"
+                android:textSize="10sp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline59"
+                app:layout_constraintEnd_toStartOf="@+id/guideline54"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/guideline47"
+                app:layout_constraintTop_toTopOf="@+id/guideline56" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

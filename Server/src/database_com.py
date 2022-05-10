@@ -98,7 +98,8 @@ class Post(db.Model):
         if self.training_session is not None:
             session = self.training_session.to_dict();
         return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption,
-                "likes": self.likes, "comments": [comment.to_dict() for comment in self.comments],
+                "likes": [user.to_dict_friends() for user in self.likes], "comments": [comment.to_dict() for
+                                                                                       comment in self.comments],
                 "trainingSession": session, "date": self.date_time}
 
 

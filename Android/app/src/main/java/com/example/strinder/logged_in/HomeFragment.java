@@ -35,6 +35,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
     private SwipeRefreshLayout swipeContainer;
     private Boolean isAtEndOfScroll = false;
     private RecyclerView recyclerView;
+    private User user;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -68,7 +69,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         //fetchData();
         Bundle bundle = getArguments();
         if(bundle != null) {
-            User user =  bundle.getParcelable("account");
+            user =  bundle.getParcelable("account");
 
             ServerConnection connection = new ServerConnection(this.getContext());
             recyclerView = v.findViewById(R.id.homeFeedRecycleView);
@@ -76,12 +77,12 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
             // Setup refresh listener which triggers new data loading
             swipeContainer.setOnRefreshListener(() -> {
-                fetchData(connection,user);
+                fetchData(connection);
                 Log.i("Refresh Home","Fetch data");
                 swipeContainer.setRefreshing(false);
             });
 
-            fetchData(connection,user);
+            fetchData(connection);
 
         }
 
@@ -91,7 +92,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
 
 
-    public void fetchData(final ServerConnection connection, final User user){
+    public void fetchData(final ServerConnection connection) {
         connection.sendStringJsonRequest("/posts/latest/-1",
             new JSONObject(),
             Request.Method.GET, user.getAccessToken(), this);
@@ -103,12 +104,10 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                 FetchedPosts.class);
 
         PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(getContext(),
-                fetchedPosts.getPosts(), fetchedPosts.getUsers());
+                fetchedPosts.getPosts(), fetchedPosts.getUsers(),user);
 
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        recyclerView.setAdapter(adapter);
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

@@ -17,16 +17,16 @@ import java.util.List;
 
 public class User implements Parcelable {
 
-    private final String firstName;
-    private final String lastName;
+    private String firstName;
+    private String lastName;
     private final String email;
     private final ArrayList<User> friends;
     private final ArrayList<Post> posts;
     private final String username;
-    private final String birthday;
-    private final String gender;
+    private String birthday;
+    private String gender;
     private String photoUrl;
-    private final String biography;
+    private String biography;
     private final int id;
     private final String accessToken;
 
@@ -130,6 +130,26 @@ public class User implements Parcelable {
 
     public void setPhotoUrl(final String photoUrl) {
         this.photoUrl = photoUrl;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public void setBiography(String biography) {
+        this.biography = biography;
     }
 
     @Override

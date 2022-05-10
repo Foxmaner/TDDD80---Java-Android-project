@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:text="@string/accountText"
         android:textSize="20sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline16"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -37,10 +38,10 @@
         android:layout_height="wrap_content"
         android:text="@string/sign_out"
         android:textColor="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/guideline19"
+        app:layout_constraintBottom_toTopOf="@+id/guideline12"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editBiography" />
+        app:layout_constraintTop_toTopOf="@+id/guideline19" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline10"
@@ -59,10 +60,11 @@
         android:ems="10"
         android:hint="@string/placeholder"
         android:inputType="textPersonName"
+        android:maxLength="20"
         android:minHeight="48dp"
+        android:text="@string/placeholder"
         android:textColor="#757575"
         android:textColorHint="#757575"
-        android:maxLength="20"
         app:layout_constraintBottom_toTopOf="@+id/guideline15"
         app:layout_constraintEnd_toStartOf="@+id/guideline18"
         app:layout_constraintHorizontal_bias="0.0"
@@ -80,13 +82,14 @@
         android:ems="10"
         android:hint="@string/placeholder"
         android:inputType="textPersonName"
+        android:maxLength="20"
         android:minHeight="48dp"
+        android:text="@string/placeholder"
         android:textColor="#757575"
         android:textColorHint="#757575"
         app:layout_constraintBottom_toTopOf="@+id/guideline15"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline18"
-        android:maxLength="20"
         app:layout_constraintTop_toTopOf="@+id/guideline16" />
 
     <EditText
@@ -99,10 +102,11 @@
         android:ems="10"
         android:hint="@string/placeholder"
         android:inputType="textPersonName"
+        android:maxLength="6"
         android:minHeight="48dp"
+        android:text="@string/placeholder"
         android:textColor="#757575"
         android:textColorHint="#757575"
-        android:maxLength="6"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
         app:layout_constraintEnd_toStartOf="@+id/guideline18"
         app:layout_constraintStart_toStartOf="parent"
@@ -119,6 +123,7 @@
         android:hint="@string/placeholder"
         android:inputType="date"
         android:minHeight="48dp"
+        android:text="@string/placeholder"
         android:textColor="#757575"
         android:textColorHint="#757575"
         app:layout_constraintBottom_toTopOf="@+id/guideline14"
@@ -148,29 +153,55 @@
         android:ems="10"
         android:gravity="start|top"
         android:hint="@string/placeholder"
+        android:inputType="textPersonName"
+        android:maxLength="100"
         android:minHeight="48dp"
+        android:singleLine="true"
+        android:text="@string/placeholder"
         android:textColor="#757575"
         android:textColorHint="#757575"
         app:layout_constraintBottom_toTopOf="@+id/guideline20"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/guideline14"
-        android:singleLine="true"
-        android:maxLength="100"
-        android:inputType="textPersonName" />
+        app:layout_constraintTop_toTopOf="@+id/guideline14" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline19"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="436dp" />
+        app:layout_constraintGuide_begin="446dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline20"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_begin="310dp" />
+        app:layout_constraintGuide_begin="321dp" />
+
+    <Button
+        android:id="@+id/submitButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/submitButtonText"
+        android:textColor="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/guideline11"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/guideline20" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline11"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="400dp" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline12"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_begin="519dp" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

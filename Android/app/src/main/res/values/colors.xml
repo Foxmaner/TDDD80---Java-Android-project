@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="papaya">#E56717</color>
     <color name="carrot">#FFA500</color>
+    <color name="standardText">#555555</color>
 </resources>

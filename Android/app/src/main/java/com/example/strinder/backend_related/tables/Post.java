@@ -11,7 +11,7 @@ import java.util.List;
 public class Post implements Parcelable {
 
     private final int id,userId;
-    private final String title,caption,username;
+    private final String title,caption;
     private final String date;
     private final List<User> likes;
     private final List<Comment> comments;
@@ -20,7 +20,6 @@ public class Post implements Parcelable {
     public Post(final Parcel parcel) {
         id = parcel.readInt();
         userId = parcel.readInt();
-        username = parcel.readString();
         title = parcel.readString();
         caption = parcel.readString();
         date = parcel.readString();
@@ -47,10 +46,6 @@ public class Post implements Parcelable {
 
     public String getCaption() {
         return caption;
-    }
-
-    public String getUsername() {
-        return username;
     }
 
     public String getDate() {
@@ -94,7 +89,6 @@ public class Post implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeInt(id);
         parcel.writeInt(userId);
-        parcel.writeString(username);
         parcel.writeString(title);
         parcel.writeString(caption);
         parcel.writeString(date);
@@ -103,5 +97,17 @@ public class Post implements Parcelable {
         parcel.writeParcelable(trainingSession,i);
     }
 
-
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id=" + id +
+                ", userId=" + userId +
+                ", title='" + title + '\'' +
+                ", caption='" + caption + '\'' +
+                ", date='" + date + '\'' +
+                ", likes=" + likes +
+                ", comments=" + comments +
+                ", trainingSession=" + trainingSession +
+                '}';
+    }
 }

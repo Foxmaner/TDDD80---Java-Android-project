@@ -83,7 +83,6 @@ public class AuthenticationHandler implements VolleyResponseListener<String>, Co
 
     @Override
     public void onResponse(String response) {
-        System.out.println(response);
         Intent myIntent = new Intent(activity, LoggedInActivity.class);
         //Convert the response with GSON.
         Gson gson = new Gson();

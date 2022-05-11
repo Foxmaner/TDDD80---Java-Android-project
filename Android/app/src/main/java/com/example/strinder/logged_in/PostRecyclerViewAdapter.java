@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -78,10 +79,9 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
                         Gson gson = new Gson();
                         TypeToken<List<User>> token = new TypeToken<List<User>>(){};
                         //The users that have liked the post.
-                        List<User> users = gson.fromJson(response, token.getType());
+                        List<User> likeUsers = gson.fromJson(response, token.getType());
 
-                        holder.likes.setText(String.format("You and %s other people have liked " +
-                                " this post",users.size() - 1));
+                        setLikeText(holder,likeUsers);
                     }
 
                     @Override
@@ -92,7 +92,7 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
                     }
                 }));
 
-
+        //Get the amount of likes.
         connection.sendStringJsonRequest("/post/get_likes/" + post.getId(), new JSONObject(),
                 Request.Method.GET, currentUser.getAccessToken(),
                 new VolleyResponseListener<String>() {
@@ -101,23 +101,9 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
                         Gson gson = new Gson();
                         TypeToken<List<User>> token = new TypeToken<List<User>>(){};
                         //The users that have liked the post.
-                        List<User> users = gson.fromJson(response, token.getType());
+                        List<User> likeUsers = gson.fromJson(response, token.getType());
 
-
-                        String text;
-                        int likes = users.size();
-                        if(users.contains(currentUser)) {
-                            likes--;
-
-                            text = String.format("You and %s other people have liked " +
-                                    " this post", likes);
-                        }
-                        else {
-                            text = String.format("%s people have liked" +
-                                    " this post", likes);
-                        }
-
-                        holder.likes.setText(text);
+                        setLikeText(holder,likeUsers);
                     }
 
                     @Override
@@ -138,7 +124,6 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
                 .into(holder.profileImage);
 
 
-
         holder.postCaptionView.setText(post.getCaption());
         holder.postTitleView.setText(post.getTitle());
         holder.postDate.setText(post.getDate());
@@ -152,6 +137,26 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
 
         }
 
+    }
+
+    private void setLikeText(final PostRecyclerViewAdapter.MyViewHolder holder,
+                             final List<User> users) {
+        String text;
+
+        int likes = users.size();
+        if(users.contains(currentUser)) {
+            likes--;
+            text = String.format("You and %s other people have liked " +
+                    " this post", likes);
+            DrawableCompat.setTint(holder.likeButton.getDrawable(),context.getColor(R.color.liked));
+        }
+        else {
+            text = String.format("%s people have liked" +
+                    " this post", likes);
+            DrawableCompat.setTint(holder.likeButton.getDrawable(),context.getColor(R.color.papaya));
+        }
+
+        holder.likes.setText(text);
     }
 
     @Override
@@ -187,7 +192,4 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
         }
     }
 
-    private void onLike(final View v) {
-
-    }
 }

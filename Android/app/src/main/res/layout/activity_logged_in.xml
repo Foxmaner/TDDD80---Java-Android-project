@@ -4,11 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".LoggedInActivity">
 
     <include
-        layout="@layout/toolbar"
-        android:id="@+id/toolbar"/>
+        android:id="@+id/toolbar"
+        layout="@layout/toolbar" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navBar"
@@ -36,6 +37,7 @@
         android:name="com.example.strinder.logged_in.HomeFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:background="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/navBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -293,7 +293,13 @@ def like(post_id):
     post = Post.query.filter_by(id=post_id).first()
     user = User.query.filter_by(id=user_id).first()
     if post is not None and user is not None:
-        post.likes.append(user)
+
+        if user in post.likes:
+            post.likes.remove(user)
+        else:
+            post.likes.append(user)
+
+        db.session.commit()
         data = [user.to_dict_friends() for user in post.likes]
         return jsonify(data), 200
     else:

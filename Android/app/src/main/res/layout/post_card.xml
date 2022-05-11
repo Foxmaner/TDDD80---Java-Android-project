@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:background="#FFFFFF">
 
     <androidx.cardview.widget.CardView
         android:layout_width="0dp"
-        android:layout_height="420dp"
+        android:layout_height="wrap_content"
         app:cardBackgroundColor="#F4F3F3"
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
@@ -24,7 +25,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="382dp">
+            android:layout_height="match_parent">
 
             <ImageView
                 android:id="@+id/postCardProfileImage"
@@ -115,7 +116,6 @@
                 android:layout_height="0dp"
                 android:text="@string/placeholder"
                 android:textSize="10sp"
-                app:layout_constraintBottom_toTopOf="@+id/guideline32"
                 app:layout_constraintEnd_toStartOf="@+id/guideline46"
                 app:layout_constraintStart_toStartOf="@+id/guideline47"
                 app:layout_constraintTop_toTopOf="@+id/guideline31" />
@@ -157,7 +157,7 @@
                 android:id="@+id/timeLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Elapsed Time"
+                android:text="@string/elapsed_time"
                 android:textSize="8sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline51"
                 app:layout_constraintEnd_toStartOf="@+id/guideline54"
@@ -275,7 +275,7 @@
                 android:layout_height="0dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/likeDescription"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/guideline37"
                 app:layout_constraintEnd_toStartOf="@+id/guideline58"
                 app:layout_constraintStart_toStartOf="@+id/guideline47"
                 app:layout_constraintTop_toTopOf="@+id/guideline59"
@@ -287,7 +287,7 @@
                 android:layout_height="0dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/contentDescription"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/guideline37"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline58"
                 app:layout_constraintTop_toTopOf="@+id/guideline59"
@@ -325,13 +325,6 @@
                 app:layout_constraintStart_toStartOf="@+id/guideline55"
                 app:layout_constraintTop_toTopOf="@+id/guideline51" />
 
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline32"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_end="272dp" />
-
             <TextView
                 android:id="@+id/postCardLikes"
                 android:layout_width="wrap_content"
@@ -343,6 +336,46 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/guideline47"
                 app:layout_constraintTop_toTopOf="@+id/guideline56" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline37"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="404dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline40"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="169dp" />
+
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/swipeContainer2"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline37">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/postCardComments"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

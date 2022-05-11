@@ -31,6 +31,7 @@ import com.example.strinder.backend_related.storage.DbxCompletionListener;
 import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.User;
+import com.example.strinder.logged_in.adapters.PostRecyclerViewAdapter;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;

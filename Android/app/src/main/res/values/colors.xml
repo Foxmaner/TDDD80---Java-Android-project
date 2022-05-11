@@ -10,5 +10,5 @@
     <color name="papaya">#E56717</color>
     <color name="carrot">#FFA500</color>
     <color name="standardText">#555555</color>
-    <color name="liked">#FF00A509</color>
+    <color name="selected">#FF00A509</color>
 </resources>

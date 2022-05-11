@@ -76,5 +76,7 @@
     <string name="likeDescription">Like the post.</string>
     <string name="contentDescription">Comment on the post.</string>
     <string name="likesPlaceholder">0 people have liked this post</string>
+    <string name="elapsed_time">Elapsed Time</string>
+    <string name="commentScrollDescription">The post\'s comments.</string>
 
 </resources>

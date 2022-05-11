@@ -1,4 +1,4 @@
-package com.example.strinder.logged_in;
+package com.example.strinder.logged_in.adapters;
 
 import android.content.Context;
 import android.util.Log;
@@ -7,12 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -69,7 +71,8 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
         else {
             user = users.get(position);
         }
-        //TODO Add removal of likes
+
+        //TODO Make this a method
         holder.likeButton.setOnClickListener(view ->
                 connection.sendStringJsonRequest("/post/like/" + post.getId(),
                         new JSONObject(), Request.Method.POST, currentUser.getAccessToken(),
@@ -91,7 +94,7 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
                                 Toast.LENGTH_SHORT).show();
                     }
                 }));
-
+        //TODO Make this a method
         //Get the amount of likes.
         connection.sendStringJsonRequest("/post/get_likes/" + post.getId(), new JSONObject(),
                 Request.Method.GET, currentUser.getAccessToken(),
@@ -127,13 +130,54 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
         holder.postCaptionView.setText(post.getCaption());
         holder.postTitleView.setText(post.getTitle());
         holder.postDate.setText(post.getDate());
+        holder.swipeRefreshLayout.setVisibility(View.GONE);
+
+        //TODO Make this a method
+        //Collapse / Expand view
+        holder.commentButton.setOnClickListener(view -> {
+            int viewMode = holder.swipeRefreshLayout.getVisibility();
+            if(viewMode == View.GONE) {
+                holder.swipeRefreshLayout.setVisibility(View.VISIBLE);
+                DrawableCompat.setTint(holder.commentButton.getDrawable(),
+                        context.getColor(R.color.selected));
+            }
+            else {
+                holder.swipeRefreshLayout.setVisibility(View.GONE);
+                DrawableCompat.setTint(holder.commentButton.getDrawable(),
+                        context.getColor(R.color.papaya));
+            }
+
+            //Send connection
+            connection.sendStringJsonRequest("/comments/" + post.getId(), new JSONObject(),
+                    Request.Method.GET, currentUser.getAccessToken(),
+                    new VolleyResponseListener<String>() {
+
+                        @Override
+                        public void onResponse(String response) {
+                            System.out.println(response);
+                            //TODO Add comments to the list.
+
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                            Log.e("Error Fetching Comments", "Failed to fetch" +
+                                            " comments for post " + post.getId());
+
+                            Toast.makeText(context,"Failed to fetch comments.",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        });
+
 
         if (session != null) {
             holder.postExercise.setText(session.getExercise());
             holder.postDistanceValueView.setText(String.format("%s %s", session.getDistance(),
                     session.getDistanceUnit()));
             holder.postTimeValueView.setText(session.getElapsedTime());
-            holder.postSpeedValueView.setText(String.format("%s %s", session.getSpeed(), session.getSpeedUnit()));
+            holder.postSpeedValueView.setText(String.format("%s %s", session.getSpeed(),
+                    session.getSpeedUnit()));
 
         }
 
@@ -148,12 +192,14 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
             likes--;
             text = String.format("You and %s other people have liked " +
                     " this post", likes);
-            DrawableCompat.setTint(holder.likeButton.getDrawable(),context.getColor(R.color.liked));
+            DrawableCompat.setTint(holder.likeButton.getDrawable(),
+                    context.getColor(R.color.selected));
         }
         else {
             text = String.format("%s people have liked" +
                     " this post", likes);
-            DrawableCompat.setTint(holder.likeButton.getDrawable(),context.getColor(R.color.papaya));
+            DrawableCompat.setTint(holder.likeButton.getDrawable(),
+                    context.getColor(R.color.papaya));
         }
 
         holder.likes.setText(text);
@@ -170,6 +216,8 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
         private final ImageView profileImage;
         private final ImageButton likeButton;
         private final ImageButton commentButton;
+        private final RecyclerView comments;
+        private final SwipeRefreshLayout swipeRefreshLayout;
 
 
         public MyViewHolder(@NonNull View itemView) {
@@ -187,7 +235,8 @@ public class PostRecyclerViewAdapter extends RecyclerView.Adapter<PostRecyclerVi
             likeButton = itemView.findViewById(R.id.likeButton);
             commentButton = itemView.findViewById(R.id.commentButton);
             likes = itemView.findViewById(R.id.postCardLikes);
-
+            comments = itemView.findViewById(R.id.postCardComments);
+            swipeRefreshLayout = itemView.findViewById(R.id.swipeContainer2);
 
         }
     }

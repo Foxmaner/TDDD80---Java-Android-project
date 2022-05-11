@@ -121,7 +121,7 @@ public class LoggedInActivity extends AppCompatActivity {
             }
             else if (id == R.id.messages) {
                 fragment = new MessagesFragment();
-                setHeaderText(getString(R.string.navbar_messages));
+                setHeaderText(getString(R.string.navbar_notifications));
             }
             else if (id == R.id.profile) {
                 fragment = ProfileFragment.newInstance(account);

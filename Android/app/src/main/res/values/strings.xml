@@ -10,12 +10,11 @@
     <string name="navbar_plus">Add</string>
     <string name="navbar_friends">Friends</string>
     <string name="navbar_profile">Profile</string>
-    <string name="navbar_messages">Messages</string>
+    <string name="navbar_notifications">Notifications</string>
     <string name="camera_desc">Take picture.</string>
     <string name="profile_desc">Your profile image.</string>
     <string name="upload_desc">Upload image from device.</string>
     <string name="placeholder">Placeholder</string>
-    <string name="notifications">Notifications</string>
     <string name="settings">Settings</string>
 
     <!-- Settings -->
@@ -76,6 +75,6 @@
     <string name="activityDescription">The activity map.</string>
     <string name="likeDescription">Like the post.</string>
     <string name="contentDescription">Comment on the post.</string>
-    <string name="likesPlaceholder">0 people have likes this post</string>
+    <string name="likesPlaceholder">0 people have liked this post</string>
 
 </resources>

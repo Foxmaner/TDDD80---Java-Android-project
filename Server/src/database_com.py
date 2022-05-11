@@ -129,7 +129,7 @@ class Comment(db.Model):
     __tablename__ = "Comment"
     id = db.Column(db.Integer, primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
-    text = db.Column(db.String(140), nullable=False)
+    text = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
     # Many people can like a comment, and comments can have many likes.
     likes = db.relationship("User", secondary=liked_comments_table, back_populates="liked_comments")

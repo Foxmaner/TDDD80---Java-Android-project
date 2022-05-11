@@ -182,7 +182,6 @@ def logout():
 @app.route("/user/set_data", methods=["POST"])
 @jwt_required()
 def set_data():
-   
     json_data = request.get_json()
     if json_data is None:
         return "", 400
@@ -283,7 +282,6 @@ def add_comment(post_id):
 @app.route("/post/like/<post_id>", methods=["POST"])
 @jwt_required()
 def like(post_id):
-
     try:
         post_id = int(post_id)
         user_id = int(get_jwt_identity())
@@ -411,14 +409,13 @@ def get_posts(nr_of_posts):
     return data, 200
 
 
-@app.route("/comments/<post_id>/<nr_of_comments>", methods=["GET"])
+@app.route("/comments/<post_id>", methods=["GET"])
 @jwt_required()
-def get_comments(post_id, nr_of_comments):
-    """Fetch selected nr of comments. -1 = ALL."""
+def get_comments(post_id):
+    """Fetch all comments for a specific post. """
 
     try:
         post_id = int(post_id)
-        nr_of_comments = int(nr_of_comments)
 
     except(ValueError, TypeError):
         return "", 400
@@ -427,16 +424,11 @@ def get_comments(post_id, nr_of_comments):
 
     if post is not None:
 
-        if nr_of_comments == -1:
-            comments = [comment.to_dict() for comment in post.comments[:]]
-        elif nr_of_comments >= 0:
-            comments = [comment.to_dict() for comment in post.comments[:nr_of_comments]]
-        else:
-            return "", 400
+        comments = [comment.to_dict() for comment in post.comments[:]]
+
+        return jsonify(comments), 400
     else:
         return "", 400
-
-    return jsonify(comments), 200
 
 
 @app.route("/friends/<user_id>/<nr_of_friends>", methods=["GET"])

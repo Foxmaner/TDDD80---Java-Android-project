@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
@@ -155,5 +156,19 @@ public class FriendsFragment extends Fragment implements VolleyResponseListener<
     public void onError(VolleyError error) {
         System.out.println("Error!!");
         System.out.println(error.toString());
+
+        View v = this.getView();
+        TextView textFriendName = (TextView) v.findViewById(R.id.userCardName);
+        TextView textFriendBio = (TextView) v.findViewById(R.id.userCardBio);
+        ImageView imageFriend = (ImageView) v.findViewById(R.id.friendImage);
+
+
+
+
+        textFriendName.setText("Cant find user");
+        textFriendBio.setText("");
+        imageFriend.setImageDrawable(null);
+
+
     }
 }

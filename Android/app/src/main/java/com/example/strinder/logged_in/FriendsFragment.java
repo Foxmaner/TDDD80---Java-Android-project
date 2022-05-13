@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
@@ -18,6 +19,10 @@ import com.example.strinder.R;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.User;
+import com.google.gson.Gson;
+import com.squareup.picasso.MemoryPolicy;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONObject;
 
@@ -118,6 +123,32 @@ public class FriendsFragment extends Fragment implements VolleyResponseListener<
     public void onResponse(String response) {
         System.out.println("Svar!!");
         System.out.println(response.toString());
+        View v = this.getView();
+        TextView textFriendName = (TextView) v.findViewById(R.id.userCardName);
+        TextView textFriendBio = (TextView) v.findViewById(R.id.userCardBio);
+        ImageView imageFriend = (ImageView) v.findViewById(R.id.friendImage);
+        Gson gson = new Gson();
+
+        User friend = gson.fromJson(response,User.class);
+
+        textFriendName.setText(friend.getFirstName().toString() + " " + friend.getLastName());
+        textFriendBio.setText(friend.getBiography().toString());
+
+        if(user.getPhotoUrl() != null) {
+            //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
+            if(getActivity() != null) {
+                Picasso.with(getActivity().getApplicationContext()).
+                        invalidate("https://www.dropbox.com/s/g3ybnjebb26s51t/"+
+                                user.getUsername()+".png?raw=1");
+            }
+            Picasso.with(getActivity()).load(friend.getPhotoUrl())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .networkPolicy(NetworkPolicy.NO_CACHE)
+                    .placeholder(android.R.drawable.sym_def_app_icon)
+                    .error(android.R.drawable.sym_def_app_icon)
+                    .into(imageFriend);
+        }
+
     }
 
     @Override

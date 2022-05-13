@@ -1,13 +1,16 @@
 package com.example.strinder.logged_in;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,9 +19,11 @@ import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
+import com.example.strinder.LoggedInActivity;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
 import com.google.gson.Gson;
 import com.squareup.picasso.MemoryPolicy;
@@ -106,6 +111,23 @@ public class FriendsFragment extends Fragment implements VolleyResponseListener<
                     return handled;
                 }
             });
+
+            ImageButton addFriendButton = (ImageButton) v.findViewById(R.id.buttonFriendAdd);
+            ImageButton messageFriendButton = (ImageButton) v.findViewById(R.id.buttonFriendMessage);
+            addFriendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    addFriend();
+                }
+            });
+
+            messageFriendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    System.out.println("MessageFriend");
+                }
+            });
+
         }
 
 
@@ -135,6 +157,10 @@ public class FriendsFragment extends Fragment implements VolleyResponseListener<
         textFriendName.setText(friend.getFirstName().toString() + " " + friend.getLastName());
         textFriendBio.setText(friend.getBiography().toString());
 
+        ImageButton addFriendButton = (ImageButton) v.findViewById(R.id.buttonFriendAdd);
+        ImageButton messageFriendButton = (ImageButton) v.findViewById(R.id.buttonFriendMessage);
+        addFriendButton.setVisibility(View.VISIBLE);
+        messageFriendButton.setVisibility(View.VISIBLE);
         if(user.getPhotoUrl() != null) {
             //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
             if(getActivity() != null) {
@@ -161,14 +187,38 @@ public class FriendsFragment extends Fragment implements VolleyResponseListener<
         TextView textFriendName = (TextView) v.findViewById(R.id.userCardName);
         TextView textFriendBio = (TextView) v.findViewById(R.id.userCardBio);
         ImageView imageFriend = (ImageView) v.findViewById(R.id.friendImage);
-
-
+        ImageButton addFriendButton = (ImageButton) v.findViewById(R.id.buttonFriendAdd);
+        ImageButton messageFriendButton = (ImageButton) v.findViewById(R.id.buttonFriendMessage);
 
 
         textFriendName.setText("Cant find user");
         textFriendBio.setText("");
         imageFriend.setImageDrawable(null);
+        addFriendButton.setVisibility(View.INVISIBLE);
+        messageFriendButton.setVisibility(View.INVISIBLE);
 
 
+    }
+
+    public void addFriend(){
+        ServerConnection connection = new ServerConnection(this.getContext());
+        EditText searchFriendText = (EditText)this.getView().findViewById(R.id.searchFriendText);
+        String friendID = searchFriendText.getText().toString();
+        connection.sendStringJsonRequest("/befriend/" + friendID,
+                new JSONObject(),
+                Request.Method.GET, user.getAccessToken(),  new VolleyResponseListener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        System.out.println("lyckad att befrienda");
+                        System.out.println(response);
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        System.out.println("misslyckad befriend");
+                        System.out.println(error);
+                    }
+                    });
+        return;
     }
 }

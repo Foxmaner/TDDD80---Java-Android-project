@@ -20,11 +20,12 @@
         android:id="@+id/userCardName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/userCardBio"
+        app:layout_constraintBottom_toTopOf="@+id/buttonFriendAdd"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/friendImage" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.23000002" />
 
     <TextView
         android:id="@+id/userCardBio"
@@ -33,5 +34,38 @@
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/friendImage" />
+        app:layout_constraintStart_toStartOf="@+id/friendImage"
+        app:layout_constraintTop_toBottomOf="@+id/userCardName"
+        app:layout_constraintVertical_bias="0.47000003" />
+
+    <ImageButton
+        android:id="@+id/buttonFriendMessage"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="#FFFFFF"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline35"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/friendImage"
+        app:srcCompat="@drawable/ic_baseline_message_24" />
+
+    <ImageButton
+        android:id="@+id/buttonFriendAdd"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="#FFFFFF"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline35"
+        app:layout_constraintTop_toBottomOf="@+id/friendImage"
+        app:srcCompat="@drawable/ic_baseline_person_add_24" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline35"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_begin="200dp" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

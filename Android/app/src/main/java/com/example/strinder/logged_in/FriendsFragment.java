@@ -12,14 +12,21 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.Request;
+import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.database.ServerConnection;
+import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.tables.User;
+
+import org.json.JSONObject;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link FriendsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FriendsFragment extends Fragment {
+public class FriendsFragment extends Fragment implements VolleyResponseListener<String> {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -32,6 +39,8 @@ public class FriendsFragment extends Fragment {
 
     private EditText searchFriendText;
 
+    private User user;
+
     public FriendsFragment() {
         // Required empty public constructor
     }
@@ -40,17 +49,15 @@ public class FriendsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     *
      * @return A new instance of fragment FriendsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static FriendsFragment newInstance(String param1, String param2) {
+    public static FriendsFragment newInstance(final User user) {
         FriendsFragment fragment = new FriendsFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("account",user);
+        fragment.setArguments(bundle);
         return fragment;
     }
 
@@ -68,22 +75,54 @@ public class FriendsFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View v  = inflater.inflate(R.layout.fragment_friends, container, false);
-        EditText searchFriendText = (EditText)v.findViewById(R.id.searchFriendText);
-        searchFriendText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                boolean handled = false;
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    // When you have pressed "done/enter" on keyboard"
-                    //Closes keyboard
-                    InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
-                    handled = true;
+
+        Bundle bundle = getArguments();
+        if(bundle != null) {
+            user =  bundle.getParcelable("account");
+
+            EditText searchFriendText = (EditText)v.findViewById(R.id.searchFriendText);
+            searchFriendText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+                @Override
+                public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                    boolean handled = false;
+                    if (actionId == EditorInfo.IME_ACTION_DONE) {
+                        // When you have pressed "done/enter" on keyboard"
+                        ServerConnection connection = new ServerConnection(v.getContext());
+                        String userID = searchFriendText.getText().toString();
+                        fetchUser(connection,userID);
+
+
+                        //Closes keyboard
+                        InputMethodManager imm = (InputMethodManager) v.getContext().getSystemService(getActivity().INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                        handled = true;
+                    }
+                    return handled;
                 }
-                return handled;
-            }
-        });
+            });
+        }
+
+
 
         return v;
+    }
+
+    public void fetchUser(final ServerConnection connection, final String userID) {
+        connection.sendStringJsonRequest("/user/get_data/" + userID,
+                new JSONObject(),
+                Request.Method.GET, user.getAccessToken(), this);
+
+    }
+
+    @Override
+    public void onResponse(String response) {
+        System.out.println("Svar!!");
+        System.out.println(response.toString());
+    }
+
+    @Override
+    public void onError(VolleyError error) {
+        System.out.println("Error!!");
+        System.out.println(error.toString());
     }
 }

@@ -110,7 +110,7 @@ public class LoggedInActivity extends AppCompatActivity {
                 setHeaderText(getString(R.string.navbar_home));
             }
             else if (id == R.id.friends) {
-                fragment = new FriendsFragment();
+                fragment = FriendsFragment.newInstance(account);
                 setHeaderText(getString(R.string.navbar_friends));
             }
             else if (id == R.id.plus) {

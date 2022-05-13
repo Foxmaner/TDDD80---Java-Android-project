@@ -19,7 +19,7 @@ import com.example.strinder.R;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.logged_in.adapters.PostRecyclerViewAdapter;
+import com.example.strinder.logged_in.adapters.PostAdapter;
 import com.google.gson.Gson;
 
 import org.json.JSONObject;
@@ -104,7 +104,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         FetchedPosts fetchedPosts = gson.fromJson(response,
                 FetchedPosts.class);
 
-        PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(getContext(),
+        PostAdapter adapter = new PostAdapter(getContext(),
                 fetchedPosts.getPosts(), fetchedPosts.getUsers(),user);
 
         recyclerView.setAdapter(adapter);

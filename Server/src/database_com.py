@@ -39,10 +39,6 @@ liked_posts_table = db.Table("liked_posts",
                              db.Column("user_id", db.Integer, db.ForeignKey("User.id"), primary_key=True),
                              db.Column("post_id", db.Integer, db.ForeignKey("Post.id"), primary_key=True))
 
-liked_comments_table = db.Table("liked_comments",
-                                db.Column("user_id", db.Integer, db.ForeignKey("User.id"), primary_key=True),
-                                db.Column("comment_id", db.Integer, db.ForeignKey("Comment.id"), primary_key=True))
-
 
 class User(db.Model):
     __tablename__ = "User"
@@ -62,8 +58,8 @@ class User(db.Model):
                               secondaryjoin=id == friend_to_friend.c.friend_id)
 
     posts = db.relationship("Post", backref="user", lazy=True)
+    # We don't really need a many to many here at the moment, but maybe if development continues.
     liked_posts = db.relationship("Post", secondary=liked_posts_table, back_populates="likes")
-    liked_comments = db.relationship("Comment", secondary=liked_comments_table, back_populates="likes")
 
     def to_dict(self):
         formatted = None
@@ -131,12 +127,9 @@ class Comment(db.Model):
     post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
     text = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
-    # Many people can like a comment, and comments can have many likes.
-    likes = db.relationship("User", secondary=liked_comments_table, back_populates="liked_comments")
 
     def to_dict(self):
-        return {"id": self.id, "postId": self.post_id, "text": self.text, "userId": self.user_id,
-                "likes": self.likes}
+        return {"id": self.id, "postId": self.post_id, "text": self.text, "userId": self.user_id}
 
 
 class TokenBlocklist(db.Model):

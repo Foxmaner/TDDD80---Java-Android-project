@@ -25,7 +25,7 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/commentProfileImage"
+                android:id="@+id/commentCardProfileImage"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
@@ -45,7 +45,7 @@
                 app:layout_constraintGuide_begin="97dp" />
 
             <TextView
-                android:id="@+id/commentText"
+                android:id="@+id/commentCardText"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"

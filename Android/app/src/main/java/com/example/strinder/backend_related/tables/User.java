@@ -110,6 +110,7 @@ public class User implements Parcelable {
 
         ServerConnection connection = new ServerConnection(context);
         JSONObject object = new JSONObject();
+        //Upload the data that actually can change.
         try {
             object.put("photo_url",this.photoUrl == null ? JSONObject.NULL : this.photoUrl);
             object.put("first_name", this.firstName == null ? JSONObject.NULL : this.firstName);
@@ -193,7 +194,8 @@ public class User implements Parcelable {
         if (o == null || getClass() != o.getClass())
             return false;
         User user = (User) o;
-        return id == user.getId() && Objects.equals(firstName, user.getFirstName()) && Objects.equals(lastName, user.getLastName()) && username.equals(user.getUsername());
+        return id == user.getId() && Objects.equals(firstName, user.getFirstName()) &&
+                Objects.equals(lastName, user.getLastName()) && username.equals(user.getUsername());
     }
 
 }

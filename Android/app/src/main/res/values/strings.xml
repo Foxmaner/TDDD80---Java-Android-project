@@ -78,5 +78,7 @@
     <string name="likesPlaceholder">0 people have liked this post</string>
     <string name="elapsed_time">Elapsed Time</string>
     <string name="commentScrollDescription">The post\'s comments.</string>
+    <string name="add_comment">Add Comment</string>
+    <string name="addCommentPlaceholder">Enter your comment here</string>
 
 </resources>

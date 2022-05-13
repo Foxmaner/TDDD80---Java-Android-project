@@ -31,7 +31,7 @@ import com.example.strinder.backend_related.storage.DbxCompletionListener;
 import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.logged_in.adapters.PostRecyclerViewAdapter;
+import com.example.strinder.logged_in.adapters.PostAdapter;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -101,7 +101,7 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
             //The part that displays all the user's posts.
             RecyclerView recyclerView = v.findViewById(R.id.myPosts);
 
-            PostRecyclerViewAdapter adapter = new PostRecyclerViewAdapter(this.getContext(),
+            PostAdapter adapter = new PostAdapter(this.getContext(),
                     user.getPosts(), Collections.singletonList(user), user);
 
             recyclerView.setAdapter(adapter);

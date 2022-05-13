@@ -9,7 +9,6 @@ import java.util.List;
 public class Comment implements Parcelable {
     private final int id,userId,postId;
     private final String text;
-    private final List<User> likes;
 
     public Comment(final Parcel parcel) {
 
@@ -17,8 +16,6 @@ public class Comment implements Parcelable {
         userId = parcel.readInt();
         postId = parcel.readInt();
         text = parcel.readString();
-        likes = new ArrayList<>();
-        parcel.readList(likes,User.class.getClassLoader());
     }
 
     public int getId() {
@@ -35,10 +32,6 @@ public class Comment implements Parcelable {
 
     public String getText() {
         return text;
-    }
-
-    public List<User> getLikes() {
-        return likes;
     }
 
     public static final Creator<Comment> CREATOR = new Creator<Comment>() {
@@ -64,6 +57,5 @@ public class Comment implements Parcelable {
         parcel.writeInt(userId);
         parcel.writeInt(postId);
         parcel.writeString(text);
-        parcel.writeList(likes);
     }
 }

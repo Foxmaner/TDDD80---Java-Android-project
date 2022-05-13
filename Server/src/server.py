@@ -251,7 +251,7 @@ def add_friend(friend_id):
     return "", 400
 
 
-@app.route("/comment/add/<post_id>", methods=["POST"])
+@app.route("/comments/add/<post_id>", methods=["POST"])
 @jwt_required()
 def add_comment(post_id):
     """Adds a comment to a post. """
@@ -270,13 +270,13 @@ def add_comment(post_id):
             comment = Comment(post_id=post_id, text=post_data["text"], user_id=get_jwt_identity())
             post.comments.append(comment)
             db.session.commit()
+            return "", 200
+
         except KeyError:
             return "", 400
 
     else:
         return "", 400
-
-    return "", 200
 
 
 @app.route("/post/like/<post_id>", methods=["POST"])
@@ -413,7 +413,6 @@ def get_posts(nr_of_posts):
 @jwt_required()
 def get_comments(post_id):
     """Fetch all comments for a specific post. """
-
     try:
         post_id = int(post_id)
 
@@ -423,10 +422,9 @@ def get_comments(post_id):
     post = Post.query.filter_by(id=post_id).first()
 
     if post is not None:
+        comments = [comment.to_dict() for comment in post.comments]
 
-        comments = [comment.to_dict() for comment in post.comments[:]]
-
-        return jsonify(comments), 400
+        return jsonify(comments), 200
     else:
         return "", 400
 

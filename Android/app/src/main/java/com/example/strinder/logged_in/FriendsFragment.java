@@ -206,17 +206,22 @@ public class FriendsFragment extends Fragment implements VolleyResponseListener<
         String friendID = searchFriendText.getText().toString();
         connection.sendStringJsonRequest("/befriend/" + friendID,
                 new JSONObject(),
-                Request.Method.GET, user.getAccessToken(),  new VolleyResponseListener<String>() {
+                Request.Method.POST, user.getAccessToken(),  new VolleyResponseListener<String>() {
                     @Override
                     public void onResponse(String response) {
                         System.out.println("lyckad att befrienda");
                         System.out.println(response);
+                        Toast.makeText(getView().getContext(),"Succeded to add friend",
+                                Toast.LENGTH_SHORT).show();
+
                     }
 
                     @Override
                     public void onError(VolleyError error) {
                         System.out.println("misslyckad befriend");
                         System.out.println(error);
+                        Toast.makeText(getView().getContext(),"Something went wrong. Failed to add friend.",
+                                Toast.LENGTH_SHORT).show();
                     }
                     });
         return;

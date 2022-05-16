@@ -241,20 +241,6 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_begin="250dp" />
 
-            <ImageView
-                android:id="@+id/postCardMap"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:adjustViewBounds="true"
-                android:contentDescription="@string/activityDescription"
-                android:paddingTop="10dp"
-                android:scaleType="centerCrop"
-                app:layout_constraintBottom_toTopOf="@+id/guideline56"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="@+id/guideline47"
-                app:layout_constraintTop_toTopOf="@+id/guideline50"
-                app:srcCompat="@drawable/login_pic" />
-
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline56"
                 android:layout_width="wrap_content"
@@ -331,7 +317,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/likesPlaceholder"
-                android:textSize="10sp"
+                android:textSize="11sp"
                 app:layout_constraintBottom_toTopOf="@+id/guideline59"
                 app:layout_constraintEnd_toStartOf="@+id/guideline54"
                 app:layout_constraintHorizontal_bias="0.0"
@@ -345,6 +331,16 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="404dp" />
 
+            <fragment
+                android:id="@+id/map"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/guideline56"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guideline50"
+                tools:context=".logged_in.MapsFragment" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

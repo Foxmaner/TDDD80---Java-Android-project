@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -24,6 +25,12 @@ import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.CommentFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -68,9 +75,35 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
         //In case we know that all posts belong to one individual. The profile is one such case.
         if (users.size() == 1 && users.get(0).equals(currentUser)) {
             user = users.get(0);
-        } else {
+        }
+        else {
             user = users.get(position);
         }
+
+        //Set Map position
+
+        SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.map);
+
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(new OnMapReadyCallback() {
+
+                @Override
+                public void onMapReady(@NonNull GoogleMap googleMap) {
+
+
+                    // Add a marker in Sydney and move the camera
+                    LatLng sydney = new LatLng(-34, 151);
+                    googleMap.addMarker(new MarkerOptions()
+                            .position(sydney)
+                            .title("Marker in Sydney"));
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+                    //Make it so that the user can't move around in the map window.
+                    googleMap.getUiSettings().setScrollGesturesEnabled(false);
+
+                }
+            });
+        }
+
 
         //Set onLike listener
         holder.getLikeButton().setOnClickListener(view ->
@@ -116,9 +149,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
         //Collapse / Expand view
         holder.getCommentButton().setOnClickListener(view -> {
-            CommentFragment fragment = CommentFragment.newInstance(currentUser,post,position);
+            CommentFragment commentFragment = CommentFragment.newInstance(currentUser,post,position);
             manager.beginTransaction().replace(R.id.loggedInView,
-                    fragment).commit();
+                    commentFragment).commit();
         });
 
 
@@ -265,6 +298,7 @@ class PostViewHolder extends RecyclerView.ViewHolder {
     public ImageButton getCommentButton() {
         return commentButton;
     }
+
 }
 
 

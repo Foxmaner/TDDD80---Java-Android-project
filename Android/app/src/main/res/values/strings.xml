@@ -85,5 +85,8 @@
     <string name="addFriendButtonDescription">Add this friend.</string>
     <string name="friendProfileImageDescription">The user\'\'s profile image.</string>
     <string name="unknown">Unknown</string>
+    <string name="users_that_you_follow">Users That You Follow:</string>
+    <string name="search_for_user">Search For User</string>
+    <string name="searchResult">Your Search Gave The Following Result:</string>
 
 </resources>

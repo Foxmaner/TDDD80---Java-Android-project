@@ -1,16 +1,16 @@
+import os
 import traceback
-
-from flask import jsonify, request
-from sqlalchemy import desc
 from datetime import timedelta, datetime, timezone
 
-from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingSession
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
+from flask import jsonify, request
 from flask_bcrypt import Bcrypt
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
 from flask_jwt_extended import get_jwt_identity
-from google.oauth2 import id_token
 from google.auth.transport import requests
-import os
+from google.oauth2 import id_token
+from sqlalchemy import desc
+
+from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingSession
 
 bcrypt = Bcrypt(app)
 
@@ -47,10 +47,10 @@ def authenticate():
             # ID token is valid. Get the user's Google Account ID and other information.
             username = info["sub"]
             email = info["email"]
-            first_name = None
+            first_name = ""
             if "given_name" in info:
                 first_name = info["given_name"]
-            last_name = None
+            last_name = ""
             if "family_name" in info:
                 last_name = info["family_name"]
             photo_url = None
@@ -78,6 +78,7 @@ def authenticate():
             token = create_access_token(identity=user.id)
             data = user.to_dict()
             data["accessToken"] = token
+            print(data)
             return data, 200
 
         else:
@@ -239,7 +240,7 @@ def add_friend(friend_id):
     friend = User.query.filter_by(id=friend_id).first()
     user = User.query.filter_by(id=user_id).first()
 
-    if user is not None and friend is not None and user != friend:
+    if user is not None and friend is not None and user != friend and friend not in user.friends:
         user.friends.append(friend)
         friend.friends.append(user)
 
@@ -302,6 +303,28 @@ def like(post_id):
         return jsonify(data), 200
     else:
         return "", 400
+
+
+@app.route("/befriend/remove/<friend_id>", methods=["POST"])
+@jwt_required()
+def remove_friend(friend_id):
+    try:
+        friend_id = int(friend_id)
+    except (ValueError, TypeError):
+        return "", 400
+
+    friend = User.query.filter_by(id=friend_id).first()
+    user = User.query.filter_by(id=get_jwt_identity()).first()
+
+    if friend is not None and user is not None and user in friend.friends \
+            and friend in user.friends:
+        friend.friends.remove(user)
+        user.friends.remove(friend)
+        
+        db.session.commit()
+        return "", 200
+
+    return "", 400
 
 
 # ------- GET -------- #
@@ -378,6 +401,25 @@ def get_user(user_id):
         return "", 400
 
 
+@app.route("/user/get_users/<full_name>")
+@jwt_required()
+def get_users_by_name(full_name):
+    try:
+        full_name = str(full_name)
+    except (ValueError, TypeError):
+        return "", 400
+    print(full_name)
+    users = User.query.filter(User.full_name.like("%" + full_name + "%")).all()
+
+    if users is not None:
+        # Convert User object to dictionary.
+        users = [user.to_dict_friends() for user in users]
+        print(users)
+        return jsonify(users), 200
+
+    return "", 400
+
+
 @app.route("/posts/latest/<nr_of_posts>", methods=["GET"])
 @jwt_required()
 def get_posts(nr_of_posts):
@@ -391,10 +433,10 @@ def get_posts(nr_of_posts):
 
     if nr_of_posts == -1:
         posts = [post.to_dict() for post in Post.query.
-                 order_by(desc(Post.date_time)).all()]
+            order_by(desc(Post.date_time)).all()]
     elif nr_of_posts >= 0:
         posts = [post.to_dict() for post in Post.query.
-                 order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
+            order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
     else:
         return "", 400
 

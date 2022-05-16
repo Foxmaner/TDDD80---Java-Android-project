@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext import hybrid
 from sqlalchemy.sql import func
 # Create app
 app = Flask(__name__)
@@ -73,11 +74,16 @@ class User(db.Model):
                 "posts": [post.to_dict() for post in self.posts]}
 
     def to_dict_friends(self):
-        return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name}
+        return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name,
+                "photoUrl" : self.photo_url}
 
     # Here the self.id is enough, because it is unique. Just in case we added two more clauses.
     def __eq__(self, other):
         return self.id == other.id and self.username == other.username and self.email == other.email
+
+    @hybrid.hybrid_property
+    def full_name(self):
+        return self.first_name + " " + self.last_name
 
 
 class Post(db.Model):

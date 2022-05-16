@@ -178,9 +178,9 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
     private void setCoreDetails(final View v) {
         //First and last name
         TextView firstLastName = v.findViewById(R.id.firstLastName);
-        firstLastName.setText(user.getFirstName() == null ? "Unknown" : user.getFirstName());
+        firstLastName.setText(user.getFirstName());
         firstLastName.append(" ");
-        firstLastName.append(user.getLastName() == null ? "Unknown" : user.getLastName());
+        firstLastName.append(user.getLastName());
 
         ImageView profileImage = v.findViewById(R.id.profileImage);
 
@@ -188,8 +188,7 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
             //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
             if(getActivity() != null) {
                 Picasso.with(getActivity().getApplicationContext()).
-                        invalidate("https://www.dropbox.com/s/g3ybnjebb26s51t/"+
-                                user.getUsername()+".png?raw=1");
+                        invalidate(DropBoxServices.getUserImagePath(user));
             }
             Picasso.with(getActivity()).load(user.getPhotoUrl())
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -213,12 +212,6 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
         else
             birthday.append("Unknown");
 
-        TextView userID = v.findViewById(R.id.userID);
-        userID.setText("User-id: ");
-        if(user.getId() != 0)
-            userID.append(String.valueOf(user.getId()));
-        else
-            userID.append("Unknown");
     }
 
     /** Handles what happens when you press the button with a camera on it */

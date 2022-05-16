@@ -59,8 +59,6 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
         if(users.size() > position) {
             User currentUser = users.get(position);
-            if(!currentUser.equals(user)) {
-                holder.getAddFriendButton().setVisibility(View.VISIBLE);
                 holder.getFriendName().setText(String.format("%s %s", currentUser.getFirstName(),
                         currentUser.getLastName()));
 
@@ -92,7 +90,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
                         addFriend(holder,currentUser);
                     }
                 });
-            }
+
 
         }
 
@@ -120,7 +118,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
     private void addFriend(final FollowViewHolder holder, final User currentUser){
         ServerConnection connection = new ServerConnection(context);
 
-        connection.sendStringJsonRequest("/befriend/" + currentUser.getId(),
+        connection.sendStringJsonRequest("/follow/" + currentUser.getId(),
                 new JSONObject(),
                 Request.Method.POST, user.getAccessToken(), new VolleyResponseListener<String>() {
                     @Override
@@ -146,7 +144,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
     }
 
     private void removeFriend(final FollowViewHolder holder, final User currentUser) {
-        connection.sendStringJsonRequest("/befriend/remove/" + currentUser.getId(),
+        connection.sendStringJsonRequest("/follow/remove/" + currentUser.getId(),
                 new JSONObject(),
                 Request.Method.POST, user.getAccessToken(), new VolleyResponseListener<String>() {
                     @Override

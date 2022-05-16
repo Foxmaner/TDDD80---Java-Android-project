@@ -222,7 +222,7 @@ def set_data():
     return "", 400
 
 
-@app.route("/befriend/<friend_id>", methods=["POST"])
+@app.route("/follow/<friend_id>", methods=["POST"])
 @jwt_required()
 def add_friend(friend_id):
     """Befriends two existing users. """
@@ -241,7 +241,6 @@ def add_friend(friend_id):
 
     if user is not None and friend is not None and user != friend and friend not in user.friends:
         user.friends.append(friend)
-        friend.friends.append(user)
 
         db.session.commit()
 
@@ -304,7 +303,7 @@ def like(post_id):
         return "", 400
 
 
-@app.route("/befriend/remove/<friend_id>", methods=["POST"])
+@app.route("/follow/remove/<friend_id>", methods=["POST"])
 @jwt_required()
 def remove_friend(friend_id):
     try:
@@ -315,9 +314,7 @@ def remove_friend(friend_id):
     friend = User.query.filter_by(id=friend_id).first()
     user = User.query.filter_by(id=get_jwt_identity()).first()
 
-    if friend is not None and user is not None and user in friend.friends \
-            and friend in user.friends:
-        friend.friends.remove(user)
+    if friend is not None and user is not None and friend in user.friends:
         user.friends.remove(friend)
 
         db.session.commit()
@@ -359,31 +356,6 @@ def get_data(user_id):
     return "", 400
 
 
-@app.route("/befriended/<user_id>/<friend_id>", methods=["GET"])
-@jwt_required()
-def are_friends(user_id, friend_id):
-    """ Returns true if the users are friends, false if not. """
-
-    try:
-        friend_id = int(friend_id)
-        user_id = int(user_id)
-    except (TypeError, ValueError):
-        return "", 400
-
-    # We check if friend_id and user_id are actual users.
-    friend = User.query.filter_by(id=friend_id).first()
-    user = User.query.filter_by(id=user_id).first()
-
-    if friend is not None and user is not None:
-        # Check if friend is in user's friend list.
-
-        result = friend.id in [friend.id for friend in user.friends]
-
-        return str(result), 200
-
-    return "", 400
-
-
 @app.route("/user/get_user/<user_id>")
 @jwt_required()
 def get_user(user_id):
@@ -403,15 +375,19 @@ def get_user(user_id):
 @app.route("/user/get_users/<full_name>")
 @jwt_required()
 def get_users_by_name(full_name):
+    """
+    Returns all the users that matches the given name, except
+    the logged-in user."""
     try:
         full_name = str(full_name)
     except (ValueError, TypeError):
         return "", 400
     print(full_name)
-    users = User.query.filter(User.full_name.like("%" + full_name + "%")).all()
+    users = User.query.filter(User.full_name.like("%" + full_name + "%"),
+                              User.id != get_jwt_identity()).all()
 
     if users is not None:
-        # Convert User object to dictionary.
+        # Convert User objects to dictionary.
         users = [user.to_dict_friends() for user in users]
         print(users)
         return jsonify(users), 200

@@ -122,8 +122,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     fragment).commit();
         });
 
-        if(!currentUser.equals(user)){
-            holder.deleteButton.setVisibility(View.INVISIBLE);
+        if(currentUser.equals(user)){
+            holder.deleteButton.setVisibility(View.VISIBLE);
+
+            holder.deleteButton.setOnClickListener(view ->
+                    connection.sendStringJsonRequest("/del/post/" + String.valueOf(post.getId()),
+                            new JSONObject(), Request.Method.DELETE, currentUser.getAccessToken(),
+                            new VolleyResponseListener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Toast.makeText(context, "Post removed",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onError(VolleyError error) {
+                                    Log.e("Like Post Error", "Error occurred when deleting post.");
+                                    Toast.makeText(context, "Failed to delete post.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                            }));
+
         }
 
 

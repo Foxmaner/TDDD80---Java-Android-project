@@ -351,6 +351,7 @@
                 android:layout_height="40dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:backgroundTint="#FFFFFF"
+                android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/guideline41"
                 app:layout_constraintEnd_toEndOf="@+id/postCardMap"
                 app:layout_constraintHorizontal_bias="0.82"

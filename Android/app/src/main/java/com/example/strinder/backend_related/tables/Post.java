@@ -3,8 +3,6 @@ package com.example.strinder.backend_related.tables;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.w3c.dom.Comment;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,7 +12,7 @@ public class Post implements Parcelable {
     private final String title,caption;
     private final String date;
     private final List<User> likes;
-    private final List<Comment> comments;
+    private List<Comment> comments;
     private TrainingSession trainingSession;
 
     public Post(final Parcel parcel) {
@@ -58,6 +56,10 @@ public class Post implements Parcelable {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public void setComments(final List<Comment> comments) {
+        this.comments = comments;
     }
 
     public TrainingSession getTrainingSession() {

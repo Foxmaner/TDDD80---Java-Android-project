@@ -10,12 +10,11 @@
     <string name="navbar_plus">Add</string>
     <string name="navbar_friends">Friends</string>
     <string name="navbar_profile">Profile</string>
-    <string name="navbar_messages">Messages</string>
+    <string name="navbar_notifications">Notifications</string>
     <string name="camera_desc">Take picture.</string>
     <string name="profile_desc">Your profile image.</string>
     <string name="upload_desc">Upload image from device.</string>
     <string name="placeholder">Placeholder</string>
-    <string name="notifications">Notifications</string>
     <string name="settings">Settings</string>
 
     <!-- Settings -->
@@ -52,12 +51,8 @@
     <string name="firstnamePlaceholder">Firstname</string>
     <string name="lastnamePlaceholder">Lastname</string>
     <string name="biographyPlaceholder">Biography</string>
-    <string name="profileImageDescription">The user\'s profile image.</string>
-    <string name="activityDescription">The activity map.</string>
-    <string name="likeDescription">Like the post.</string>
-    <string name="contentDescription">Comment on the post.</string>
     <string name="activityText">Activity</string>
-    <string name="likesPlaceholder">None have liked this yet</string>
+
     <!-- For the dropdown -->
     <string-array name="activities">
         <item>Run</item>
@@ -75,5 +70,17 @@
         <item>meter</item>
     </string-array>
 
+    <!--- Post -->
+    <string name="profileImageDescription">The user\'s profile image.</string>
+    <string name="activityDescription">The activity map.</string>
+    <string name="likeDescription">Like the post.</string>
+    <string name="contentDescription">Comment on the post.</string>
+    <string name="likesPlaceholder">0 people have liked this post</string>
+    <string name="elapsed_time">Elapsed Time</string>
+    <string name="commentScrollDescription">The post\'s comments.</string>
+    <string name="add_comment">Add Comment</string>
+    <string name="addCommentPlaceholder">Enter your comment here</string>
+    <string name="backButtonDescription">Returns you to the post</string>
+    <string name="noComments">Be the first to post a comment!</string>
 
 </resources>

@@ -43,7 +43,7 @@ public class LoggedInActivity extends AppCompatActivity {
         ActionBar bar =  getSupportActionBar();
 
         HomeFragment fragment;
-        fragment = HomeFragment.newInstance(account);
+        fragment = HomeFragment.newInstance(account,0);
 
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.loggedInView, fragment).commit();
@@ -106,7 +106,7 @@ public class LoggedInActivity extends AppCompatActivity {
             final int id = item.getItemId();
             //We can't convert this to a switch case due to the ids not being final.
             if (id == R.id.home) {
-                fragment = HomeFragment.newInstance(account);
+                fragment = HomeFragment.newInstance(account,0);
                 setHeaderText(getString(R.string.navbar_home));
             }
             else if (id == R.id.friends) {
@@ -121,7 +121,7 @@ public class LoggedInActivity extends AppCompatActivity {
             }
             else if (id == R.id.messages) {
                 fragment = new MessagesFragment();
-                setHeaderText(getString(R.string.navbar_messages));
+                setHeaderText(getString(R.string.navbar_notifications));
             }
             else if (id == R.id.profile) {
                 fragment = ProfileFragment.newInstance(account);

@@ -78,7 +78,6 @@ def authenticate():
             token = create_access_token(identity=user.id)
             data = user.to_dict()
             data["accessToken"] = token
-            print(data)
             return data, 200
 
         else:
@@ -320,7 +319,7 @@ def remove_friend(friend_id):
             and friend in user.friends:
         friend.friends.remove(user)
         user.friends.remove(friend)
-        
+
         db.session.commit()
         return "", 200
 
@@ -433,21 +432,32 @@ def get_posts(nr_of_posts):
 
     if nr_of_posts == -1:
         posts = [post.to_dict() for post in Post.query.
-            order_by(desc(Post.date_time)).all()]
+                 order_by(desc(Post.date_time)).all() if post.user_id]
     elif nr_of_posts >= 0:
         posts = [post.to_dict() for post in Post.query.
-            order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
+                 order_by(desc(Post.date_time)).limit(nr_of_posts).all()]
     else:
         return "", 400
 
     users = []
+    new_posts = []
+    # TODO This can surely be optimized (and simplified)
     for post in posts:
         user_id = post.get("userId")
         user = get_user(user_id)[0]
         if isinstance(user, dict):
-            users.append(user)
+            if user["id"] != get_jwt_identity():
+                for friend in user["friends"]:
+                    if friend["id"] == get_jwt_identity():
+                        print("Found one")
+                        users.append(user)
+                        new_posts.append(post)
+                        break
+            else:
+                users.append(user)
+                new_posts.append(post)
 
-    data = {"posts": posts, "users": users}
+    data = {"posts": new_posts, "users": users}
     return data, 200
 
 

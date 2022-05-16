@@ -445,7 +445,6 @@ def get_friends(user_id, nr_of_friends):
     if user is not None:
 
         if nr_of_friends == -1:
-            print([friend.to_dict() for friend in user.friends])
             friends = [friend.to_dict() for friend in user.friends]
 
         elif nr_of_friends >= 0:

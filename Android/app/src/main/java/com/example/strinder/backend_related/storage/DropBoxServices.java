@@ -142,7 +142,11 @@ public class DropBoxServices {
 
         thread.start();
 
+    }
 
+    public static String getUserImagePath(final User  user) {
+        return "https://www.dropbox.com/s/g3ybnjebb26s51t/"+
+                user.getUsername()+".png?raw=1";
     }
 
 }

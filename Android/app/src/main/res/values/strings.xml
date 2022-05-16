@@ -82,5 +82,8 @@
     <string name="addCommentPlaceholder">Enter your comment here</string>
     <string name="backButtonDescription">Returns you to the post</string>
     <string name="noComments">Be the first to post a comment!</string>
+    <string name="addFriendButtonDescription">Add this friend.</string>
+    <string name="friendProfileImageDescription">The user\'\'s profile image.</string>
+    <string name="unknown">Unknown</string>
 
 </resources>

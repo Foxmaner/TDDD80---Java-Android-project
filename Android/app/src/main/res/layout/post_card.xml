@@ -345,6 +345,19 @@
                 android:orientation="horizontal"
                 app:layout_constraintGuide_begin="404dp" />
 
+            <ImageButton
+                android:id="@+id/buttonDeletePost"
+                android:layout_width="48dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:backgroundTint="#FFFFFF"
+                app:layout_constraintBottom_toTopOf="@+id/guideline41"
+                app:layout_constraintEnd_toEndOf="@+id/postCardMap"
+                app:layout_constraintHorizontal_bias="0.82"
+                app:layout_constraintStart_toEndOf="@+id/postCardDate"
+                app:layout_constraintTop_toTopOf="@+id/postCardName"
+                app:srcCompat="@android:drawable/ic_menu_delete" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

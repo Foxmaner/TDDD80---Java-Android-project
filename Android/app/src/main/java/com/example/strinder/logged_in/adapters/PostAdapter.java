@@ -122,6 +122,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                     fragment).commit();
         });
 
+        if(!currentUser.equals(user)){
+            holder.deleteButton.setVisibility(View.INVISIBLE);
+        }
 
 
 
@@ -197,6 +200,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         private final ImageView profileImage;
         private final ImageButton likeButton;
         private final ImageButton commentButton;
+        private final ImageButton deleteButton;
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -213,6 +217,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likeButton = itemView.findViewById(R.id.likeButton);
             commentButton = itemView.findViewById(R.id.commentButton);
             likes = itemView.findViewById(R.id.postCardLikes);
+            deleteButton = itemView.findViewById(R.id.buttonDeletePost);
 
         }
     }

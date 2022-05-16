@@ -2,6 +2,7 @@ package com.example.strinder.backend_related.tables;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 

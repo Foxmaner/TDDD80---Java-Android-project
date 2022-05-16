@@ -102,7 +102,7 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
             RecyclerView recyclerView = v.findViewById(R.id.myPosts);
 
             PostAdapter adapter = new PostAdapter(this.getContext(),
-                    user.getPosts(), Collections.singletonList(user), user);
+                    user.getPosts(), Collections.singletonList(user), user,getParentFragmentManager());
 
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));

@@ -80,5 +80,7 @@
     <string name="commentScrollDescription">The post\'s comments.</string>
     <string name="add_comment">Add Comment</string>
     <string name="addCommentPlaceholder">Enter your comment here</string>
+    <string name="backButtonDescription">Returns you to the post</string>
+    <string name="noComments">Be the first to post a comment!</string>
 
 </resources>

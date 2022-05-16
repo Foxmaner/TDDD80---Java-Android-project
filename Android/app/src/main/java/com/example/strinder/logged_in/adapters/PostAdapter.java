@@ -5,7 +5,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,24 +12,22 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
-import com.example.strinder.backend_related.tables.Comment;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
+import com.example.strinder.logged_in.CommentFragment;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.List;
@@ -41,14 +38,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     private final List<User> users;
     private final User currentUser;
     private final ServerConnection connection;
-    private boolean isAtEndOfScroll = false;
+    private final FragmentManager manager;
 
-    public PostAdapter(Context context, List<Post> posts, List<User> users,
-                       final User currentUser) {
+    public PostAdapter(final Context context, final List<Post> posts, final List<User> users,
+                       final User currentUser, final FragmentManager manager) {
         this.context = context;
         this.posts = posts;
         this.users = users;
         this.currentUser = currentUser;
+        this.manager = manager;
         connection = new ServerConnection(context);
     }
 
@@ -96,6 +94,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                                 Toast.makeText(context, "Failed to like post.",
                                         Toast.LENGTH_SHORT).show();
                             }
+
                         }));
 
 
@@ -111,72 +110,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 .error(android.R.drawable.sym_def_app_icon)
                 .into(holder.profileImage);
 
-
         holder.postCaptionView.setText(post.getCaption());
         holder.postTitleView.setText(post.getTitle());
         holder.postDate.setText(post.getDate());
 
         //Collapse / Expand view
         holder.commentButton.setOnClickListener(view -> {
-            int viewMode = holder.comments.getVisibility();
-            if (viewMode == View.GONE) {
-                holder.comments.setVisibility(View.VISIBLE);
-                holder.addComment.setVisibility(View.VISIBLE);
-                holder.newCommentText.setVisibility(View.VISIBLE);
-                DrawableCompat.setTint(holder.commentButton.getDrawable(),
-                        context.getColor(R.color.selected));
-            } else {
-                holder.comments.setVisibility(View.GONE);
-                holder.addComment.setVisibility(View.GONE);
-                holder.newCommentText.setVisibility(View.GONE);
-                DrawableCompat.setTint(holder.commentButton.getDrawable(),
-                        context.getColor(R.color.papaya));
-            }
 
-            fetchComments(post,holder);
-
+            CommentFragment fragment = CommentFragment.newInstance(currentUser,post,position);
+            manager.beginTransaction().replace(R.id.loggedInView,
+                    fragment).commit();
         });
 
-        //Add comment button listener
-        holder.addComment.setOnClickListener(view -> {
-            String commentText = holder.newCommentText.getText().toString();
 
-            //If empty, don't continue
-            if (commentText.isEmpty()) {
-                return;
-            }
-
-            JSONObject jsonObject = new JSONObject();
-            try {
-                jsonObject.put("text", commentText);
-            } catch (JSONException e) {
-                e.printStackTrace();
-                return;
-            }
-
-            connection.sendStringJsonRequest("/comments/add/" + post.getId(), jsonObject,
-                    Request.Method.POST, currentUser.getAccessToken(),
-                    new VolleyResponseListener<String>() {
-
-                        @Override
-                        public void onResponse(String response) {
-                            fetchComments(post,holder);
-
-                            Log.i("Add Comment Success", "Added comment to post " +
-                                    post.getId());
-                            Toast.makeText(context, "Successfully Added Comment!",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-
-                        @Override
-                        public void onError(VolleyError error) {
-                            Log.e("Add Comment Error", error.toString());
-                            Toast.makeText(context, "Failed to add your comment! Please" +
-                                            "try again!",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        });
 
 
         if (session != null) {
@@ -212,7 +158,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         holder.likes.setText(text);
     }
 
-    //TODO Comments do not work as intended...
     private void fetchLikes(final Post post, final PostViewHolder holder) {
 
         connection.sendStringJsonRequest("/post/get_likes/" + post.getId(), new JSONObject(),
@@ -239,65 +184,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
                 });
     }
 
-    private void fetchComments(final Post post, final PostViewHolder holder) {
-        //Send connection
-        connection.sendStringJsonRequest("/comments/" + post.getId(), new JSONObject(),
-                Request.Method.GET, currentUser.getAccessToken(),
-                new VolleyResponseListener<String>() {
-
-                    @Override
-                    public void onResponse(String response) {
-                        Gson gson = new Gson();
-                        TypeToken<List<Comment>> token = new TypeToken<List<Comment>>() {
-                        };
-                        post.setComments(gson.fromJson(response,token.getType()));
-
-                        CommentAdapter adapter = new CommentAdapter(context, post.getComments());
-
-                        holder.comments.setAdapter(adapter);
-                        holder.comments.setLayoutManager(new LinearLayoutManager(context));
-
-                        holder.comments.addOnScrollListener(new RecyclerView.OnScrollListener() {
-                            @Override
-                            public void onScrollStateChanged(@NonNull RecyclerView recyclerView,
-                                                             int newState) {
-                                super.onScrollStateChanged(recyclerView, newState);
-                                isAtEndOfScroll = !recyclerView.canScrollVertically(1) &&
-                                        !isAtEndOfScroll;
-
-                            }
-                        });
-
-                    }
-
-
-                    @Override
-                    public void onError(VolleyError error) {
-                        Log.e("Error Fetching Comments", "Failed to fetch" +
-                                " comments for post " + post.getId());
-
-                        Toast.makeText(context, "Failed to fetch comments.",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                });
-    }
 
     @Override
     public int getItemCount() {
         return posts.size();
     }
 
-    //TODO Make this NOT static!
+    //TODO Make this NOT static?
     public static class PostViewHolder extends RecyclerView.ViewHolder {
         private final TextView postExercise,postNameView,postCaptionView,postTitleView,
                 postDistanceValueView, postTimeValueView, postSpeedValueView, postDate,likes;
         private final ImageView profileImage;
         private final ImageButton likeButton;
         private final ImageButton commentButton;
-        private final RecyclerView comments;
-        private final TextView newCommentText;
-        private final Button addComment;
-
 
         public PostViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -314,9 +213,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likeButton = itemView.findViewById(R.id.likeButton);
             commentButton = itemView.findViewById(R.id.commentButton);
             likes = itemView.findViewById(R.id.postCardLikes);
-            comments = itemView.findViewById(R.id.postCardComments);
-            newCommentText = itemView.findViewById(R.id.postCardAddCommentText);
-            addComment = itemView.findViewById(R.id.postCardAddComment);
 
         }
     }

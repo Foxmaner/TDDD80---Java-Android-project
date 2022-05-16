@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -34,7 +33,6 @@ import org.json.JSONObject;
 public class HomeFragment extends Fragment implements VolleyResponseListener<String> {
 
     private SwipeRefreshLayout swipeContainer;
-    private Boolean isAtEndOfScroll = false;
     private RecyclerView recyclerView;
     private User user;
 
@@ -47,12 +45,12 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
      * this fragment using the provided parameters.
      * @return A new instance of fragment HomeFragment.
      */
-    // TODO: Rename and change types and number of parameters
-    public static HomeFragment newInstance(final User user) {
+    public static HomeFragment newInstance(final User user, final int location) {
         HomeFragment fragment = new HomeFragment();
 
         Bundle bundle = new Bundle();
         bundle.putParcelable("account",user);
+        bundle.putInt("postLocation",location);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -69,20 +67,26 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
         //fetchData();
         Bundle bundle = getArguments();
-        if(bundle != null) {
+        if(bundle != null && getContext() != null) {
             user =  bundle.getParcelable("account");
+            int postLocation = bundle.getInt("postLocation");
 
             ServerConnection connection = new ServerConnection(this.getContext());
             recyclerView = v.findViewById(R.id.homeFeedRecycleView);
+
             swipeContainer = v.findViewById(R.id.swipeContainer);
 
             // Setup refresh listener which triggers new data loading
             swipeContainer.setOnRefreshListener(() -> {
                 fetchData(connection);
-                Log.i("Refresh Home","Fetch data");
+                Log.i("Refresh Home","Refreshing Home, fetching new data.");
                 swipeContainer.setRefreshing(false);
             });
 
+            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+            recyclerView.setLayoutManager(layoutManager);
+
+            recyclerView.scrollToPosition(postLocation);
             fetchData(connection);
 
         }
@@ -105,22 +109,9 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                 FetchedPosts.class);
 
         PostAdapter adapter = new PostAdapter(getContext(),
-                fetchedPosts.getPosts(), fetchedPosts.getUsers(),user);
+                fetchedPosts.getPosts(), fetchedPosts.getUsers(),user,getParentFragmentManager());
 
         recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView,
-                                             int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-                isAtEndOfScroll = !recyclerView.canScrollVertically(1) &&
-                        !isAtEndOfScroll;
-
-            }
-        });
-
 
     }
 

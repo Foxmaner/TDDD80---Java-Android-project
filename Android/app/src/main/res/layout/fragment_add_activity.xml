@@ -24,63 +24,54 @@
         android:id="@+id/postActivity"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/postActivityText"
         android:minHeight="48dp"
+        android:popupBackground="@color/white"
         android:spinnerMode="dropdown"
         android:textColor="#555555"
-        android:popupBackground="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/guideline25"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline24" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline21"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="392dp" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline22"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_begin="14dp" />
 
     <EditText
         android:id="@+id/postTitle"
-        android:maxLength="40"
         android:layout_width="0dp"
         android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/title"
         android:inputType="textPersonName"
+        android:maxLength="40"
         android:textColor="@color/standardText"
         android:textColorHint="@color/standardText"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline23"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/postCaption"
         android:layout_width="0dp"
         android:layout_height="48dp"
-        android:maxLength="100"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/caption"
         android:inputType="textPersonName"
+        android:maxLength="100"
         android:textColor="@color/standardText"
         android:textColorHint="@color/standardText"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline24"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline23" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -112,8 +103,8 @@
         android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/guideline26"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline25" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -126,19 +117,21 @@
     <EditText
         android:id="@+id/postElapsedTime"
         android:layout_width="0dp"
-        android:maxLength="5"
         android:layout_height="48dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/elapsedTime"
         android:inputType="time"
+        android:maxLength="5"
         android:minHeight="48dp"
         android:textColor="@color/standardText"
         android:textColorHint="@color/standardText"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline27"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline26" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -152,6 +145,7 @@
         android:id="@+id/postSpeed"
         android:layout_width="0dp"
         android:layout_height="48dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
@@ -163,7 +157,7 @@
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
         app:layout_constraintEnd_toStartOf="@+id/guideline17"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/guideline27" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -175,27 +169,32 @@
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline17"
+        app:layout_constraintGuide_percent="0.5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="200dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintGuide_begin="200dp"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
         android:id="@+id/postDistance"
-        android:maxLength="5"
         android:layout_width="0dp"
         android:layout_height="48dp"
+        android:layout_marginStart="16dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/distance"
         android:inputType="numberDecimal"
+        android:maxLength="5"
         android:textColor="@color/standardText"
         android:textColorHint="@color/standardText"
         android:textSize="14sp"
         app:layout_constraintBottom_toTopOf="@+id/guideline28"
         app:layout_constraintEnd_toStartOf="@+id/guideline17"
-        app:layout_constraintStart_toStartOf="@+id/guideline22"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/postSpeed" />
 
     <androidx.constraintlayout.widget.Guideline
@@ -216,9 +215,10 @@
         android:id="@+id/postSpeedUnit"
         android:layout_width="0dp"
         android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/select_speed_unit"
         app:layout_constraintBottom_toTopOf="@+id/guideline13"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline17"
         app:layout_constraintTop_toTopOf="@+id/guideline27" />
 
@@ -226,9 +226,10 @@
         android:id="@+id/postDistanceUnit"
         android:layout_width="0dp"
         android:layout_height="48dp"
+        android:layout_marginEnd="16dp"
         android:contentDescription="@string/select_distance_unit"
         app:layout_constraintBottom_toTopOf="@+id/guideline28"
-        app:layout_constraintEnd_toStartOf="@+id/guideline21"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/guideline17"
         app:layout_constraintTop_toTopOf="@+id/guideline13" />
 

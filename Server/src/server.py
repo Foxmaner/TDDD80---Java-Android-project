@@ -108,7 +108,8 @@ def add_post():
 
         try:
             # Try to get post_data, if it fails we throw a 400 error code.
-            post = Post(user_id=user_id, title=post_data["title"], caption=post_data["caption"])
+            post = Post(user_id=user_id, title=post_data["title"], caption=post_data["caption"],
+                        longitude=post_data["longitude"], latitude=post_data["latitude"])
         except KeyError:
             return "", 400
 

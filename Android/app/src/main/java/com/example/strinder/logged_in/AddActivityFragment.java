@@ -1,5 +1,13 @@
 package com.example.strinder.logged_in;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +19,10 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
@@ -32,12 +44,17 @@ import org.json.JSONObject;
  * Use the {@link AddActivityFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddActivityFragment extends Fragment {
+public class AddActivityFragment extends Fragment implements LocationListener {
 
+    private static final int REQUEST = 112;
     private EditText title, caption,elapsedTime,distance,speed;
     private Spinner activities,speedUnit,distanceUnit;
     private ServerConnection connection;
     private User user;
+    private ActivityResultLauncher<Intent> activityResultLauncher;
+    private LocationManager locationManager;
+    private Location location;
+    private Button addPostButton;
 
 
     public AddActivityFragment() {
@@ -57,6 +74,25 @@ public class AddActivityFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if(getActivity() != null) {
+            locationManager = (LocationManager) getActivity().
+                    getSystemService(Context.LOCATION_SERVICE);
+
+            //Ask for permission if we don't have it.
+            String[] PERMISSIONS = {Manifest.permission.ACCESS_COARSE_LOCATION,
+                    Manifest.permission.ACCESS_FINE_LOCATION};
+
+            if (!hasPermissions(getActivity(), PERMISSIONS)) {
+                ActivityCompat.requestPermissions(getActivity(), PERMISSIONS, REQUEST );
+
+            }
+            else {
+                Log.i("Permission","Permission was not granted.");
+                //TODO Fix here
+            }
+
+        }
 
     }
 
@@ -85,7 +121,8 @@ public class AddActivityFragment extends Fragment {
             speed = view.findViewById(R.id.postSpeed);
             speedUnit = view.findViewById(R.id.postSpeedUnit);
 
-            Button addPostButton = view.findViewById(R.id.addPostButton);
+            addPostButton = view.findViewById(R.id.addPostButton);
+            addPostButton.setEnabled(false);
             addPostButton.setOnClickListener(this::onSubmit);
 
             ArrayAdapter<CharSequence> activityAdapter = ArrayAdapter.createFromResource(getContext(),
@@ -127,11 +164,17 @@ public class AddActivityFragment extends Fragment {
         if(isDataFormattedCorrect(postTitle,postCaption,postActivity,postDistance,postDistanceUnit,
                 postSpeed,postSpeedUnit,postElapsedTime)) {
 
+            //Get location data
+            double latitude = location.getLatitude();
+            double longitude = location.getLongitude();
+
             //The data is formatted correctly
             JSONObject object = new JSONObject();
             try {
                 object.put("title",postTitle);
                 object.put("caption",postCaption);
+                object.put("latitude",latitude);
+                object.put("longitude",longitude);
             }
             catch (JSONException e) {
                 e.printStackTrace();
@@ -139,6 +182,7 @@ public class AddActivityFragment extends Fragment {
 
             connection.sendStringJsonRequest("/post/add", object,
                     Request.Method.POST, user.getAccessToken(), new VolleyResponseListener<String>() {
+
                         @Override
                         public void onResponse(String response) {
                             Gson gson = new Gson();
@@ -164,6 +208,7 @@ public class AddActivityFragment extends Fragment {
                             connection.sendStringJsonRequest("/session/set", object,
                                     Request.Method.POST, user.getAccessToken(),
                                     new VolleyResponseListener<String>() {
+
                                         @Override
                                         public void onResponse(String response) {
                                             TrainingSession session = gson.fromJson(response,
@@ -232,6 +277,55 @@ public class AddActivityFragment extends Fragment {
                 && !postSpeedUnit.isEmpty() && !postElapsedTime.isEmpty() &&
                 postElapsedTime.matches("^\\d{2}:\\d{2}$");
     }
+
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) !=
+                        PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.i("GPS","Checking position of device.");
+        addPostButton.setEnabled(true);
+
+        this.location = location;
+    }
+
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (getActivity() != null && ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400,
+                    1, this);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getContext() != null && ContextCompat.checkSelfPermission(getContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+
+            locationManager.removeUpdates(this);
+        }
+    }
+
 
 
 }

@@ -27,8 +27,10 @@ import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.CommentFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
@@ -38,6 +40,7 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.util.List;
+import java.util.Map;
 
 public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private final Context context;
@@ -55,6 +58,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
         this.currentUser = currentUser;
         this.manager = manager;
         connection = new ServerConnection(context);
+
     }
 
     @NonNull
@@ -82,27 +86,29 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
         //Set Map position
 
-        SupportMapFragment mapFragment = (SupportMapFragment) manager.findFragmentById(R.id.map);
+        holder.getMapView().onCreate(null);
+        holder.getMapView().onResume();
 
-        if (mapFragment != null) {
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
+        holder.getMapView().getMapAsync(googleMap -> {
+            System.out.println("Test");
+            // Add a marker in Sydney and move the camera
+            LatLng pos = new LatLng(post.getLatitude(), post.getLongitude());
+            googleMap.addMarker(new MarkerOptions()
+                    .position(pos)
+                    .title("Exercise location"));
 
-                @Override
-                public void onMapReady(@NonNull GoogleMap googleMap) {
+            CameraPosition cameraPosition = new CameraPosition.Builder().
+                    target(pos).
+                    tilt(60).
+                    zoom(15).
+                    bearing(0).
+                    build();
 
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            //Make it so that the user can't move around in the map window.
+            googleMap.getUiSettings().setScrollGesturesEnabled(false);
 
-                    // Add a marker in Sydney and move the camera
-                    LatLng sydney = new LatLng(-34, 151);
-                    googleMap.addMarker(new MarkerOptions()
-                            .position(sydney)
-                            .title("Marker in Sydney"));
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
-                    //Make it so that the user can't move around in the map window.
-                    googleMap.getUiSettings().setScrollGesturesEnabled(false);
-
-                }
-            });
-        }
+        });
 
 
         //Set onLike listener
@@ -232,10 +238,9 @@ class PostViewHolder extends RecyclerView.ViewHolder {
     private final ImageView profileImage;
     private final ImageButton likeButton;
     private final ImageButton commentButton;
-
+    private final MapView mapView;
     public PostViewHolder(@NonNull View itemView) {
         super(itemView);
-
         postNameView = itemView.findViewById(R.id.postCardName);
         postDistanceValueView = itemView.findViewById(R.id.postCardDistance);
         postTimeValueView = itemView.findViewById(R.id.postCardTime);
@@ -248,7 +253,7 @@ class PostViewHolder extends RecyclerView.ViewHolder {
         likeButton = itemView.findViewById(R.id.likeButton);
         commentButton = itemView.findViewById(R.id.commentButton);
         likes = itemView.findViewById(R.id.postCardLikes);
-
+        mapView = itemView.findViewById(R.id.map);
     }
 
     public TextView getPostExercise() {
@@ -299,6 +304,9 @@ class PostViewHolder extends RecyclerView.ViewHolder {
         return commentButton;
     }
 
+    public MapView getMapView() {
+        return mapView;
+    }
 }
 
 

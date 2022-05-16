@@ -93,6 +93,8 @@ class Post(db.Model):
     title = db.Column(db.String(40), nullable=False)
     caption = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime, default=func.now(), nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
     # Here we need a relationship! We need to know which user liked what post.
     likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")
 
@@ -107,7 +109,8 @@ class Post(db.Model):
         return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption,
                 "likes": [user.to_dict_friends() for user in self.likes], "comments": [comment.to_dict() for
                                                                                        comment in self.comments],
-                "trainingSession": session, "date": self.date_time}
+                "trainingSession": session, "date": self.date_time, "latitude": self.latitude,
+                "longitude": self.longitude}
 
 
 class TrainingSession(db.Model):

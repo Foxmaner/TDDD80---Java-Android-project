@@ -116,7 +116,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         //Collapse / Expand view
         holder.commentButton.setOnClickListener(view -> {
-
+            
             CommentFragment fragment = CommentFragment.newInstance(currentUser,post,position);
             manager.beginTransaction().replace(R.id.loggedInView,
                     fragment).commit();

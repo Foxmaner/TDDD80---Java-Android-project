@@ -3,13 +3,11 @@ package com.example.strinder.logged_in;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -20,12 +18,10 @@ import androidx.fragment.app.Fragment;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.example.strinder.LoggedInActivity;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.storage.DropBoxServices;
-import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
 import com.google.gson.Gson;
 import com.squareup.picasso.MemoryPolicy;
@@ -106,7 +102,6 @@ public class FriendsFragment extends Fragment implements VolleyResponseListener<
         friendName = v.findViewById(R.id.userCardName);
         friendBiography  = v.findViewById(R.id.userCardBio);
         friendImage = v.findViewById(R.id.friendImage);
-
 
         return v;
     }

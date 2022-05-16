@@ -32,7 +32,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private final Context context;
     private final List<Post> posts;
     private final List<User> users;
@@ -53,7 +53,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                             int viewType) {
+                                                         int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.post_card, parent, false);
         return new PostViewHolder(view);
@@ -73,7 +73,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         }
 
         //Set onLike listener
-        holder.likeButton.setOnClickListener(view ->
+        holder.getLikeButton().setOnClickListener(view ->
                 connection.sendStringJsonRequest("/post/like/" + post.getId(),
                         new JSONObject(), Request.Method.POST, currentUser.getAccessToken(),
                         new VolleyResponseListener<String>() {
@@ -103,19 +103,19 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         TrainingSession session = post.getTrainingSession();
 
-        holder.postNameView.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+        holder.getPostNameView().setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
         //We do not want to reload the image.
         Picasso.with(context).load(user.getPhotoUrl())
                 .placeholder(android.R.drawable.sym_def_app_icon)
                 .error(android.R.drawable.sym_def_app_icon)
-                .into(holder.profileImage);
+                .into(holder.getProfileImage());
 
-        holder.postCaptionView.setText(post.getCaption());
-        holder.postTitleView.setText(post.getTitle());
-        holder.postDate.setText(post.getDate());
+        holder.getPostCaptionView().setText(post.getCaption());
+        holder.getPostTitleView().setText(post.getTitle());
+        holder.getPostDate().setText(post.getDate());
 
         //Collapse / Expand view
-        holder.commentButton.setOnClickListener(view -> {
+        holder.getCommentButton().setOnClickListener(view -> {
             CommentFragment fragment = CommentFragment.newInstance(currentUser,post,position);
             manager.beginTransaction().replace(R.id.loggedInView,
                     fragment).commit();
@@ -125,11 +125,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
 
         if (session != null) {
-            holder.postExercise.setText(session.getExercise());
-            holder.postDistanceValueView.setText(String.format("%s %s", session.getDistance(),
+            holder.getPostExercise().setText(session.getExercise());
+            holder.getPostDistanceValueView().setText(String.format("%s %s", session.getDistance(),
                     session.getDistanceUnit()));
-            holder.postTimeValueView.setText(session.getElapsedTime());
-            holder.postSpeedValueView.setText(String.format("%s %s", session.getSpeed(),
+            holder.getPostTimeValueView().setText(session.getElapsedTime());
+            holder.getPostSpeedValueView().setText(String.format("%s %s", session.getSpeed(),
                     session.getSpeedUnit()));
 
         }
@@ -145,16 +145,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likes--;
             text = String.format("You and %s other people have liked " +
                     " this post", likes);
-            DrawableCompat.setTint(holder.likeButton.getDrawable(),
+            DrawableCompat.setTint(holder.getLikeButton().getDrawable(),
                     context.getColor(R.color.selected));
-        } else {
+        }
+        else {
             text = String.format("%s people have liked" +
                     " this post", likes);
-            DrawableCompat.setTint(holder.likeButton.getDrawable(),
+            DrawableCompat.setTint(holder.getLikeButton().getDrawable(),
                     context.getColor(R.color.papaya));
         }
 
-        holder.likes.setText(text);
+        holder.getLikes().setText(text);
     }
 
     private void fetchLikes(final Post post, final PostViewHolder holder) {
@@ -189,31 +190,80 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return posts.size();
     }
 
-    //TODO Make this NOT static?
-    public static class PostViewHolder extends RecyclerView.ViewHolder {
-        private final TextView postExercise,postNameView,postCaptionView,postTitleView,
-                postDistanceValueView, postTimeValueView, postSpeedValueView, postDate,likes;
-        private final ImageView profileImage;
-        private final ImageButton likeButton;
-        private final ImageButton commentButton;
 
-        public PostViewHolder(@NonNull View itemView) {
-            super(itemView);
+}
 
-            postNameView = itemView.findViewById(R.id.postCardName);
-            postDistanceValueView = itemView.findViewById(R.id.postCardDistance);
-            postTimeValueView = itemView.findViewById(R.id.postCardTime);
-            postSpeedValueView = itemView.findViewById(R.id.postCardSpeed);
-            postCaptionView = itemView.findViewById(R.id.postCardCaption);
-            postTitleView = itemView.findViewById(R.id.postCardTitle);
-            postDate = itemView.findViewById(R.id.postCardDate);
-            profileImage = itemView.findViewById(R.id.postCardProfileImage);
-            postExercise = itemView.findViewById(R.id.postCardActivity);
-            likeButton = itemView.findViewById(R.id.likeButton);
-            commentButton = itemView.findViewById(R.id.commentButton);
-            likes = itemView.findViewById(R.id.postCardLikes);
+class PostViewHolder extends RecyclerView.ViewHolder {
+    private final TextView postExercise,postNameView,postCaptionView,postTitleView,
+            postDistanceValueView, postTimeValueView, postSpeedValueView, postDate,likes;
+    private final ImageView profileImage;
+    private final ImageButton likeButton;
+    private final ImageButton commentButton;
 
-        }
+    public PostViewHolder(@NonNull View itemView) {
+        super(itemView);
+
+        postNameView = itemView.findViewById(R.id.postCardName);
+        postDistanceValueView = itemView.findViewById(R.id.postCardDistance);
+        postTimeValueView = itemView.findViewById(R.id.postCardTime);
+        postSpeedValueView = itemView.findViewById(R.id.postCardSpeed);
+        postCaptionView = itemView.findViewById(R.id.postCardCaption);
+        postTitleView = itemView.findViewById(R.id.postCardTitle);
+        postDate = itemView.findViewById(R.id.postCardDate);
+        profileImage = itemView.findViewById(R.id.postCardProfileImage);
+        postExercise = itemView.findViewById(R.id.postCardActivity);
+        likeButton = itemView.findViewById(R.id.likeButton);
+        commentButton = itemView.findViewById(R.id.commentButton);
+        likes = itemView.findViewById(R.id.postCardLikes);
+
+    }
+
+    public TextView getPostExercise() {
+        return postExercise;
+    }
+
+    public TextView getPostNameView() {
+        return postNameView;
+    }
+
+    public TextView getPostCaptionView() {
+        return postCaptionView;
+    }
+
+    public TextView getPostTitleView() {
+        return postTitleView;
+    }
+
+    public TextView getPostDistanceValueView() {
+        return postDistanceValueView;
+    }
+
+    public TextView getPostTimeValueView() {
+        return postTimeValueView;
+    }
+
+    public TextView getPostSpeedValueView() {
+        return postSpeedValueView;
+    }
+
+    public TextView getPostDate() {
+        return postDate;
+    }
+
+    public TextView getLikes() {
+        return likes;
+    }
+
+    public ImageView getProfileImage() {
+        return profileImage;
+    }
+
+    public ImageButton getLikeButton() {
+        return likeButton;
+    }
+
+    public ImageButton getCommentButton() {
+        return commentButton;
     }
 }
 

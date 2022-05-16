@@ -74,7 +74,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
             ServerConnection connection = new ServerConnection(this.getContext());
             recyclerView = v.findViewById(R.id.homeFeedRecycleView);
 
-            swipeContainer = v.findViewById(R.id.swipeContainer);
+            swipeContainer = v.findViewById(R.id.homeSwipeContainer);
 
             // Setup refresh listener which triggers new data loading
             swipeContainer.setOnRefreshListener(() -> {

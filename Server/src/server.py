@@ -475,7 +475,7 @@ def remove_user(user_id):
 def remove_post(post_id):
     post = Post.query.filter_by(id=post_id)
 
-    if post.first() is not None and post.user_id == get_jwt_identity():
+    if post.first() is not None and post.first().user_id == get_jwt_identity():
         post.delete()
         db.session.commit()
         return "", 200

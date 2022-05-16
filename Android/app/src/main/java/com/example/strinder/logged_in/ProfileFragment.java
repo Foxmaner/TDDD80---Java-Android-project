@@ -212,6 +212,13 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
             birthday.append(user.getBirthday());
         else
             birthday.append("Unknown");
+
+        TextView userID = v.findViewById(R.id.userID);
+        userID.setText("User-id: ");
+        if(user.getId() != 0)
+            userID.append(String.valueOf(user.getId()));
+        else
+            userID.append("Unknown");
     }
 
     /** Handles what happens when you press the button with a camera on it */

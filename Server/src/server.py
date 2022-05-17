@@ -488,7 +488,7 @@ def remove_post(post_id):
 def remove_comment(comment_id):
     comment = Comment.query.filter_by(id=comment_id)
 
-    if comment.first() is not None and comment.user_id == get_jwt_identity():
+    if comment.first() is not None and comment.first().user_id == get_jwt_identity():
         comment.delete()
         db.session.commit()
         return "", 200

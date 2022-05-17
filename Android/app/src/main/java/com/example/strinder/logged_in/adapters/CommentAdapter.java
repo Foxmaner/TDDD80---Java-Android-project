@@ -87,6 +87,25 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
 
         if(this.user.getId() == this.comments.get(position).getUserId()){
             holder.getDeleteButton().setVisibility(View.VISIBLE);
+
+            holder.getDeleteButton().setOnClickListener(view ->
+                    connection.sendStringJsonRequest("/del/comment/" + String.valueOf(this.comments.get(position).getId()),
+                            new JSONObject(), Request.Method.DELETE, this.user.getAccessToken(),
+                            new VolleyResponseListener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    Toast.makeText(context, "Comment removed",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                                @Override
+                                public void onError(VolleyError error) {
+                                    Log.e("Like Post Error", "Error occurred when deleting comment.");
+                                    Toast.makeText(context, "Failed to delete post.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+
+                            }));
         }
 
 

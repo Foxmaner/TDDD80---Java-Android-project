@@ -1,11 +1,14 @@
 package com.example.strinder.logged_in.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -82,6 +85,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
 
         }
 
+
+            holder.getDeleteButton().setVisibility(View.VISIBLE);
+
+
+
+
+
     }
 
     @Override
@@ -94,12 +104,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
 class CommentViewHolder extends RecyclerView.ViewHolder {
     private final ImageView profileImage;
     private final TextView commentText, name;
+    private final ImageButton deleteButton;
 
     public CommentViewHolder(@NonNull View itemView) {
         super(itemView);
         this.profileImage = itemView.findViewById(R.id.commentCardProfileImage);
         this.commentText = itemView.findViewById(R.id.commentCardText);
         this.name = itemView.findViewById(R.id.commentCardName);
+        this.deleteButton = itemView.findViewById(R.id.buttonDeleteComment);
     }
 
     public ImageView getProfileImage() {
@@ -112,5 +124,9 @@ class CommentViewHolder extends RecyclerView.ViewHolder {
 
     public TextView getName() {
         return name;
+    }
+
+    public ImageButton getDeleteButton() {
+        return deleteButton;
     }
 }

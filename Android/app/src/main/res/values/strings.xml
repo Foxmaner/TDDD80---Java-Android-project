@@ -85,5 +85,6 @@
     <string name="addFriendButtonDescription">Add this friend.</string>
     <string name="friendProfileImageDescription">The user\'\'s profile image.</string>
     <string name="unknown">Unknown</string>
+    <string name="no_found_posts_message">No posts could be found</string>
 
 </resources>

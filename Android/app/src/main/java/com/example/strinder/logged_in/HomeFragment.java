@@ -107,11 +107,15 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         Gson gson = new Gson();
         FetchedPosts fetchedPosts = gson.fromJson(response,
                 FetchedPosts.class);
+        if (fetchedPosts.getPosts().size() == 0 ){
+            System.out.println("INGA POSTS!!!");
+        }else{
+            PostAdapter adapter = new PostAdapter(getContext(),
+                    fetchedPosts.getPosts(), fetchedPosts.getUsers(),user,getParentFragmentManager());
 
-        PostAdapter adapter = new PostAdapter(getContext(),
-                fetchedPosts.getPosts(), fetchedPosts.getUsers(),user,getParentFragmentManager());
+            recyclerView.setAdapter(adapter);
+        }
 
-        recyclerView.setAdapter(adapter);
 
     }
 

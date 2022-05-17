@@ -85,8 +85,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
 
         }
 
-
+        if(this.user.getId() == this.comments.get(position).getUserId()){
             holder.getDeleteButton().setVisibility(View.VISIBLE);
+        }
+
 
 
 

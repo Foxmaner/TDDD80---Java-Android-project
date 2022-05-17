@@ -111,7 +111,7 @@ public class LoggedInActivity extends AppCompatActivity {
             }
             else if (id == R.id.friends) {
                 fragment = FriendsFragment.newInstance(account);
-                setHeaderText(getString(R.string.navbar_friends));
+                setHeaderText("Followers");
             }
             else if (id == R.id.plus) {
 

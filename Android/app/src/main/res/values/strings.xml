@@ -8,7 +8,7 @@
     <!-- Navbar -->
     <string name="navbar_home">Home</string>
     <string name="navbar_plus">Add</string>
-    <string name="navbar_friends">Friends</string>
+    <string name="navbar_friends">Followers</string>
     <string name="navbar_profile">Profile</string>
     <string name="navbar_notifications">Notifications</string>
     <string name="camera_desc">Take picture.</string>

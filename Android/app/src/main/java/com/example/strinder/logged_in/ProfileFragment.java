@@ -264,7 +264,7 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
                     }
                     else {
                         Toast.makeText(this.getContext(),"Failed to open camera. Please try" +
-                                "again later", Toast.LENGTH_SHORT).show();
+                                " again later", Toast.LENGTH_SHORT).show();
                     }
                 });
     }

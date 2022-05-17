@@ -12,7 +12,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.fragment.app.FragmentContainerView;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,10 +25,7 @@ import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.CommentFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -40,7 +36,6 @@ import com.squareup.picasso.Picasso;
 import org.json.JSONObject;
 
 import java.util.List;
-import java.util.Map;
 
 public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private final Context context;
@@ -90,13 +85,14 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
         holder.getMapView().onResume();
 
         holder.getMapView().getMapAsync(googleMap -> {
-            System.out.println("Test");
-            // Add a marker in Sydney and move the camera
+            // Add a marker at the specified location.
             LatLng pos = new LatLng(post.getLatitude(), post.getLongitude());
             googleMap.addMarker(new MarkerOptions()
                     .position(pos)
                     .title("Exercise location"));
 
+            // You could set the values below as constants, but these are just
+            // displayed here and does not really have to be explained.
             CameraPosition cameraPosition = new CameraPosition.Builder().
                     target(pos).
                     tilt(60).
@@ -107,6 +103,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             //Make it so that the user can't move around in the map window.
             googleMap.getUiSettings().setScrollGesturesEnabled(false);
+            googleMap.getUiSettings().setZoomGesturesEnabled(false);
 
         });
 

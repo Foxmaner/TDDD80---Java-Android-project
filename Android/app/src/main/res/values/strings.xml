@@ -89,5 +89,6 @@
     <string name="search_for_user">Search For User</string>
     <string name="searchResult">Your Search Gave The Following Result:</string>
     <string name="mapViewDescription">The position that it was posted from</string>
+    <string name="loading_your_position">Loading your position...</string>
 
 </resources>

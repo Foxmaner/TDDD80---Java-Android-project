@@ -13,7 +13,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.storage.FirebaseServices;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.AddActivityFragment;

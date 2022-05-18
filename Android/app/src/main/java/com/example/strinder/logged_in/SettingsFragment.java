@@ -75,17 +75,19 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
 
         firstName.setText(user.getFirstName());
         lastName.setText(user.getLastName());
-        gender.setText(user.getGender());
         biography.setText(user.getBiography());
-
 
         /*
             Set the hint to the existing birthday, but if it is null set it so that
             the user understands the format.
          */
 
-        birthday.setText(user.getBirthday() == null ? "YYYY/MM/DD" : user.getBirthday());
+        if(user.getBirthday() != null)
+            birthday.setText(user.getBirthday());
 
+        if(user.getGender() != null) {
+            gender.setText(user.getGender());
+        }
 
         return v;
     }
@@ -98,13 +100,26 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
         String newBirthday = birthday.getText().toString();
 
         if(newFirstName.length() > 0 && newLastName.length() > 0 && newGender.length() > 0 &&
-            newBiography.length() > 0 && newBirthday.length() > 0 &&
-                newBirthday.matches("^\\d{4}/\\d{2}/\\d{2}$")) {
+            newBiography.length() > 0 && newBirthday.length() > 0) {
+            //We do this because different devices handle the date type different.
+            if(newBirthday.matches("^\\d{4}/\\d{2}/\\d{2}$"))
+                user.setBirthday(newBirthday);
+            else if(newBirthday.matches("^\\d{4}\\d{2}\\d{2}$")) {
+                user.setBirthday(newBirthday.substring(0,4) + "/" + newBirthday.substring(4,6) +
+                        "/" + newBirthday.substring(6,8));
+            }
+            //The date is wrongly formatted.
+            else {
+                Toast.makeText(getContext(),"Some details are wrong formatted. Can't be saved.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            System.out.println(user.getBirthday());
 
             user.setFirstName(newFirstName);
             user.setLastName(newLastName);
             user.setBiography(newBiography);
-            user.setBirthday(newBirthday);
             user.setGender(newGender);
 
             user.uploadData(getContext(), new VolleyResponseListener<String>() {

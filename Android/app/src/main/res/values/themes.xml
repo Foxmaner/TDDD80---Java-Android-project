@@ -18,6 +18,7 @@
         <item name="android:windowActionBar">false</item>
         <item name="android:windowNoTitle">true</item>
 
+        <item name="android:editTextColor">@color/standardText</item>
         <!-- Customize your theme here. -->
     </style>
 

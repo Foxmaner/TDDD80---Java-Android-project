@@ -2,6 +2,7 @@ import os
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.ext import hybrid
 from sqlalchemy.sql import func
 # Create app
 app = Flask(__name__)
@@ -73,11 +74,16 @@ class User(db.Model):
                 "posts": [post.to_dict() for post in self.posts]}
 
     def to_dict_friends(self):
-        return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name}
+        return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name,
+                "photoUrl": self.photo_url}
 
     # Here the self.id is enough, because it is unique. Just in case we added two more clauses.
     def __eq__(self, other):
         return self.id == other.id and self.username == other.username and self.email == other.email
+
+    @hybrid.hybrid_property
+    def full_name(self):
+        return self.first_name + " " + self.last_name
 
 
 class Post(db.Model):
@@ -87,6 +93,8 @@ class Post(db.Model):
     title = db.Column(db.String(40), nullable=False)
     caption = db.Column(db.String(100), nullable=False)
     date_time = db.Column(db.DateTime, default=func.now(), nullable=False)
+    longitude = db.Column(db.Float, nullable=False)
+    latitude = db.Column(db.Float, nullable=False)
     # Here we need a relationship! We need to know which user liked what post.
     likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")
 
@@ -96,11 +104,13 @@ class Post(db.Model):
     def to_dict(self):
         session = None
         if self.training_session is not None:
-            session = self.training_session.to_dict();
+            session = self.training_session.to_dict()
+
         return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption,
                 "likes": [user.to_dict_friends() for user in self.likes], "comments": [comment.to_dict() for
                                                                                        comment in self.comments],
-                "trainingSession": session, "date": self.date_time}
+                "trainingSession": session, "date": self.date_time, "latitude": self.latitude,
+                "longitude": self.longitude}
 
 
 class TrainingSession(db.Model):

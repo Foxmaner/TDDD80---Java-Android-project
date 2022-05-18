@@ -2,6 +2,7 @@ package com.example.strinder.logged_in.handlers;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -43,6 +44,9 @@ public class LogoutHandler implements VolleyResponseListener<String> {
 
     @Override
     public void onResponse(String response) {
+        Log.i("Successfully disconnected from server",
+                "User is logged out,switching intent.");
+
         //If successful (code = 200), go back to main page.
         Intent myIntent = new Intent(activity, LoggedOutActivity.class);
         activity.startActivity(myIntent);
@@ -50,7 +54,8 @@ public class LogoutHandler implements VolleyResponseListener<String> {
 
     @Override
     public void onError(VolleyError error) {
-        //TODO Make this better. We cant just do this?
-        Toast.makeText(activity,"Failed to sign out",Toast.LENGTH_SHORT).show();
+        Log.e("Logout error", "Failed to logout!");
+        Toast.makeText(activity,"Failed to sign out. Please close the app",
+                Toast.LENGTH_SHORT).show();
     }
 }

@@ -18,6 +18,7 @@ public class ServerConnection {
 
     private final RequestQueue requestQueue;
 
+
     /**
      * Initializes a ServerConnection for a specific Context.
      *

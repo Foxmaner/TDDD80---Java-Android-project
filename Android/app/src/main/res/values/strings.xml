@@ -86,5 +86,11 @@
     <string name="friendProfileImageDescription">The user\'\'s profile image.</string>
     <string name="unknown">Unknown</string>
     <string name="no_found_posts_message">No posts could be found</string>
+    <string name="users_that_you_follow">Users That You Follow:</string>
+    <string name="search_for_user">Search For User</string>
+    <string name="searchResult">Your Search Gave The Following Result:</string>
+    <string name="mapViewDescription">The position that it was posted from</string>
+    <string name="loading_your_position">Loading your position...</string>
+
 
 </resources>

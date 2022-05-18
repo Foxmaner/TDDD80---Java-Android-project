@@ -62,7 +62,7 @@
         android:layout_height="48dp"
         android:backgroundTint="@color/white"
         android:contentDescription="@string/addFriendButtonDescription"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/guideline35"
         app:layout_constraintStart_toStartOf="parent"

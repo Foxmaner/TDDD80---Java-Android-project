@@ -14,6 +14,7 @@ public class Post implements Parcelable {
     private final List<User> likes;
     private List<Comment> comments;
     private TrainingSession trainingSession;
+    private final double latitude,longitude;
 
     public Post(final Parcel parcel) {
         id = parcel.readInt();
@@ -27,6 +28,9 @@ public class Post implements Parcelable {
         parcel.readList(comments,Comment.class.getClassLoader());
 
         trainingSession = parcel.readParcelable(TrainingSession.class.getClassLoader());
+
+        latitude = parcel.readDouble();
+        longitude = parcel.readDouble();
 
     }
 
@@ -56,6 +60,14 @@ public class Post implements Parcelable {
 
     public List<Comment> getComments() {
         return comments;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
     }
 
     public void setComments(final List<Comment> comments) {
@@ -97,19 +109,8 @@ public class Post implements Parcelable {
         parcel.writeList(likes);
         parcel.writeList(comments);
         parcel.writeParcelable(trainingSession,i);
+        parcel.writeDouble(latitude);
+        parcel.writeDouble(longitude);
     }
 
-    @Override
-    public String toString() {
-        return "Post{" +
-                "id=" + id +
-                ", userId=" + userId +
-                ", title='" + title + '\'' +
-                ", caption='" + caption + '\'' +
-                ", date='" + date + '\'' +
-                ", likes=" + likes +
-                ", comments=" + comments +
-                ", trainingSession=" + trainingSession +
-                '}';
-    }
 }

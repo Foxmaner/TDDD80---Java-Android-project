@@ -14,6 +14,7 @@ import android.widget.Toast;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.android.volley.Request;
 import com.android.volley.VolleyError;
@@ -45,6 +46,7 @@ public class CommentFragment extends Fragment {
     private RecyclerView commentList;
     private int location;
     private TextView amountOfComments;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     public CommentFragment() {
         // Required empty public constructor
@@ -134,6 +136,15 @@ public class CommentFragment extends Fragment {
                                         Toast.LENGTH_SHORT).show();
                             }
                         });
+            });
+
+            swipeRefreshLayout = v.findViewById(R.id.commentSwipeContainer);
+
+            // Setup refresh listener which triggers reload of comments.
+            swipeRefreshLayout.setOnRefreshListener(() -> {
+                fetchComments(post);
+                Log.i("Refresh Home","Refreshing Home, fetching new data.");
+                swipeRefreshLayout.setRefreshing(false);
             });
 
             ImageButton backButton = v.findViewById(R.id.backButton);

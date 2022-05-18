@@ -154,6 +154,14 @@ public class User implements Parcelable {
         this.biography = biography;
     }
 
+    public void addFriend(final User user) {
+        friends.add(user);
+    }
+
+    public void removeFriend(final User user) {
+        friends.remove(user);
+    }
+
     @Override
     public int describeContents() {
         return 0;

@@ -16,7 +16,7 @@ import androidx.fragment.app.FragmentTransaction;
 import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.AddActivityFragment;
-import com.example.strinder.logged_in.FriendsFragment;
+import com.example.strinder.logged_in.FollowFragment;
 import com.example.strinder.logged_in.HomeFragment;
 import com.example.strinder.logged_in.MessagesFragment;
 import com.example.strinder.logged_in.ProfileFragment;
@@ -110,8 +110,8 @@ public class LoggedInActivity extends AppCompatActivity {
                 setHeaderText(getString(R.string.navbar_home));
             }
             else if (id == R.id.friends) {
-                fragment = FriendsFragment.newInstance(account);
-                setHeaderText("Followers");
+                fragment = FollowFragment.newInstance(account);
+                setHeaderText(getString(R.string.navbar_friends));
             }
             else if (id == R.id.plus) {
 

@@ -418,6 +418,7 @@ def get_posts(nr_of_posts):
 
     users = []
     new_posts = []
+
     # TODO This can surely be optimized (and simplified)
     for post in posts:
         user_id = post.get("userId")
@@ -426,7 +427,6 @@ def get_posts(nr_of_posts):
             if user["id"] != get_jwt_identity():
                 for friend in user["friends"]:
                     if friend["id"] == get_jwt_identity():
-                        print("Found one")
                         users.append(user)
                         new_posts.append(post)
                         break

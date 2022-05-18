@@ -14,6 +14,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.example.strinder.backend_related.storage.DropBoxServices;
+import com.example.strinder.backend_related.storage.FirebaseServices;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.AddActivityFragment;
 import com.example.strinder.logged_in.FollowFragment;
@@ -60,7 +61,7 @@ public class LoggedInActivity extends AppCompatActivity {
         BottomNavigationView menuBar = findViewById(R.id.navBar);
         menuBar.setSelectedItemId(R.id.home);
 
-        DropBoxServices.getInstance().initialize(this);
+        FirebaseServices.getInstance().initialize(this);
         setBottomNavListener(menuBar);
 
 

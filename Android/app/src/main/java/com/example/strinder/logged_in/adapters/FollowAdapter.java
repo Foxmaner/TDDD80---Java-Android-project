@@ -19,7 +19,6 @@ import com.android.volley.VolleyError;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
-import com.example.strinder.backend_related.storage.DropBoxServices;
 import com.example.strinder.backend_related.tables.User;
 import com.google.gson.Gson;
 import com.squareup.picasso.MemoryPolicy;
@@ -68,7 +67,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
                     //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
                     if (context != null) {
                         Picasso.with(context.getApplicationContext()).
-                                invalidate(DropBoxServices.getUserImagePath(currentUser));
+                                invalidate(currentUser.getPhotoUrl());
                     }
 
                     Picasso.with(context).load(currentUser.getPhotoUrl())

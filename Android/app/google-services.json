@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "960100179212",
+    "project_id": "avid-task-340008",
+    "storage_bucket": "avid-task-340008.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:960100179212:android:ca4a9f7a545b49c1833d29",
+        "android_client_info": {
+          "package_name": "com.example.strinder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "960100179212-vsh7i7ja5r93a1l8373t94m9b7cr3opo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.strinder",
+            "certificate_hash": "f1db4b6c42c33bfe05d4dca48adc68428ab9a11a"
+          }
+        },
+        {
+          "client_id": "960100179212-4f9co6hv8aogedarvvdi732j147bb53p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnRj4lDUJrVIcqGXN9Y-ptLewgjzRsU64"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "960100179212-4f9co6hv8aogedarvvdi732j147bb53p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

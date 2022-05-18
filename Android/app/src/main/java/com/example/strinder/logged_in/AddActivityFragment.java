@@ -180,7 +180,8 @@ public class AddActivityFragment extends Fragment implements LocationListener {
                                             post.setTrainingSession(session);
 
                                             //FIXME Fix this later on? Make a listener or something.
-                                            LoggedInActivity activity = (LoggedInActivity) getActivity();
+                                            LoggedInActivity activity = (LoggedInActivity)
+                                                    getActivity();
 
                                             if(activity != null) {
                                                 activity.jumpToHome("Your Post Was Successfully" +
@@ -285,7 +286,7 @@ public class AddActivityFragment extends Fragment implements LocationListener {
         if (hasPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             Log.i("GPS Resume", "Resume call");
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 450,
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 450,
                     1, this);
         }
     }

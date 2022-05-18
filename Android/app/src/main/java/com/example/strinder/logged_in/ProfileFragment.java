@@ -27,17 +27,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
-import com.example.strinder.backend_related.storage.DbxCompletionListener;
-import com.example.strinder.backend_related.storage.DropBoxServices;
+import com.example.strinder.backend_related.storage.FirebaseCompletionListener;
+import com.example.strinder.backend_related.storage.FirebaseServices;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.adapters.PostAdapter;
+import com.google.firebase.storage.StorageMetadata;
+import com.google.firebase.storage.StorageReference;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.LocalTime;
@@ -50,8 +50,7 @@ import java.util.List;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements DbxCompletionListener,
-        VolleyResponseListener<String> {
+public class ProfileFragment extends Fragment implements FirebaseCompletionListener {
 
     private ActivityResultLauncher<Intent> cameraActivityLauncher;
     private ActivityResultLauncher<Intent> uploadActivityLauncher;
@@ -188,8 +187,9 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
             //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
             if(getActivity() != null) {
                 Picasso.with(getActivity().getApplicationContext()).
-                        invalidate(DropBoxServices.getUserImagePath(user));
+                        invalidate(user.getPhotoUrl());
             }
+
             Picasso.with(getActivity()).load(user.getPhotoUrl())
                     .memoryPolicy(MemoryPolicy.NO_CACHE)
                     .networkPolicy(NetworkPolicy.NO_CACHE)
@@ -253,13 +253,10 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
                     if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                         Bundle bundle = result.getData().getExtras();
                         Bitmap bitmap = (Bitmap) bundle.get("data");
-                        //Convert to InputStream
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 0 /*ignored for PNG*/, bos);
-                        byte[] bitMapData = bos.toByteArray();
-                        ByteArrayInputStream bs = new ByteArrayInputStream(bitMapData);
 
-                        DropBoxServices.getInstance().saveImage(bs,user,this);
+                        if(bitmap != null) {
+                            FirebaseServices.getInstance().saveImage(bitmap, user, this);
+                        }
 
                     }
                     else {
@@ -289,13 +286,8 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
                     }
 
                     if(bitmap != null) {
-                        //Convert to InputStream
-                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
-                        byte[] bitMapData = bos.toByteArray();
-                        ByteArrayInputStream bs = new ByteArrayInputStream(bitMapData);
 
-                        DropBoxServices.getInstance().saveImage(bs, user, this);
+                        FirebaseServices.getInstance().saveImage(bitmap,user,this);
                     }
 
                 }
@@ -306,25 +298,41 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
 
 
     @Override
-    public void onFinish(Object object) {
+    public void onFinish(StorageMetadata data) {
 
-        Boolean wasUploaded = (Boolean)object;
 
-        if(wasUploaded) {
-            DropBoxServices.getInstance().getLinkToImage(user, result -> {
-                String response = (String) result;
-                if(response != null) {
+        if(data != null) {
+            StorageReference ref = data.getReference();
 
-                    user.setPhotoUrl(response);
+            if(ref != null) {
+                ref.getDownloadUrl().addOnSuccessListener(uri -> {
+                    user.setPhotoUrl(uri.toString());
 
-                    user.uploadData(getContext(), this);
-                }
-                else {
-                    Toast.makeText(getContext(),"Could not find path to the uploaded image.",
-                            Toast.LENGTH_SHORT).show();
-                }
+                    user.uploadData(getContext(), new VolleyResponseListener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.i("Successfully saved link",
+                                    "Link was uploaded to database");
+                            Toast.makeText(getContext(),"Successfully saved link in database",
+                                    Toast.LENGTH_SHORT).show();
 
-            });
+                            getParentFragmentManager().beginTransaction().
+                                    replace(R.id.loggedInView,ProfileFragment.newInstance(user)).
+                                    commit();
+                        }
+
+                        @Override
+                        public void onError(VolleyError error) {
+                            Log.e("Failed to save link",
+                                    "Link failed to upload to database");
+
+                            Toast.makeText(getContext(),"Failed to save link in database",
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                });
+            }
+
         }
         else {
             Toast.makeText(this.getContext(),"Failed to upload image.",Toast.LENGTH_SHORT).
@@ -334,17 +342,4 @@ public class ProfileFragment extends Fragment implements DbxCompletionListener,
 
     }
 
-    @Override
-    public void onResponse(String response) {
-        Log.i("Upload Success", "Image was successfully uploaded");
-        getParentFragmentManager().beginTransaction().
-                replace(R.id.loggedInView,ProfileFragment.newInstance(user)).commit();
-    }
-
-    @Override
-    public void onError(VolleyError error) {
-        Log.e("Upload Image Error", error.toString());
-        Toast.makeText(getContext(),"Failed to upload image to " +
-                "database",Toast.LENGTH_SHORT).show();
-    }
 }

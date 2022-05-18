@@ -341,6 +341,7 @@
                 android:visibility="invisible"
                 app:layout_constraintBottom_toTopOf="@+id/guideline41"
 
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.82"
                 app:layout_constraintStart_toEndOf="@+id/postCardDate"
                 app:layout_constraintTop_toTopOf="@+id/postCardName"

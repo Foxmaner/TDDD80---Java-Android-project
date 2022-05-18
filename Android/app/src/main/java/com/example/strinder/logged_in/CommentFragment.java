@@ -98,7 +98,7 @@ public class CommentFragment extends Fragment {
             addComment.setOnClickListener(view -> {
                 EditText commentText = v.findViewById(R.id.commentText);
                 String text = commentText.getText().toString();
-
+                commentText.setText("");
                 //If empty, don't continue
                 if (text.isEmpty()) {
                     Toast.makeText(getContext(), "Please write a valid comment",

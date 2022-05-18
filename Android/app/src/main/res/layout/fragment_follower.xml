@@ -22,14 +22,14 @@
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
         android:autofillHints=""
+        android:iconifiedByDefault="false"
         android:inputType="textPersonName"
         android:queryHint="@string/search_for_user"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/guideline33"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/followTitle"

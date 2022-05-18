@@ -25,7 +25,9 @@ import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.CommentFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -80,11 +82,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
         }
 
         //Set Map position
-
-        holder.getMapView().onCreate(null);
-        holder.getMapView().onResume();
-
         holder.getMapView().getMapAsync(googleMap -> {
+            MapsInitializer.initialize(context.getApplicationContext());
             // Add a marker at the specified location.
             LatLng pos = new LatLng(post.getLatitude(), post.getLongitude());
             googleMap.addMarker(new MarkerOptions()
@@ -106,6 +105,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
             googleMap.getUiSettings().setZoomGesturesEnabled(false);
 
         });
+
+        holder.getMapView().onCreate(null);
+        holder.getMapView().onStart();
+        holder.getMapView().onResume();
 
 
         //Set onLike listener

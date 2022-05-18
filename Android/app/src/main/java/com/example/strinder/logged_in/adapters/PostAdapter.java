@@ -24,6 +24,11 @@ import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.CommentFragment;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.squareup.picasso.Picasso;
@@ -32,7 +37,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
+public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private final Context context;
     private final List<Post> posts;
     private final List<User> users;
@@ -48,12 +53,13 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         this.currentUser = currentUser;
         this.manager = manager;
         connection = new ServerConnection(context);
+
     }
 
     @NonNull
     @Override
     public PostViewHolder onCreateViewHolder(@NonNull ViewGroup parent,
-                                             int viewType) {
+                                                         int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.post_card, parent, false);
         return new PostViewHolder(view);
@@ -68,12 +74,42 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         //In case we know that all posts belong to one individual. The profile is one such case.
         if (users.size() == 1 && users.get(0).equals(currentUser)) {
             user = users.get(0);
-        } else {
+        }
+        else {
             user = users.get(position);
         }
 
+        //Set Map position
+
+        holder.getMapView().onCreate(null);
+        holder.getMapView().onResume();
+
+        holder.getMapView().getMapAsync(googleMap -> {
+            // Add a marker at the specified location.
+            LatLng pos = new LatLng(post.getLatitude(), post.getLongitude());
+            googleMap.addMarker(new MarkerOptions()
+                    .position(pos)
+                    .title("Exercise location"));
+
+            // You could set the values below as constants, but these are just
+            // displayed here and does not really have to be explained.
+            CameraPosition cameraPosition = new CameraPosition.Builder().
+                    target(pos).
+                    tilt(60).
+                    zoom(15).
+                    bearing(0).
+                    build();
+
+            googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            //Make it so that the user can't move around in the map window.
+            googleMap.getUiSettings().setScrollGesturesEnabled(false);
+            googleMap.getUiSettings().setZoomGesturesEnabled(false);
+
+        });
+
+
         //Set onLike listener
-        holder.likeButton.setOnClickListener(view ->
+        holder.getLikeButton().setOnClickListener(view ->
                 connection.sendStringJsonRequest("/post/like/" + post.getId(),
                         new JSONObject(), Request.Method.POST, currentUser.getAccessToken(),
                         new VolleyResponseListener<String>() {
@@ -103,34 +139,33 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         TrainingSession session = post.getTrainingSession();
 
-        holder.postNameView.setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
+        holder.getPostNameView().setText(String.format("%s %s", user.getFirstName(), user.getLastName()));
         //We do not want to reload the image.
         Picasso.with(context).load(user.getPhotoUrl())
                 .placeholder(android.R.drawable.sym_def_app_icon)
                 .error(android.R.drawable.sym_def_app_icon)
-                .into(holder.profileImage);
+                .into(holder.getProfileImage());
 
-        holder.postCaptionView.setText(post.getCaption());
-        holder.postTitleView.setText(post.getTitle());
-        holder.postDate.setText(post.getDate());
+        holder.getPostCaptionView().setText(post.getCaption());
+        holder.getPostTitleView().setText(post.getTitle());
+        holder.getPostDate().setText(post.getDate());
 
         //Collapse / Expand view
-        holder.commentButton.setOnClickListener(view -> {
-            
-            CommentFragment fragment = CommentFragment.newInstance(currentUser,post,position);
+        holder.getCommentButton().setOnClickListener(view -> {
+            CommentFragment commentFragment = CommentFragment.newInstance(currentUser,post,position);
             manager.beginTransaction().replace(R.id.loggedInView,
-                    fragment).commit();
+                    commentFragment).commit();
         });
 
 
 
 
         if (session != null) {
-            holder.postExercise.setText(session.getExercise());
-            holder.postDistanceValueView.setText(String.format("%s %s", session.getDistance(),
+            holder.getPostExercise().setText(session.getExercise());
+            holder.getPostDistanceValueView().setText(String.format("%s %s", session.getDistance(),
                     session.getDistanceUnit()));
-            holder.postTimeValueView.setText(session.getElapsedTime());
-            holder.postSpeedValueView.setText(String.format("%s %s", session.getSpeed(),
+            holder.getPostTimeValueView().setText(session.getElapsedTime());
+            holder.getPostSpeedValueView().setText(String.format("%s %s", session.getSpeed(),
                     session.getSpeedUnit()));
 
         }
@@ -146,16 +181,17 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             likes--;
             text = String.format("You and %s other people have liked " +
                     " this post", likes);
-            DrawableCompat.setTint(holder.likeButton.getDrawable(),
+            DrawableCompat.setTint(holder.getLikeButton().getDrawable(),
                     context.getColor(R.color.selected));
-        } else {
+        }
+        else {
             text = String.format("%s people have liked" +
                     " this post", likes);
-            DrawableCompat.setTint(holder.likeButton.getDrawable(),
+            DrawableCompat.setTint(holder.getLikeButton().getDrawable(),
                     context.getColor(R.color.papaya));
         }
 
-        holder.likes.setText(text);
+        holder.getLikes().setText(text);
     }
 
     private void fetchLikes(final Post post, final PostViewHolder holder) {
@@ -190,31 +226,83 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return posts.size();
     }
 
-    //TODO Make this NOT static?
-    public static class PostViewHolder extends RecyclerView.ViewHolder {
-        private final TextView postExercise,postNameView,postCaptionView,postTitleView,
-                postDistanceValueView, postTimeValueView, postSpeedValueView, postDate,likes;
-        private final ImageView profileImage;
-        private final ImageButton likeButton;
-        private final ImageButton commentButton;
 
-        public PostViewHolder(@NonNull View itemView) {
-            super(itemView);
+}
 
-            postNameView = itemView.findViewById(R.id.postCardName);
-            postDistanceValueView = itemView.findViewById(R.id.postCardDistance);
-            postTimeValueView = itemView.findViewById(R.id.postCardTime);
-            postSpeedValueView = itemView.findViewById(R.id.postCardSpeed);
-            postCaptionView = itemView.findViewById(R.id.postCardCaption);
-            postTitleView = itemView.findViewById(R.id.postCardTitle);
-            postDate = itemView.findViewById(R.id.postCardDate);
-            profileImage = itemView.findViewById(R.id.postCardProfileImage);
-            postExercise = itemView.findViewById(R.id.postCardActivity);
-            likeButton = itemView.findViewById(R.id.likeButton);
-            commentButton = itemView.findViewById(R.id.commentButton);
-            likes = itemView.findViewById(R.id.postCardLikes);
+class PostViewHolder extends RecyclerView.ViewHolder {
+    private final TextView postExercise,postNameView,postCaptionView,postTitleView,
+            postDistanceValueView, postTimeValueView, postSpeedValueView, postDate,likes;
+    private final ImageView profileImage;
+    private final ImageButton likeButton;
+    private final ImageButton commentButton;
+    private final MapView mapView;
+    public PostViewHolder(@NonNull View itemView) {
+        super(itemView);
+        postNameView = itemView.findViewById(R.id.postCardName);
+        postDistanceValueView = itemView.findViewById(R.id.postCardDistance);
+        postTimeValueView = itemView.findViewById(R.id.postCardTime);
+        postSpeedValueView = itemView.findViewById(R.id.postCardSpeed);
+        postCaptionView = itemView.findViewById(R.id.postCardCaption);
+        postTitleView = itemView.findViewById(R.id.postCardTitle);
+        postDate = itemView.findViewById(R.id.postCardDate);
+        profileImage = itemView.findViewById(R.id.postCardProfileImage);
+        postExercise = itemView.findViewById(R.id.postCardActivity);
+        likeButton = itemView.findViewById(R.id.likeButton);
+        commentButton = itemView.findViewById(R.id.commentButton);
+        likes = itemView.findViewById(R.id.postCardLikes);
+        mapView = itemView.findViewById(R.id.map);
+    }
 
-        }
+    public TextView getPostExercise() {
+        return postExercise;
+    }
+
+    public TextView getPostNameView() {
+        return postNameView;
+    }
+
+    public TextView getPostCaptionView() {
+        return postCaptionView;
+    }
+
+    public TextView getPostTitleView() {
+        return postTitleView;
+    }
+
+    public TextView getPostDistanceValueView() {
+        return postDistanceValueView;
+    }
+
+    public TextView getPostTimeValueView() {
+        return postTimeValueView;
+    }
+
+    public TextView getPostSpeedValueView() {
+        return postSpeedValueView;
+    }
+
+    public TextView getPostDate() {
+        return postDate;
+    }
+
+    public TextView getLikes() {
+        return likes;
+    }
+
+    public ImageView getProfileImage() {
+        return profileImage;
+    }
+
+    public ImageButton getLikeButton() {
+        return likeButton;
+    }
+
+    public ImageButton getCommentButton() {
+        return commentButton;
+    }
+
+    public MapView getMapView() {
+        return mapView;
     }
 }
 

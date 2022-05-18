@@ -419,22 +419,24 @@ def get_posts(nr_of_posts):
     users = []
     new_posts = []
 
-    # TODO This can surely be optimized (and simplified)
+    current_user = User.query.filter_by(id=get_jwt_identity()).first()
+    # This code can probably be achieved through SQL code.
+    # Only get the posts that are from users that you follow.
     for post in posts:
-        user_id = post.get("userId")
-        user = get_user(user_id)[0]
-        if isinstance(user, dict):
-            if user["id"] != get_jwt_identity():
-                for friend in user["friends"]:
-                    if friend["id"] == get_jwt_identity():
-                        users.append(user)
-                        new_posts.append(post)
-                        break
-            else:
-                users.append(user)
-                new_posts.append(post)
 
-    data = {"posts": new_posts, "users": users}
+        post_user = User.query.filter_by(id=post["userId"]).first()
+
+        if post_user.id != get_jwt_identity():
+
+            for user in current_user.friends:
+                if user.id == post["userId"]:
+                    new_posts.append(post)
+                    users.append(user)
+        else:
+            new_posts.append(post)
+            users.append(post_user)
+
+    data = {"posts": new_posts, "users": [user.to_dict_friends() for user in users]}
     return data, 200
 
 

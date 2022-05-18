@@ -349,15 +349,17 @@
 
 
             <com.google.android.gms.maps.MapView
+                xmlns:map="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/map"
+                android:name="com.google.android.gms.maps.MapFragment"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:name="com.google.android.gms.maps.MapFragment"
+                android:contentDescription="@string/mapViewDescription"
                 app:layout_constraintBottom_toTopOf="@+id/guideline56"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guideline50"
-            />
+                map:liteMode="true" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

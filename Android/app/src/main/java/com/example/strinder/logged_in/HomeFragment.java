@@ -83,12 +83,9 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                 swipeContainer.setRefreshing(false);
             });
 
-            LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-            recyclerView.setLayoutManager(layoutManager);
-
             recyclerView.scrollToPosition(postLocation);
-            fetchData(connection);
 
+            fetchData(connection);
         }
 
         // Inflate the layout for this fragment
@@ -96,7 +93,11 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
     }
 
 
-
+    private void setRecyclerViewOptions(final PostAdapter adapter) {
+        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
+    }
     public void fetchData(final ServerConnection connection) {
         connection.sendStringJsonRequest("/posts/latest/-1",
             new JSONObject(),
@@ -107,16 +108,11 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         Gson gson = new Gson();
         FetchedPosts fetchedPosts = gson.fromJson(response,
                 FetchedPosts.class);
-        if (fetchedPosts.getPosts().size() == 0 ){
-            System.out.println("INGA POSTS!!!");
-        }else{
-            PostAdapter adapter = new PostAdapter(getContext(),
-                    fetchedPosts.getPosts(), fetchedPosts.getUsers(),user,getParentFragmentManager());
 
-            recyclerView.setAdapter(adapter);
-        }
+        PostAdapter adapter = new PostAdapter(getContext(),
+                fetchedPosts.getPosts(), fetchedPosts.getUsers(),user,getParentFragmentManager());
 
-
+        setRecyclerViewOptions(adapter);
     }
 
     @Override

@@ -93,11 +93,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
             // You could set the values below as constants, but these are just
             // displayed here and does not really have to be explained.
             CameraPosition cameraPosition = new CameraPosition.Builder().
-                    target(pos).
-                    tilt(60).
-                    zoom(15).
-                    bearing(0).
-                    build();
+                    target(pos).zoom(16).build();
 
             googleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             //Make it so that the user can't move around in the map window.
@@ -164,7 +160,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
             holder.getDeleteButton().setVisibility(View.VISIBLE);
 
             holder.getDeleteButton().setOnClickListener(view ->
-                    connection.sendStringJsonRequest("/del/post/" + String.valueOf(post.getId()),
+                    connection.sendStringJsonRequest("/del/post/" + post.getId(),
                             new JSONObject(), Request.Method.DELETE, currentUser.getAccessToken(),
                             new VolleyResponseListener<String>() {
                                 @Override
@@ -183,8 +179,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
                             }));
 
         }
-
-
 
         if (session != null) {
             holder.getPostExercise().setText(session.getExercise());

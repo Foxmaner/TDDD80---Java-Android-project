@@ -15,7 +15,7 @@ from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingS
 bcrypt = Bcrypt(app)
 
 ACCESS_EXPIRES = timedelta(minutes=30)
-app.config["JWT_SECRET_KEY"] = "Sometimes I Pee Myself In Bed"
+app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET_KEY')
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
 
@@ -35,8 +35,7 @@ def check_if_token_revoked(_, jwt_payload: dict) -> bool:
 def authenticate():
     post_input = request.get_json()
     token = post_input["idToken"]
-    # TODO Hide somewhere!
-    client_id = "960100179212-4f9co6hv8aogedarvvdi732j147bb53p.apps.googleusercontent.com"
+    client_id = os.environ.get("TDDD80_Server_ClientID")
 
     try:
         google_request = requests.Request()

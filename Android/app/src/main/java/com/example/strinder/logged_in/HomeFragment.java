@@ -65,7 +65,6 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
-        //fetchData();
         Bundle bundle = getArguments();
         if(bundle != null && getContext() != null) {
             user =  bundle.getParcelable("account");
@@ -76,7 +75,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
             swipeContainer = v.findViewById(R.id.homeSwipeContainer);
 
-            // Setup refresh listener which triggers new data loading
+            // Setup refresh listener which triggers new data loading.
             swipeContainer.setOnRefreshListener(() -> {
                 fetchData(connection);
                 Log.i("Refresh Home","Refreshing Home, fetching new data.");

@@ -1,6 +1,7 @@
 package com.example.strinder;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -12,6 +13,8 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
+import androidx.navigation.NavInflater;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
@@ -56,12 +59,20 @@ public class LoggedInActivity extends AppCompatActivity implements
 
         NavHostFragment navHostFragment =
                 (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.loggedInView);
+
         if (navHostFragment != null) {
             navController = navHostFragment.getNavController();
+            //Set default args for the HomeFragment!
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("account",user);
+            bundle.putInt("location",0);
+            navController.setGraph(R.navigation.nav_graph,bundle);
+            Log.i("Start Destination","Bundle created for start destination.");
+            // Setup of BottomNavigationBar
             NavigationUI.setupWithNavController(menuBar,navController);
             menuBar.setOnItemSelectedListener(this);
-        }
 
+        }
 
     }
 

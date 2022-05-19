@@ -35,6 +35,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
     private SwipeRefreshLayout swipeContainer;
     private RecyclerView recyclerView;
     private User user;
+    private int postLocation;
 
     /**
      * Use this factory method to create a new instance of
@@ -54,6 +55,13 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+
+        if(bundle != null) {
+            System.out.println("READING");
+            user =  bundle.getParcelable("account");
+            postLocation = bundle.getInt("postLocation");
+        }
     }
 
     @Override
@@ -61,10 +69,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_home, container, false);
 
-        Bundle bundle = getArguments();
-        if(bundle != null && getContext() != null) {
-            user =  bundle.getParcelable("account");
-            int postLocation = bundle.getInt("postLocation");
+        if(user != null && getContext() != null) {
 
             ServerConnection connection = new ServerConnection(this.getContext());
             recyclerView = v.findViewById(R.id.homeFeedRecycleView);
@@ -94,6 +99,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         recyclerView.setAdapter(adapter);
     }
     public void fetchData(final ServerConnection connection) {
+        System.out.println("FETCHING DATA");
         connection.sendStringJsonRequest("/posts/latest/-1",
             new JSONObject(),
             Request.Method.GET, user.getAccessToken(), this);

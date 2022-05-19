@@ -8,8 +8,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
-import com.dropbox.core.v2.users.GetAccountArg;
-import com.example.strinder.R;
 import com.example.strinder.backend_related.tables.User;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -19,7 +17,6 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
 
 public class FirebaseServices {
 

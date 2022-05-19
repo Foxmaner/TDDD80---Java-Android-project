@@ -82,9 +82,10 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                 swipeContainer.setRefreshing(false);
             });
 
+            fetchData(connection);
+
             recyclerView.scrollToPosition(postLocation);
 
-            fetchData(connection);
         }
 
         // Inflate the layout for this fragment

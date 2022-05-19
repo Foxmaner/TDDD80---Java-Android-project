@@ -1,6 +1,7 @@
 package com.example.strinder.logged_in.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.graphics.drawable.DrawableCompat;
-import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.Request;
@@ -23,7 +25,6 @@ import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.logged_in.CommentFragment;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
@@ -44,15 +45,15 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private final List<User> users;
     private final User currentUser;
     private final ServerConnection connection;
-    private final FragmentManager manager;
+    private final Fragment fragment;
 
     public PostAdapter(final Context context, final List<Post> posts, final List<User> users,
-                       final User currentUser, final FragmentManager manager) {
+                       final User currentUser, final Fragment fragment) {
         this.context = context;
         this.posts = posts;
         this.users = users;
         this.currentUser = currentUser;
-        this.manager = manager;
+        this.fragment = fragment;
         connection = new ServerConnection(context);
 
     }
@@ -150,9 +151,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
         //Collapse / Expand view
         holder.getCommentButton().setOnClickListener(view -> {
-            CommentFragment commentFragment = CommentFragment.newInstance(currentUser,post,position);
-            manager.beginTransaction().replace(R.id.loggedInView,
-                    commentFragment).commit();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("account",currentUser);
+            bundle.putParcelable("post",post);
+            bundle.putInt("location",position);
+
+            NavHostFragment.findNavController(fragment).navigate(R.id.commentScreen,bundle);
         });
 
         if(currentUser.equals(user)){

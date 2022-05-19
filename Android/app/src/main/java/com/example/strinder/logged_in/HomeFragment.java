@@ -36,10 +36,6 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
     private RecyclerView recyclerView;
     private User user;
 
-    public HomeFragment() {
-        // Required empty public constructor
-    }
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -85,7 +81,6 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
             fetchData(connection);
 
             recyclerView.scrollToPosition(postLocation);
-
         }
 
         // Inflate the layout for this fragment
@@ -110,7 +105,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
                 FetchedPosts.class);
 
         PostAdapter adapter = new PostAdapter(getContext(),
-                fetchedPosts.getPosts(), fetchedPosts.getUsers(),user,getParentFragmentManager());
+                fetchedPosts.getPosts(), fetchedPosts.getUsers(),user,this);
 
         setRecyclerViewOptions(adapter);
     }

@@ -15,7 +15,7 @@ from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingS
 bcrypt = Bcrypt(app)
 
 ACCESS_EXPIRES = timedelta(minutes=30)
-app.config["JWT_SECRET_KEY"] = "Sometimes I Pee Myself In Bed"
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
 

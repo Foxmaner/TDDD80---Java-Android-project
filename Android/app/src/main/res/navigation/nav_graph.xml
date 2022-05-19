@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/homeScreen">
+
+    <fragment
+        android:id="@+id/homeScreen"
+        android:name="com.example.strinder.logged_in.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/followScreen"
+        android:name="com.example.strinder.logged_in.FollowFragment"
+        android:label="fragment_follow"
+        tools:layout="@layout/fragment_follower" />
+
+    <fragment
+        android:id="@+id/activityScreen"
+        android:name="com.example.strinder.logged_in.AddActivityFragment"
+        android:label="fragment_activity"
+        tools:layout="@layout/fragment_add_activity" />
+
+    <fragment
+        android:id="@+id/notificationScreen"
+        android:name="com.example.strinder.logged_in.NotificationFragment"
+        android:label="fragment_notification"
+        tools:layout="@layout/fragment_notifications" />
+
+    <fragment
+        android:id="@+id/profileScreen"
+        android:name="com.example.strinder.logged_in.ProfileFragment"
+        android:label="fragment_profile"
+        tools:layout="@layout/fragment_profile" />
+    <fragment
+        android:id="@+id/settingsScreen"
+        android:name="com.example.strinder.logged_in.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/commentScreen"
+        android:name="com.example.strinder.logged_in.CommentFragment"
+        android:label="fragment_comment"
+        tools:layout="@layout/fragment_comment" />
+
+</navigation>

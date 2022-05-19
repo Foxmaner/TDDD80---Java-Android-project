@@ -12,6 +12,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
+import androidx.navigation.fragment.NavHostFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -148,10 +149,13 @@ public class CommentFragment extends Fragment {
             });
 
             ImageButton backButton = v.findViewById(R.id.backButton);
-            backButton.setOnClickListener(view ->
-                    getParentFragmentManager().beginTransaction().
-                            replace(R.id.loggedInView,HomeFragment.newInstance(user,location)).
-                            commit()
+            backButton.setOnClickListener(view -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putParcelable("account",user);
+                    bundle.putInt("location",location);
+
+                    NavHostFragment.findNavController(this).navigate(R.id.homeScreen);
+                }
             );
 
 

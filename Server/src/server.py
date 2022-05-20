@@ -14,7 +14,7 @@ from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingS
 
 bcrypt = Bcrypt(app)
 
-ACCESS_EXPIRES = timedelta(minutes=30)
+ACCESS_EXPIRES = timedelta(minutes=1)
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
@@ -525,7 +525,6 @@ if __name__ == "__main__":
     # db.create_all()
     # db.session.commit()
     app.run()
-
 
 @app.before_first_request
 def init():

@@ -3,6 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="727f8044-f622-4ee4-b418-b721f4f3f130" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/.coverage" beforeDir="false" afterPath="$PROJECT_DIR$/src/.coverage" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app.db" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.db" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/test_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test_server_no_pytest.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,5 +72,16 @@
       <updated>1651659862355</updated>
     </task>
     <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>

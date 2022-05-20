@@ -75,7 +75,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
         //In case we know that all posts belong to one individual. The profile is one such case.
         if (users.size() == 1 && users.get(0).equals(currentUser)) {
-            user = currentUser;
+            user = users.get(0);
             Post postToFind = posts.get(position);
             post = user.getPosts().get(posts.indexOf(postToFind));
         }
@@ -149,7 +149,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
                 .placeholder(android.R.drawable.sym_def_app_icon)
                 .error(android.R.drawable.sym_def_app_icon)
                 .into(holder.getProfileImage());
-
+        System.out.println(post.getCaption());
         holder.getPostCaptionView().setText(post.getCaption());
         holder.getPostTitleView().setText(post.getTitle());
         holder.getPostDate().setText(post.getDate());

@@ -88,7 +88,9 @@ public class LoggedInActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         if(item.getItemId() == R.id.action_settings) {
-            navController.navigate(R.id.settingsScreen);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("account",user);
+            navController.navigate(R.id.settingsScreen,bundle);
             setHeaderText(getString(R.string.settings));
             return true;
         }

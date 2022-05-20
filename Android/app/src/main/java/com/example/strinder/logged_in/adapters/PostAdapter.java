@@ -70,16 +70,20 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
 
-        Post post = posts.get(position);
+        Post post;
         User user;
 
         //In case we know that all posts belong to one individual. The profile is one such case.
         if (users.size() == 1 && users.get(0).equals(currentUser)) {
-            user = users.get(0);
+            user = currentUser;
+            Post postToFind = posts.get(position);
+            post = user.getPosts().get(posts.indexOf(postToFind));
         }
         else {
             user = users.get(position);
+            post = posts.get(position);
         }
+
 
         //Set Map position
         holder.getMapView().getMapAsync(googleMap -> {
@@ -119,7 +123,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
                                 };
                                 //The users that have liked the post.
                                 List<User> likeUsers = gson.fromJson(response, token.getType());
-
+                                System.out.println(likeUsers.size());
+                                post.setLikes(likeUsers);
                                 setLikeText(holder, likeUsers);
                             }
 
@@ -192,7 +197,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
                     session.getSpeedUnit()));
 
         }
-
     }
 
     private void setLikeText(final PostViewHolder holder,

@@ -123,8 +123,10 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
     private int sumLikes(final List<Post> posts) {
         int sum = 0;
+
         try {
             for (Post post : posts) {
+                System.out.println(post.getLikes().size());
                 sum += post.getLikes().size();
             }
         }
@@ -171,6 +173,7 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
         TextView likes = v.findViewById(R.id.amountOfLikes);
         likes.setText(getString(R.string.amountOfLikesText));
+        System.out.println(user.getPosts().size());
         likes.append(Integer.toString(sumLikes(user.getPosts())));
     }
 
@@ -299,8 +302,6 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
     @Override
     public void onFinish(StorageMetadata data) {
-
-
         if(data != null) {
             StorageReference ref = data.getReference();
 

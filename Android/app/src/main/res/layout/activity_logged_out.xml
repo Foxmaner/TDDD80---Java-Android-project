@@ -19,6 +19,7 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/mainView"
+        android:name="com.example.strinder.logged_out.LoginFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"

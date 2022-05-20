@@ -1,53 +1,48 @@
 package com.example.strinder;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.navigation.NavController;
+import androidx.navigation.NavGraph;
+import androidx.navigation.NavInflater;
+import androidx.navigation.fragment.NavHostFragment;
+import androidx.navigation.ui.NavigationUI;
 
 import com.example.strinder.backend_related.storage.FirebaseServices;
 import com.example.strinder.backend_related.tables.User;
-import com.example.strinder.logged_in.AddActivityFragment;
-import com.example.strinder.logged_in.FollowFragment;
-import com.example.strinder.logged_in.HomeFragment;
-import com.example.strinder.logged_in.MessagesFragment;
-import com.example.strinder.logged_in.ProfileFragment;
-import com.example.strinder.logged_in.SettingsFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationBarView;
 
 /** This Activity class handles all the fragments and backend code that is used when a user
  * is logged in to the server.
  */
-public class LoggedInActivity extends AppCompatActivity {
+public class LoggedInActivity extends AppCompatActivity implements
+        NavigationBarView.OnItemSelectedListener {
 
     private Toolbar toolbar;
-    private User account;
+    private User user;
+    private NavController navController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
 
-        account = getIntent().getParcelableExtra("account");
+        user = getIntent().getParcelableExtra("account");
         //Top Nav
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         ActionBar bar =  getSupportActionBar();
-
-        HomeFragment fragment;
-        fragment = HomeFragment.newInstance(account,0);
-
-        getSupportFragmentManager().beginTransaction().
-                replace(R.id.loggedInView, fragment).commit();
-
 
         //Remove app name from top nav.
         if(bar != null) {
@@ -61,8 +56,23 @@ public class LoggedInActivity extends AppCompatActivity {
         menuBar.setSelectedItemId(R.id.home);
 
         FirebaseServices.getInstance().initialize(this);
-        setBottomNavListener(menuBar);
 
+        NavHostFragment navHostFragment =
+                (NavHostFragment) getSupportFragmentManager().findFragmentById(R.id.loggedInView);
+
+        if (navHostFragment != null) {
+            navController = navHostFragment.getNavController();
+            //Set default args for the HomeFragment!
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("account",user);
+            bundle.putInt("location",0);
+            navController.setGraph(R.navigation.nav_graph,bundle);
+            Log.i("Start Destination","Bundle created for start destination.");
+            // Setup of BottomNavigationBar
+            NavigationUI.setupWithNavController(menuBar,navController);
+            menuBar.setOnItemSelectedListener(this);
+
+        }
 
     }
 
@@ -78,8 +88,9 @@ public class LoggedInActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
         if(item.getItemId() == R.id.action_settings) {
-            SettingsFragment fragment = SettingsFragment.newInstance(account);
-            getSupportFragmentManager().beginTransaction().replace(R.id.loggedInView,fragment).commit();
+            Bundle bundle = new Bundle();
+            bundle.putParcelable("account",user);
+            navController.navigate(R.id.settingsScreen,bundle);
             setHeaderText(getString(R.string.settings));
             return true;
         }
@@ -96,60 +107,13 @@ public class LoggedInActivity extends AppCompatActivity {
         view.setText(text);
     }
 
-    /** This enables  the BottomNavListener to change fragment depending on what button
-     * the user presses.
-     * @param menuBar -  the BottomNavigationView object that the listener will be added to.
-     */
-    private void setBottomNavListener(final BottomNavigationView menuBar) {
-        menuBar.setOnItemSelectedListener(item -> {
-            Fragment fragment = null;
-            final int id = item.getItemId();
-            //We can't convert this to a switch case due to the ids not being final.
-            if (id == R.id.home) {
-                fragment = HomeFragment.newInstance(account,0);
-                setHeaderText(getString(R.string.navbar_home));
-            }
-            else if (id == R.id.friends) {
-                fragment = FollowFragment.newInstance(account);
-                setHeaderText(getString(R.string.navbar_friends));
-            }
-            else if (id == R.id.plus) {
-
-                fragment = AddActivityFragment.newInstance(account);
-                setHeaderText(getString(R.string.navbar_plus));
-
-            }
-            else if (id == R.id.messages) {
-                fragment = new MessagesFragment();
-                setHeaderText(getString(R.string.navbar_notifications));
-            }
-            else if (id == R.id.profile) {
-                fragment = ProfileFragment.newInstance(account);
-                setHeaderText(getString(R.string.navbar_profile));
-            }
-
-            if(fragment != null) {
-                getSupportFragmentManager().beginTransaction().
-                        replace(R.id.loggedInView, fragment).commit();
-
-                return true;
-            }
-
-            return false;
-        });
-    }
 
     /** This function is called after a post has been added
      * it changes the fragment back to home, and gives a conformation,
      * that a post has indeed been added
      */
     public void jumpToHome(final String message){
-        Fragment homeFragment = new HomeFragment();
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-        transaction.replace(R.id.loggedInView, homeFragment);
-        transaction.addToBackStack(null);
-
-        transaction.commit();
+        navController.navigate(R.id.homeScreen);
 
         Toast.makeText(this,message,
                 Toast.LENGTH_SHORT).show();
@@ -161,4 +125,38 @@ public class LoggedInActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
+        final int id = item.getItemId();
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("account",user);
+
+        //We can't convert this to a switch case due to the ids not being final. (warning)
+        if(id == R.id.home) {
+            setHeaderText(getString(R.string.navbar_home));
+            navController.navigate(R.id.homeScreen,bundle);
+        }
+        else if(id == R.id.follows) {
+            setHeaderText(getString(R.string.navbar_followers));
+            navController.navigate(R.id.followScreen,bundle);
+        }
+        else  if(id == R.id.plus) {
+            setHeaderText(getString(R.string.navbar_plus));
+            navController.navigate(R.id.activityScreen,bundle);
+        }
+        else if(id == R.id.notifications) {
+            setHeaderText(getString(R.string.navbar_notifications));
+            navController.navigate(R.id.notificationScreen,bundle);
+        }
+        else if(id == R.id.profile) {
+            setHeaderText(getString(R.string.navbar_profile));
+            navController.navigate(R.id.profileScreen,bundle);
+        }
+        else {
+            return false;
+        }
+
+        return true;
+    }
 }

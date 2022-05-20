@@ -5,13 +5,14 @@ import android.os.Parcelable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Post implements Parcelable {
 
     private final int id,userId;
     private final String title,caption;
     private final String date;
-    private final List<User> likes;
+    private List<User> likes;
     private List<Comment> comments;
     private TrainingSession trainingSession;
     private final double latitude,longitude;
@@ -36,10 +37,6 @@ public class Post implements Parcelable {
 
     public int getId() {
         return id;
-    }
-
-    public int getUserId() {
-        return userId;
     }
 
     public String getTitle() {
@@ -72,6 +69,10 @@ public class Post implements Parcelable {
 
     public void setComments(final List<Comment> comments) {
         this.comments = comments;
+    }
+
+    public void setLikes(final List<User> likes) {
+        this.likes = likes;
     }
 
     public TrainingSession getTrainingSession() {
@@ -113,4 +114,16 @@ public class Post implements Parcelable {
         parcel.writeDouble(longitude);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return id == post.id && userId == post.userId && title.equals(post.title) && caption.equals(post.caption) && date.equals(post.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, userId, title, caption, date);
+    }
 }

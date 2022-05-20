@@ -35,7 +35,6 @@ public class ServerConnection {
 
     private static final String BASE_URL = "https://strinder.herokuapp.com"; //Emulator: 10.0.2.2:5000
 
-
     /**
      * Send a StringRequest with a bound JsonObject.
      *

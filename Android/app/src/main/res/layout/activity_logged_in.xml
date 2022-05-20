@@ -38,15 +38,16 @@
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/loggedInView"
-        android:name="com.example.strinder.logged_in.HomeFragment"
+        android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/white"
         app:layout_constraintBottom_toTopOf="@+id/navBar"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        tools:layout="@layout/fragment_home" />
+
+        app:defaultNavHost="true" />
+
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline40"

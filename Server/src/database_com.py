@@ -9,8 +9,8 @@ app = Flask(__name__)
 
 # Connection
 if 'NAMESPACE' in os.environ and os.environ['NAMESPACE'] == 'heroku':
-    db_uri = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
-    address = "https://strinder.herokuapp.com/"
+    db_uri = os.environ.get('DB_URL')
+    address = "https://strinder-android.herokuapp.com/"
     debug_flag = False
 
 else:

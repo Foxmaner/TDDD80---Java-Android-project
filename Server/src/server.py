@@ -532,6 +532,12 @@ if __name__ == "__main__":
     app.debug = True
     app.port = int(os.environ.get("PORT", 8080))
     # Initialize database
+    # db.create_all()
+    # db.session.commit()
+    app.run()
+
+
+@app.before_first_request
+def init():
     db.create_all()
     db.session.commit()
-    app.run()

@@ -4,7 +4,6 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.strinder.logged_out.LoginFragment;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 
 /**
@@ -18,9 +17,6 @@ public class LoggedOutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_out);
 
-        //Set the FragmentContainerView to a LoginFragment.
-        LoginFragment fragment = LoginFragment.newInstance();
-        getSupportFragmentManager().beginTransaction().replace(R.id.mainView,fragment).commit();
         //Connect FireBase to Google API
         // Your server's client ID, not your Android client ID.
         // Only show accounts previously used to sign in.

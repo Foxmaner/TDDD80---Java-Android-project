@@ -50,7 +50,7 @@ import java.util.List;
  * Use the {@link ProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileFragment extends Fragment implements FirebaseCompletionListener {
+public class ProfileFragment extends Fragment implements FirebaseCompletionListener, VolleyResponseListener<String> {
 
     private ActivityResultLauncher<Intent> cameraActivityLauncher;
     private ActivityResultLauncher<Intent> uploadActivityLauncher;
@@ -101,7 +101,7 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
             RecyclerView recyclerView = v.findViewById(R.id.myPosts);
 
             PostAdapter adapter = new PostAdapter(this.getContext(),
-                    user.getPosts(), Collections.singletonList(user), user,getParentFragmentManager());
+                    user.getPosts(), Collections.singletonList(user), user,this);
 
             recyclerView.setAdapter(adapter);
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -308,28 +308,7 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
                 ref.getDownloadUrl().addOnSuccessListener(uri -> {
                     user.setPhotoUrl(uri.toString());
 
-                    user.uploadData(getContext(), new VolleyResponseListener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            Log.i("Successfully saved link",
-                                    "Link was uploaded to database");
-                            Toast.makeText(getContext(),"Successfully saved link in database",
-                                    Toast.LENGTH_SHORT).show();
-
-                            getParentFragmentManager().beginTransaction().
-                                    replace(R.id.loggedInView,ProfileFragment.newInstance(user)).
-                                    commit();
-                        }
-
-                        @Override
-                        public void onError(VolleyError error) {
-                            Log.e("Failed to save link",
-                                    "Link failed to upload to database");
-
-                            Toast.makeText(getContext(),"Failed to save link in database",
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    user.uploadData(getContext(), this);
                 });
             }
 
@@ -340,6 +319,27 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
         }
 
 
+    }
+
+    @Override
+    public void onResponse(String response) {
+        Log.i("Successfully saved link",
+                "Link was uploaded to database");
+        Toast.makeText(getContext(),"Successfully saved link in database",
+                Toast.LENGTH_SHORT).show();
+
+        getParentFragmentManager().beginTransaction().detach(ProfileFragment.this).commit();
+
+        getParentFragmentManager().beginTransaction().attach(ProfileFragment.this).commit();
+    }
+
+    @Override
+    public void onError(VolleyError error) {
+        Log.e("Failed to save link",
+                "Link failed to upload to database");
+
+        Toast.makeText(getContext(),"Failed to save link in database",
+                Toast.LENGTH_SHORT).show();
     }
 
 }

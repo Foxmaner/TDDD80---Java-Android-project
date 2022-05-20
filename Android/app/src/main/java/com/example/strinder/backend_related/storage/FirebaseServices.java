@@ -1,21 +1,16 @@
 package com.example.strinder.backend_related.storage;
 
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 
 import com.example.strinder.backend_related.tables.User;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+
 import java.io.ByteArrayOutputStream;
 
 public class FirebaseServices {
@@ -39,14 +34,11 @@ public class FirebaseServices {
         // Use the application default credentials
         FirebaseAuth auth = FirebaseAuth.getInstance();
 
-        auth.signInAnonymously().addOnCompleteListener(activity, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
+        auth.signInAnonymously().addOnCompleteListener(activity, task -> {
 
-                FirebaseStorage storage = FirebaseStorage.getInstance();
+            FirebaseStorage storage = FirebaseStorage.getInstance();
 
-                storageRef = storage.getReference();
-            }
+            storageRef = storage.getReference();
         });
     }
 

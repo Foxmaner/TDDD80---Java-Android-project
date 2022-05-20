@@ -15,7 +15,7 @@ from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingS
 bcrypt = Bcrypt(app)
 
 ACCESS_EXPIRES = timedelta(minutes=30)
-app.config["JWT_SECRET_KEY"] = os.environ.get('JWT_SECRET_KEY')
+app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
 
@@ -35,12 +35,13 @@ def check_if_token_revoked(_, jwt_payload: dict) -> bool:
 def authenticate():
     post_input = request.get_json()
     token = post_input["idToken"]
-    client_id = os.environ.get("TDDD80_Server_ClientID")
+    web_id = os.environ.get('WEB_KEY')
+
 
     try:
         google_request = requests.Request()
         # Specify the CLIENT_ID of the app that accesses the backend:
-        info = id_token.verify_oauth2_token(token, google_request, client_id)
+        info = id_token.verify_oauth2_token(token, google_request, web_id, 10)
 
         if info["iss"] == "https://accounts.google.com":
             # ID token is valid. Get the user's Google Account ID and other information.
@@ -58,6 +59,7 @@ def authenticate():
             # From Post Request
             birthday = post_input["birthday"]
             gender = post_input["gender"]
+
             user = User.query.filter_by(username=username).first()
 
             # If there are no usernames like this, we continue.
@@ -101,7 +103,7 @@ def add_post():
 
     # Query the user. (There is only one)
     query = User.query.filter_by(id=user_id).first()
-
+    print(user_id)
     if query is not None:
         post_data = request.get_json()
 
@@ -382,14 +384,14 @@ def get_users_by_name(full_name):
         full_name = str(full_name)
     except (ValueError, TypeError):
         return "", 400
-    print(full_name)
+
     users = User.query.filter(User.full_name.like("%" + full_name + "%"),
                               User.id != get_jwt_identity()).all()
 
     if users is not None:
         # Convert User objects to dictionary.
         users = [user.to_dict_friends() for user in users]
-        print(users)
+
         return jsonify(users), 200
 
     return "", 400
@@ -459,12 +461,12 @@ def get_comments(post_id):
         return "", 400
 
 
-@app.route("/friends/<user_id>/<nr_of_friends>", methods=["GET"])
+@app.route("/friends/<nr_of_friends>", methods=["GET"])
 @jwt_required()
-def get_friends(user_id, nr_of_friends):
+def get_friends(nr_of_friends):
     """Fetch selected nr of friends. -1 = ALL."""
     try:
-        user_id = int(user_id)
+        user_id = int(get_jwt_identity())
         nr_of_friends = int(nr_of_friends)
 
     except(ValueError, TypeError):
@@ -487,12 +489,12 @@ def get_friends(user_id, nr_of_friends):
     return jsonify(friends), 200
 
 
-@app.route('/del/usr/<user_id>', methods=["DELETE"])
+@app.route('/del/usr', methods=["DELETE"])
 @jwt_required()
-def remove_user(user_id):
-    user = User.query.filter_by(id=user_id)
+def remove_user():
+    user = User.query.filter_by(id=get_jwt_identity())
 
-    if user.first() is not None and user.id == get_jwt_identity():
+    if user.first() is not None and user.first().id == get_jwt_identity():
         user.delete()
         db.session.commit()
         return "", 200
@@ -529,4 +531,8 @@ def remove_comment(comment_id):
 if __name__ == "__main__":
     app.debug = True
     app.port = int(os.environ.get("PORT", 8080))
+    # Initialize database
+    db.drop_all()
+    db.create_all()
+    db.session.commit()
     app.run()

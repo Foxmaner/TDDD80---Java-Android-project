@@ -96,10 +96,11 @@ class Post(db.Model):
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     # Here we need a relationship! We need to know which user liked what post.
-    likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")
+    likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts",
+                            cascade="all, delete-orphan", single_parent=True)
 
-    comments = db.relationship("Comment", backref="post", lazy=True)
-    training_session = db.relationship("TrainingSession", uselist=False, backref="post")
+    comments = db.relationship("Comment", backref="post", lazy=True, cascade="all, delete-orphan")
+    training_session = db.relationship("TrainingSession", uselist=False, backref="post", cascade="delete")
 
     def to_dict(self):
         session = None
@@ -117,7 +118,7 @@ class TrainingSession(db.Model):
     __tablename__ = "Training_session"
     id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
     time = db.Column(db.DateTime, nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("Post.id",  ondelete='SET NULL'), nullable=True)
     speed_unit = db.Column(db.String(40), nullable=False)
     speed = db.Column(db.Float, nullable=False)
     distance = db.Column(db.Float, nullable=False)

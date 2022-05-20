@@ -37,7 +37,6 @@ def authenticate():
     token = post_input["idToken"]
     web_id = os.environ.get('WEB_KEY')
 
-
     try:
         google_request = requests.Request()
         # Specify the CLIENT_ID of the app that accesses the backend:
@@ -492,10 +491,10 @@ def get_friends(nr_of_friends):
 @app.route('/del/usr', methods=["DELETE"])
 @jwt_required()
 def remove_user():
-    user = User.query.filter_by(id=get_jwt_identity())
+    user = User.query.filter_by(id=get_jwt_identity()).first()
 
-    if user.first() is not None and user.first().id == get_jwt_identity():
-        user.delete()
+    if user is not None and user.id == get_jwt_identity():
+        db.session.delete(user)
         db.session.commit()
         return "", 200
     else:
@@ -508,6 +507,7 @@ def remove_post(post_id):
     post = Post.query.filter_by(id=post_id)
 
     if post.first() is not None and post.first().user_id == get_jwt_identity():
+        post.likes = []
         post.delete()
         db.session.commit()
         return "", 200
@@ -532,7 +532,6 @@ if __name__ == "__main__":
     app.debug = True
     app.port = int(os.environ.get("PORT", 8080))
     # Initialize database
-    db.drop_all()
     db.create_all()
     db.session.commit()
     app.run()

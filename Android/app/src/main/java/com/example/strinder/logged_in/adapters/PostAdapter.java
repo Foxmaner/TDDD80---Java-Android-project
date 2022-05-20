@@ -75,9 +75,8 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
         //In case we know that all posts belong to one individual. The profile is one such case.
         if (users.size() == 1 && users.get(0).equals(currentUser)) {
-            user = users.get(0);
-            Post postToFind = posts.get(position);
-            post = user.getPosts().get(posts.indexOf(postToFind));
+            user = currentUser;
+            post = user.getPosts().get(posts.indexOf(posts.get(position)));
         }
         else {
             user = users.get(position);
@@ -123,7 +122,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
                                 };
                                 //The users that have liked the post.
                                 List<User> likeUsers = gson.fromJson(response, token.getType());
-                                System.out.println(likeUsers.size());
                                 post.setLikes(likeUsers);
                                 setLikeText(holder, likeUsers);
                             }

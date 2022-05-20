@@ -64,7 +64,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
 
                             //Display the user's full name.
                             holder.getName().setText(String.format("%s %s",
-                                    user.getFirstName(),user.getLastName()));
+                                    commentUser.getFirstName(),commentUser.getLastName()));
 
                             //We do not want to reload the image.
                             Picasso.with(context).load(commentUser.getPhotoUrl())

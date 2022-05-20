@@ -37,6 +37,7 @@ def authenticate():
     token = post_input["idToken"]
     web_id = os.environ.get('WEB_KEY')
 
+
     try:
         google_request = requests.Request()
         # Specify the CLIENT_ID of the app that accesses the backend:

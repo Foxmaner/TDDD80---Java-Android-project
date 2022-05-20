@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="727f8044-f622-4ee4-b418-b721f4f3f130" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/backend_related/database/ServerConnection.java" beforeDir="false" afterPath="$PROJECT_DIR$/../Android/app/src/main/java/com/example/strinder/backend_related/database/ServerConnection.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/database_com.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/database_com.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/server.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

@@ -58,7 +58,6 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         Bundle bundle = getArguments();
 
         if(bundle != null) {
-            System.out.println("READING");
             user =  bundle.getParcelable("account");
             postLocation = bundle.getInt("postLocation");
         }
@@ -99,13 +98,13 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         recyclerView.setAdapter(adapter);
     }
     public void fetchData(final ServerConnection connection) {
-        System.out.println("FETCHING DATA");
         connection.sendStringJsonRequest("/posts/latest/-1",
             new JSONObject(),
             Request.Method.GET, user.getAccessToken(), this);
     }
 
     public void onResponse(String response) {
+        System.out.println(response);
         Gson gson = new Gson();
         FetchedPosts fetchedPosts = gson.fromJson(response,
                 FetchedPosts.class);

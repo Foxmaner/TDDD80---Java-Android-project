@@ -115,6 +115,7 @@ def add_post():
 
         # Save the post to the user and commit changes to database.
         query.posts.append(post)
+
         db.session.commit()
 
         return jsonify(post.to_dict()), 200
@@ -147,24 +148,13 @@ def set_session():
         training = TrainingSession(time=time, post_id=post_id, speed_unit=speed_unit,
                                    speed=speed, distance=distance, distance_unit=distance_unit, exercise=exercise)
         # Update the training_session attribute.
-        if post.training_session is None:
-            post.training_session = training
-        else:
-            # Could not replace the session as such: training_session = training.
-            post.training_session.speed = training.speed
-            post.training_session.post_id = training.post_id
-            post.training_session.time = training.time
-            post.training_session.exercise = training.exercise
-            post.training_session.speed_unit = training.speed_unit
-            post.training_session.distance_unit = training.distance_unit
-            post.training_session.distance = training.distance
+        post.training_session = training
 
         db.session.commit()
 
         return jsonify(training.to_dict()), 200
 
-    else:
-        return "", 400
+    return "", 400
 
 
 @app.route("/user/logout", methods=["POST"])

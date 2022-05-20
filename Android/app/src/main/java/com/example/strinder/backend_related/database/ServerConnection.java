@@ -29,7 +29,6 @@ public class ServerConnection {
             requestQueue = Volley.newRequestQueue(context);
         else
             requestQueue = null;
-
     }
 
     private static final String BASE_URL = "https://strinder-android.herokuapp.com"; //Emulator: 10.0.2.2:5000

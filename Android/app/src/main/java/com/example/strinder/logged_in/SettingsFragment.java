@@ -115,7 +115,6 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                 return;
             }
 
-            System.out.println(user.getBirthday());
 
             user.setFirstName(newFirstName);
             user.setLastName(newLastName);

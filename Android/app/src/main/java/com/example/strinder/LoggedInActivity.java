@@ -112,8 +112,10 @@ public class LoggedInActivity extends AppCompatActivity implements
      * it changes the fragment back to home, and gives a conformation,
      * that a post has indeed been added
      */
-    public void jumpToHome(final String message){
-        navController.navigate(R.id.homeScreen);
+    public void jumpToHome(final String message, User user){
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("account",user);
+        navController.navigate(R.id.homeScreen,bundle);
 
         Toast.makeText(this,message,
                 Toast.LENGTH_SHORT).show();

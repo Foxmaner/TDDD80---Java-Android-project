@@ -177,6 +177,7 @@ public class AddActivityFragment extends Fragment implements LocationListener {
                                         public void onResponse(String response) {
                                             TrainingSession session = gson.fromJson(response,
                                                     TrainingSession.class);
+
                                             post.setTrainingSession(session);
 
                                             //FIXME Fix this later on? Make a listener or something.
@@ -185,7 +186,7 @@ public class AddActivityFragment extends Fragment implements LocationListener {
 
                                             if(activity != null) {
                                                 activity.jumpToHome("Your Post Was Successfully" +
-                                                        " Added!");
+                                                        " Added!",user);
                                             }
                                         }
 
@@ -194,7 +195,7 @@ public class AddActivityFragment extends Fragment implements LocationListener {
                                             Log.e("Adding activity", error.toString());
                                             user.getPosts().remove(post);
                                             Toast.makeText(getContext(),"Failed to add activity" +
-                                                            "stats to the post.",
+                                                            " stats to the post.",
                                                     Toast.LENGTH_SHORT).show();
                                         }
                                     });

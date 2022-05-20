@@ -62,7 +62,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
                         currentUser.getLastName()));
 
                 holder.getFriendBiography().setText(currentUser.getBiography());
-                System.out.println(currentUser.getPhotoUrl());
+
                 if (currentUser.getPhotoUrl() != null) {
                     //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
                     if (context != null) {

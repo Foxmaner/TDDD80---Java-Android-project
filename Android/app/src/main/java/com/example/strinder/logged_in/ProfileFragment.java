@@ -111,6 +111,7 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
             //Camera intent launcher
             setCameraIntentLauncher();
+
             //Upload intent launcher
             setUploadIntentLauncher();
 
@@ -126,7 +127,6 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
         try {
             for (Post post : posts) {
-                System.out.println(post.getLikes().size());
                 sum += post.getLikes().size();
             }
         }
@@ -141,10 +141,15 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
         float sum = 0;
         try {
             for (Post post : posts) {
-                String time = post.getTrainingSession().getElapsedTime();
-                LocalTime localTime = LocalTime.parse(time);
-                if(localTime != null)
-                    sum += localTime.getHour() + localTime.getMinute() / 60f;
+                if(post.getTrainingSession() != null) {
+                    String time = post.getTrainingSession().getElapsedTime();
+                    LocalTime localTime = LocalTime.parse(time);
+                    if (localTime != null)
+                        sum += localTime.getHour() + localTime.getMinute() / 60f;
+                }
+                else {
+                    return -1;
+                }
             }
         }
         catch(NumberFormatException e ){
@@ -173,7 +178,6 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
         TextView likes = v.findViewById(R.id.amountOfLikes);
         likes.setText(getString(R.string.amountOfLikesText));
-        System.out.println(user.getPosts().size());
         likes.append(Integer.toString(sumLikes(user.getPosts())));
     }
 

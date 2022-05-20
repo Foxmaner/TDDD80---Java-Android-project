@@ -110,7 +110,8 @@ public class CommentFragment extends Fragment {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("text", text);
-                } catch (JSONException e) {
+                }
+                catch (JSONException e) {
                     e.printStackTrace();
                     return;
                 }
@@ -154,7 +155,7 @@ public class CommentFragment extends Fragment {
                     bundle.putParcelable("account",user);
                     bundle.putInt("location",location);
 
-                    NavHostFragment.findNavController(this).navigate(R.id.homeScreen);
+                    NavHostFragment.findNavController(this).navigate(R.id.homeScreen,bundle);
                 }
             );
 

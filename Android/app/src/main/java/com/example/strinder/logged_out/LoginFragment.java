@@ -164,8 +164,6 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
             AuthenticationHandler authenticationHandler = new AuthenticationHandler(account,
                     this.getActivity());
             authenticationHandler.tryAuthentication();
-        }else{
-            System.out.println("activity i login = null");
         }
 
 

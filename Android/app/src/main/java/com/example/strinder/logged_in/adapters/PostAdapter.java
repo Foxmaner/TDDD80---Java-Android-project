@@ -83,7 +83,6 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
             post = posts.get(position);
         }
 
-
         //Set Map position
         holder.getMapView().getMapAsync(googleMap -> {
             MapsInitializer.initialize(context.getApplicationContext());
@@ -147,7 +146,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
                 .placeholder(android.R.drawable.sym_def_app_icon)
                 .error(android.R.drawable.sym_def_app_icon)
                 .into(holder.getProfileImage());
-        System.out.println(post.getCaption());
+
         holder.getPostCaptionView().setText(post.getCaption());
         holder.getPostTitleView().setText(post.getTitle());
         holder.getPostDate().setText(post.getDate());
@@ -162,7 +161,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
             NavHostFragment.findNavController(fragment).navigate(R.id.commentScreen,bundle);
         });
 
-        if(currentUser.equals(user)){
+        if(currentUser.equals(user)) {
             holder.getDeleteButton().setVisibility(View.VISIBLE);
 
             holder.getDeleteButton().setOnClickListener(view ->
@@ -173,6 +172,9 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
                                 public void onResponse(String response) {
                                     Toast.makeText(context, "Post removed",
                                             Toast.LENGTH_SHORT).show();
+
+                                    if(user.getPosts() != null)
+                                        user.getPosts().remove(post);
                                 }
 
                                 @Override

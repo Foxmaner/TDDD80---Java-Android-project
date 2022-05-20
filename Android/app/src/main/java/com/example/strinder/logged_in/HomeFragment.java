@@ -36,6 +36,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
     private RecyclerView recyclerView;
     private User user;
     private int postLocation;
+    private ServerConnection connection;
 
     /**
      * Use this factory method to create a new instance of
@@ -70,7 +71,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
         if(user != null && getContext() != null) {
 
-            ServerConnection connection = new ServerConnection(this.getContext());
+            connection = new ServerConnection(this.getContext());
             recyclerView = v.findViewById(R.id.homeFeedRecycleView);
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
             swipeContainer = v.findViewById(R.id.homeSwipeContainer);
@@ -117,6 +118,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
     @Override
     public void onError(VolleyError error) {
+        connection.maybeDoRefresh(error,user);
         Toast.makeText(getContext(),"Failed to load posts. Try refreshing.",
                 Toast.LENGTH_SHORT).show();
     }

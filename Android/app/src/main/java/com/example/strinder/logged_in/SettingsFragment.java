@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.tables.User;
 import com.example.strinder.logged_in.handlers.LogoutHandler;
@@ -134,11 +135,12 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
                     biography.setText(user.getBiography());
                     gender.setText(user.getGender());
 
-
                 }
 
                 @Override
                 public void onError(VolleyError error) {
+                    ServerConnection connection = new ServerConnection(getContext());
+                    connection.maybeDoRefresh(error,user);
                     Log.e("Upload Details",error.toString());
                     Toast.makeText(getContext(),"Details were correctly formatted, " +
                             "but failed to upload to the database",Toast.LENGTH_SHORT).show();
@@ -154,7 +156,7 @@ public class SettingsFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View view) {
         if(view.getId() == R.id.signOutBtn) {
-            logoutHandler.tryLogout(user.getAccessToken());
+            logoutHandler.tryLogout(user);
         }
     }
 

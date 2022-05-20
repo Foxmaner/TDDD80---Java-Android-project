@@ -29,7 +29,8 @@ public class User implements Parcelable {
     private String photoUrl;
     private String biography;
     private final int id;
-    private final String accessToken;
+    private String accessToken;
+    private final String refreshToken;
 
     private User(final Parcel parcel) {
         this.firstName = parcel.readString();
@@ -47,8 +48,8 @@ public class User implements Parcelable {
         posts = new ArrayList<>();
         parcel.readList(posts,Post.class.getClassLoader());
 
-
         accessToken = parcel.readString();
+        refreshToken = parcel.readString();
     }
 
     public String getFirstName() {
@@ -81,6 +82,10 @@ public class User implements Parcelable {
 
     public String getAccessToken() {
         return accessToken;
+    }
+
+    public String getRefreshToken() {
+        return refreshToken;
     }
 
     public int getId() {
@@ -154,6 +159,10 @@ public class User implements Parcelable {
         this.biography = biography;
     }
 
+    public void setAccessToken(final String accessToken) {
+        this.accessToken = accessToken;
+    }
+
     public void addFriend(final User user) {
         friends.add(user);
     }
@@ -181,6 +190,7 @@ public class User implements Parcelable {
         parcel.writeList(friends);
         parcel.writeList(posts);
         parcel.writeString(accessToken);
+        parcel.writeString(refreshToken);
     }
 
     public static final Parcelable.Creator<User> CREATOR

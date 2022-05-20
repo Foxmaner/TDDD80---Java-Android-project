@@ -132,6 +132,7 @@ public class CommentFragment extends Fragment {
 
                             @Override
                             public void onError(VolleyError error) {
+                                connection.maybeDoRefresh(error,user);
                                 Log.e("Add Comment Error", error.toString());
                                 Toast.makeText(getContext(), "Failed to add your comment! " +
                                                 "Please try again!",
@@ -205,6 +206,7 @@ public class CommentFragment extends Fragment {
 
                     @Override
                     public void onError(VolleyError error) {
+                        connection.maybeDoRefresh(error,user);
                         Log.e("Error Fetching Comments", "Failed to fetch" +
                                 " comments for post " + post.getId());
 

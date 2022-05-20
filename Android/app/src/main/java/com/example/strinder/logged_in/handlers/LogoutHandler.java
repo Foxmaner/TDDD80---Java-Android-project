@@ -10,6 +10,7 @@ import com.android.volley.VolleyError;
 import com.example.strinder.LoggedOutActivity;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.tables.User;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -18,22 +19,25 @@ import org.json.JSONObject;
 
 public class LogoutHandler implements VolleyResponseListener<String> {
     private final Activity activity;
-
+    private ServerConnection connection;
+    private User user;
     public LogoutHandler(final Activity activity) {
         this.activity = activity;
     }
 
-    public void tryLogout(final String token) {
+    public void tryLogout(final User user) {
         if(activity != null) {
+            this.user = user;
            GoogleSignInClient client = GoogleSignIn.getClient(activity,
                    GoogleSignInOptions.DEFAULT_SIGN_IN);
 
             client.signOut();
 
             //Logout from backend
-            ServerConnection connection = new ServerConnection(activity);
+            connection = new ServerConnection(activity);
             JSONObject json = new JSONObject();
-            connection.sendStringJsonRequest("/user/logout",json, Request.Method.POST,token,
+            connection.sendStringJsonRequest("/user/logout",json, Request.Method.POST,
+                    user.getAccessToken(),
                     this);
 
         }
@@ -54,6 +58,7 @@ public class LogoutHandler implements VolleyResponseListener<String> {
 
     @Override
     public void onError(VolleyError error) {
+        connection.maybeDoRefresh(error,user);
         Log.e("Logout error", "Failed to logout!");
         Toast.makeText(activity,"Failed to sign out. Please close the app",
                 Toast.LENGTH_SHORT).show();

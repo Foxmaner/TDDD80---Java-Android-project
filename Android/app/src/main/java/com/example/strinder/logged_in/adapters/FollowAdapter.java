@@ -135,6 +135,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
                     @Override
                     public void onError(VolleyError error) {
+                        connection.maybeDoRefresh(error,user);
                         Log.e("Add Fail", "Failed to add user to follow list");
                         Toast.makeText(context,"Failed to add user. Please try again.",
                                 Toast.LENGTH_SHORT).show();
@@ -159,6 +160,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
                     @Override
                     public void onError(VolleyError error) {
+                        connection.maybeDoRefresh(error,user);
                         Log.e("Remove Fail", "Failed to remove user from your follow list");
                         Toast.makeText(context,"Failed to remove user. Please try again.",
                                 Toast.LENGTH_SHORT).show();

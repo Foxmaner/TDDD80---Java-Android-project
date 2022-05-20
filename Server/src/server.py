@@ -3,18 +3,18 @@ import traceback
 from datetime import timedelta, datetime, timezone
 
 from flask import jsonify, request
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    create_refresh_token,
+    get_jwt_identity, get_jwt
+)
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from sqlalchemy import desc
 
 from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingSession
 
-bcrypt = Bcrypt(app)
-
-ACCESS_EXPIRES = timedelta(minutes=1)
+ACCESS_EXPIRES = timedelta(minutes=15)
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
@@ -30,6 +30,22 @@ def check_if_token_revoked(_, jwt_payload: dict) -> bool:
 
 
 # ----- POST ----- #
+
+# The jwt_refresh_token_required decorator insures a valid refresh
+# token is present in the request before calling this endpoint. We
+# can use the get_jwt_identity() function to get the identity of
+# the refresh token, and use the create_access_token() function again
+# to make a new access token for this identity.
+@app.route("/refresh", methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+
+    ret = {
+        'access_token': create_access_token(identity=get_jwt_identity())
+    }
+
+    return jsonify(ret), 200
+
 
 @app.route("/authenticate", methods=["POST"])
 def authenticate():
@@ -76,8 +92,11 @@ def authenticate():
                 db.session.commit()
 
             token = create_access_token(identity=user.id)
+            refresh_token = create_refresh_token(identity=user.id)
+
             data = user.to_dict()
             data["accessToken"] = token
+            data["refreshToken"] = refresh_token
             return data, 200
 
         else:

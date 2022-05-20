@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.volley.VolleyError;
 import com.example.strinder.R;
+import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
 import com.example.strinder.backend_related.storage.FirebaseCompletionListener;
 import com.example.strinder.backend_related.storage.FirebaseServices;
@@ -340,6 +341,8 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
     @Override
     public void onError(VolleyError error) {
+        ServerConnection connection = new ServerConnection(getContext());
+        connection.maybeDoRefresh(error,user);
         Log.e("Failed to save link",
                 "Link failed to upload to database");
 

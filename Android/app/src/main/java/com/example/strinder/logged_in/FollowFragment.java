@@ -127,6 +127,7 @@ public class FollowFragment extends Fragment {
 
                         @Override
                         public void onError(VolleyError error) {
+                            connection.maybeDoRefresh(error,user);
                             Log.e("Retrieve Users Error", "Failed to get users from " +
                                     "database");
                             Toast.makeText(getContext(), "Search Failed",

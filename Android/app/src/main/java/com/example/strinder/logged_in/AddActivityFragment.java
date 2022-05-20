@@ -192,6 +192,7 @@ public class AddActivityFragment extends Fragment implements LocationListener {
 
                                         @Override
                                         public void onError(VolleyError error) {
+                                            connection.maybeDoRefresh(error,user);
                                             Log.e("Adding activity", error.toString());
                                             user.getPosts().remove(post);
                                             Toast.makeText(getContext(),"Failed to add activity" +
@@ -203,6 +204,7 @@ public class AddActivityFragment extends Fragment implements LocationListener {
 
                         @Override
                         public void onError(VolleyError error) {
+                            connection.maybeDoRefresh(error,user);
                             Log.e("Adding Post", error.toString());
                             Toast.makeText(getContext(),"Failed To Add Post",
                                     Toast.LENGTH_SHORT).show();

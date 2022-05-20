@@ -127,6 +127,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
                             @Override
                             public void onError(VolleyError error) {
+                                connection.maybeDoRefresh(error,currentUser);
                                 Log.e("Like Post Error", "Error occurred when liking post.");
                                 Toast.makeText(context, "Failed to like post.",
                                         Toast.LENGTH_SHORT).show();
@@ -179,6 +180,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
                                 @Override
                                 public void onError(VolleyError error) {
+                                    connection.maybeDoRefresh(error,currentUser);
                                     Log.e("Like Post Error", "Error occurred when deleting post.");
                                     Toast.makeText(context, "Failed to delete post.",
                                             Toast.LENGTH_SHORT).show();
@@ -239,6 +241,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
                     @Override
                     public void onError(VolleyError error) {
+                        connection.maybeDoRefresh(error,currentUser);
                         Log.e("Like Post Error", "Error occurred when fetching likes.");
                         Toast.makeText(context, "Failed to get amount of likes on post.",
                                 Toast.LENGTH_SHORT).show();

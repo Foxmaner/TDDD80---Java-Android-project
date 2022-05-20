@@ -18,6 +18,7 @@ import androidx.navigation.NavInflater;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
+import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.storage.FirebaseServices;
 import com.example.strinder.backend_related.tables.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;

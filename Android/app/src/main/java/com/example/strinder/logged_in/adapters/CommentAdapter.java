@@ -78,7 +78,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
 
                         @Override
                         public void onError(VolleyError error) {
-
+                            connection.maybeDoRefresh(error,user);
+                            Log.e("Fetch User Error", "Failed to fetch user data");
+                            Toast.makeText(context,"Failed to fetch user data",
+                                    Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -100,6 +103,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
 
                                 @Override
                                 public void onError(VolleyError error) {
+                                    connection.maybeDoRefresh(error,user);
                                     Log.e("Like Post Error", "Error occurred when deleting comment.");
                                     Toast.makeText(context, "Failed to delete post.",
                                             Toast.LENGTH_SHORT).show();

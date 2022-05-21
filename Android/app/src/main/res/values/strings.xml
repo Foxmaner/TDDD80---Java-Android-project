@@ -22,9 +22,6 @@
     <string name="submitButtonText">Save Details</string>
     <string name="accountText">Account</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
     <!--- Profile -->
     <string name="amountOfActivities">Posts:</string>
     <string name="amountOfLikesText">Likes:</string>
@@ -90,7 +87,7 @@
     <string name="search_for_user">Search For User</string>
     <string name="searchResult">Your Search Gave The Following Result:</string>
     <string name="mapViewDescription">The position that it was posted from</string>
-    <string name="loading_your_position">Loading your position...</string>
+    <string name="loading_your_position">Loading your position…</string>
 
 
 </resources>

@@ -92,7 +92,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
         User user;
 
         //In case we know that all posts belong to one individual. The profile is one such case.
-        if (users.size() == 1 && users.get(0).equals(currentUser)) {
+        if (users.size() == 1 && users.get(0).equals(currentUser) && posts.size() > position) {
             user = currentUser;
             post = user.getPosts().get(posts.indexOf(posts.get(position)));
         }

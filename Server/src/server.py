@@ -1,4 +1,5 @@
 import os
+import re
 import traceback
 from datetime import timedelta, datetime, timezone
 
@@ -161,8 +162,14 @@ def set_session():
     post_input = request.get_json()
     try:
         user_id = get_jwt_identity()
-        # Get the hour and minutes: HH:MM (e.g 16:56)
-        time = datetime.strptime(post_input["time"], "%H:%M")
+
+        # Check the time format. It has to match 99:59 etc.
+        elapsed_time = post_input["time"]
+        pattern = re.compile("^[0-9][0-9]:[0-5][0-9]$")
+        if pattern.match(elapsed_time) is None:
+            return "", 400
+
+        time = elapsed_time
         post_id = post_input["postId"]
         speed_unit = post_input["speedUnit"]
         speed = post_input["speed"]

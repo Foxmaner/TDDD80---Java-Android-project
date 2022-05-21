@@ -41,7 +41,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
-import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -135,12 +134,12 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
             for (Post post : posts) {
                 if(post.getTrainingSession() != null) {
                     String time = post.getTrainingSession().getElapsedTime();
-                    LocalTime localTime = LocalTime.parse(time);
-                    if (localTime != null)
-                        sum += localTime.getHour() + localTime.getMinute() / 60f;
-                }
-                else {
-                    return -1;
+                    String[] splitTime = time.split(":");
+                    int hours = Integer.parseInt(splitTime[0]);
+                    int minutes = Integer.parseInt(splitTime[1]);
+
+                    sum += hours + minutes/ 60f;
+
                 }
             }
         }

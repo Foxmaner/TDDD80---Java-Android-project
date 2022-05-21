@@ -69,7 +69,8 @@ public class ServerConnection {
         String jsonString = json.toString();
 
         if(requestQueue != null) {
-            StringRequest request = new StringRequest(method, url, (volleyResponseListener::onResponse), volleyResponseListener::onError) {
+            StringRequest request = new StringRequest(method, url,
+            (volleyResponseListener::onResponse), volleyResponseListener::onError) {
                 @Override
                 public Map<String, String> getHeaders() {
                     Map<String, String> params = new HashMap<>();

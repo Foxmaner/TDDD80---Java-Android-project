@@ -176,11 +176,13 @@ public class AddActivityFragment extends Fragment implements LocationListener {
                                         @Override
                                         public void onError(VolleyError error) {
                                             connection.maybeDoRefresh(error,user);
-                                            Log.e("Adding activity", error.toString());
+                                            Log.e("Failed to add training session to activity",
+                                                    error.toString());
+
                                             user.getPosts().remove(post);
-                                            Toast.makeText(getContext(),"Failed to add activity" +
-                                                            " stats to the post.",
-                                                    Toast.LENGTH_SHORT).show();
+
+                                            handleError(post);
+
                                         }
                                     });
                         }
@@ -204,6 +206,40 @@ public class AddActivityFragment extends Fragment implements LocationListener {
         }
     }
 
+    /** This method is executed when the request to set a session for a {@link Post Post} object
+     * fails.
+     * @param post - the {@link Post Post} object.
+     */
+    private void handleError(final Post post) {
+
+        //We need to remove the Post we created.
+        connection.sendStringJsonRequest("/del/post/"+
+                        post.getId(),new JSONObject(),
+                Request.Method.DELETE,
+                user.getAccessToken(),
+                new VolleyResponseListener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Internal Server Error",
+                                "Failed to add exercise data -> " +
+                                        "had to remove the entire post.");
+
+                        Toast.makeText(getContext(),"Internal Server Error." +
+                                " Failed to set exercise data", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        Log.i("Internal Server Error",
+                                "Failed to add exercise data but failed to delete post");
+                        Toast.makeText(getContext(),"Internal Server Error, Remove Created Post" +
+                                "Manually",Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
+    }
+
     /** Returns if the data is correctly formatted or not
      *
      * @param postTitle - the title as a String
@@ -225,7 +261,7 @@ public class AddActivityFragment extends Fragment implements LocationListener {
         return !postTitle.isEmpty() && !postCaption.isEmpty() && !postActivity.isEmpty()
                 && !postDistance.isEmpty() && !postDistanceUnit.isEmpty() && !postSpeed.isEmpty()
                 && !postSpeedUnit.isEmpty() && !postElapsedTime.isEmpty() &&
-                postElapsedTime.matches("^\\d{2}:\\d{2}$");
+                postElapsedTime.matches("^[0-9][0-9]:[0-5][0-9]$");
     }
 
 

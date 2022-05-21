@@ -79,12 +79,13 @@ class User(db.Model):
         return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name,
                 "photoUrl": self.photo_url}
 
-    # Here the self.id is enough, because it is unique. Just in case we added two more clauses.
+    # Here the self.id is enough, because it is unique. Just "in case" we added two more clauses.
     def __eq__(self, other):
         return self.id == other.id and self.username == other.username and self.email == other.email
 
     @hybrid.hybrid_property
     def full_name(self):
+        """This returns the user's fullname in lowercase."""
         f_name = self.first_name
         l_name = self.last_name
 

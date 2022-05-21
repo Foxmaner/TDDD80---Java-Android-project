@@ -18,6 +18,7 @@ NOTE: There can be a conflict with the @app.before_first_request annotation
 in server.py. If so, comment it out.
 """
 
+
 # IMPORTANT NOTE: Save your database before this, because this drops the database.
 @pytest.fixture(scope="session", autouse=True)
 def init():

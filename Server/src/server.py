@@ -418,7 +418,7 @@ def get_users_by_name(full_name):
 @app.route("/posts/latest/<nr_of_posts>", methods=["GET"])
 @jwt_required()
 def get_posts(nr_of_posts):
-    """Fetch selected nr of posts ordered by latest. -1 = ALL"""
+    """Fetch selected nr of posts ordered by latest. -1 = ALL. The amount is given in the url."""
 
     try:
         nr_of_posts = int(nr_of_posts)
@@ -439,7 +439,7 @@ def get_posts(nr_of_posts):
     new_posts = []
 
     current_user = User.query.filter_by(id=get_jwt_identity()).first()
-    # This code can probably be achieved through SQL code.
+    # This code can probably be achieved more efficiently through SQL code.
     # Only get the posts that are from users that you follow.
     for post in posts:
 
@@ -483,7 +483,7 @@ def get_comments(post_id):
 @app.route("/followers/<nr_of_follows>", methods=["GET"])
 @jwt_required()
 def get_followers(nr_of_follows):
-    """Fetch selected nr of follows. -1 = ALL."""
+    """Fetch selected nr of follows. -1 = ALL. The amount is given in the url."""
     try:
         user_id = int(get_jwt_identity())
         nr_of_follows = int(nr_of_follows)

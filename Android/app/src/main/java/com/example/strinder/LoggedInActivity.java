@@ -13,19 +13,18 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.navigation.NavController;
-import androidx.navigation.NavGraph;
-import androidx.navigation.NavInflater;
 import androidx.navigation.fragment.NavHostFragment;
 import androidx.navigation.ui.NavigationUI;
 
-import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.storage.FirebaseServices;
 import com.example.strinder.backend_related.tables.User;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationBarView;
 
-/** This Activity class handles all the fragments and backend code that is used when a user
- * is logged in to the server.
+/**
+ * This class extends {@link AppCompatActivity AppCompatActivity}.
+ * This class handles all the different {@link androidx.fragment.app.Fragment Fragment} objects
+ * and makes sure that every component works together.
  */
 public class LoggedInActivity extends AppCompatActivity implements
         NavigationBarView.OnItemSelectedListener {
@@ -99,9 +98,9 @@ public class LoggedInActivity extends AppCompatActivity implements
         return false;
     }
 
-    /** Change the top navigation menu header text
+    /** Change the top navigation menu header text.
      *
-     * @param text - the new String of text that is to be displayed.
+     * @param text - the new text of type {@link String String} that is to be displayed.
      */
     private void setHeaderText(final String text) {
         TextView view = toolbar.findViewById(R.id.fragmentName);
@@ -110,8 +109,11 @@ public class LoggedInActivity extends AppCompatActivity implements
 
 
     /** This function is called after a post has been added
-     * it changes the fragment back to home, and gives a conformation,
-     * that a post has indeed been added
+     * it changes the {@link androidx.fragment.app.Fragment Fragment} back to
+     * {@link com.example.strinder.logged_in.HomeFragment HomeFragment}, and gives a confirmation,
+     * according to the specified message.
+     * @param message - the message of type {@link String String} that is to be displayed.
+     * @param user - the logged-in {@link User User} object.
      */
     public void jumpToHome(final String message, User user){
         Bundle bundle = new Bundle();
@@ -130,6 +132,7 @@ public class LoggedInActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+        //This is executed when you press on one of the navigation buttons.
 
         final int id = item.getItemId();
         Bundle bundle = new Bundle();

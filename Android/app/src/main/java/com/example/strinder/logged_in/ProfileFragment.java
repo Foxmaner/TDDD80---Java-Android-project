@@ -47,33 +47,14 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link ProfileFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class is a subclass of {@link Fragment Fragment}.
+ * This class displays the logged-in {@link User User} object's profile.
  */
 public class ProfileFragment extends Fragment implements FirebaseCompletionListener, VolleyResponseListener<String> {
 
     private ActivityResultLauncher<Intent> cameraActivityLauncher;
     private ActivityResultLauncher<Intent> uploadActivityLauncher;
     private User user;
-
-    public ProfileFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment ProfileFragment.
-     */
-    public static ProfileFragment newInstance(final User user) {
-        ProfileFragment profileFragment = new ProfileFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("account",user);
-        profileFragment.setArguments(bundle);
-
-        return profileFragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -122,7 +103,11 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
         return v;
     }
 
-
+    /** This method sum the amount of likes on a given {@link List<Post> List<Post>} object.
+     *
+     * @param posts - the {@link List<Post> List<Post>} object.
+     * @return the sum as an integer.
+     */
     private int sumLikes(final List<Post> posts) {
         int sum = 0;
 
@@ -138,6 +123,12 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
         return sum;
     }
 
+    /** This method sum the amount of hours exercised on a given {@link List<Post> List<Post>}
+     * object.
+     *
+     * @param posts - the {@link List<Post> List<Post>} object.
+     * @return the sum as an integer.
+     */
     private float sumHours(final List<Post> posts) {
         float sum = 0;
         try {
@@ -160,12 +151,13 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
         return sum;
     }
 
+    /** This method sets the different 'stats' of type {@link View View} objects to its correct
+     *  value.
+     *
+     * @param v - the {@link View View} object given in the
+     *            {@link ProfileFragment#onCreateView(LayoutInflater, ViewGroup, Bundle)} method.
+     */
     private void setStats(final View v) {
-        TextView biography = v.findViewById(R.id.biography);
-        biography.setText(R.string.biography_base_text);
-        //Biography is never null. (It is initially set in database)
-        biography.append(user.getBiography());
-
         //The part that displays the user stats.
         TextView activities = v.findViewById(R.id.amountOfActivities);
         activities.setText(getString(R.string.amountOfActivities));
@@ -182,7 +174,17 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
         likes.append(Integer.toString(sumLikes(user.getPosts())));
     }
 
+    /** This method sets the core details of the profile, that being the different {@link View View}
+     * objects, to its correct values.
+     * @param v - the {@link View View} object given in the
+     *            {@link ProfileFragment#onCreateView(LayoutInflater, ViewGroup, Bundle)} method.
+     */
     private void setCoreDetails(final View v) {
+        TextView biography = v.findViewById(R.id.biography);
+        biography.setText(R.string.biography_base_text);
+        //Biography is never null. (It is initially set in database)
+        biography.append(user.getBiography());
+
         //First and last name
         TextView firstLastName = v.findViewById(R.id.firstLastName);
         firstLastName.setText(user.getFirstName());
@@ -222,7 +224,10 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
     }
 
-    /** Handles what happens when you press the button with a camera on it */
+    /** Handles what happens when you press the button with a camera on it.
+     *
+     * @param cameraView - the {@link ImageButton ImageButton} object's {@link View View}.
+     */
     private void onCameraClick(View cameraView) {
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         try {
@@ -236,7 +241,10 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
         }
     }
 
-    /** Handles what happens when you press the button with a cloud on it */
+    /** Handles what happens when you press the button with a cloud on it.
+     *
+     * @param uploadView - the {@link ImageButton ImageButton} object's {@link View View}.
+     */
     private void onUploadClick(View uploadView) {
         Intent uploadImageIntent = new Intent();
         try {
@@ -255,6 +263,9 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
 
     }
 
+    /** This defines how the {@link ProfileFragment#onCameraClick(View)} should act. That being,
+     * what should happen when the user presses the {@link ImageButton ImageButton}.
+     */
     private void setCameraIntentLauncher() {
         cameraActivityLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -274,6 +285,9 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
                 });
     }
 
+    /** This defines how the {@link ProfileFragment#onUploadClick(View)} should act. That being,
+     * what should happen when the user presses the {@link ImageButton ImageButton}.
+     */
     private void setUploadIntentLauncher() {
         uploadActivityLauncher = registerForActivityResult(new ActivityResultContracts.
                 StartActivityForResult(), (result) -> {
@@ -302,7 +316,6 @@ public class ProfileFragment extends Fragment implements FirebaseCompletionListe
             }
         });
     }
-
 
 
     @Override

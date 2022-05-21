@@ -22,7 +22,6 @@ import com.android.volley.VolleyError;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
-import com.example.strinder.backend_related.tables.Comment;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;

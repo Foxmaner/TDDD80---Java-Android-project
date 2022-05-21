@@ -16,15 +16,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import org.json.JSONObject;
-
+/** This class handles the logging-out process. The {@link User User} is logged-out of
+ * the signed in Google Account and from the backend. */
 public class LogoutHandler implements VolleyResponseListener<String> {
     private final Activity activity;
     private ServerConnection connection;
     private User user;
+
+    /** Initialize a LogoutHandler object.
+     *
+     * @param activity - an {@link Activity Activity} object.
+     */
     public LogoutHandler(final Activity activity) {
         this.activity = activity;
     }
 
+    /** Try to logout the logged in User specified as a parameter.
+     *
+     * @param user - the logged-in {@link User User} object.
+     */
     public void tryLogout(final User user) {
         if(activity != null) {
             this.user = user;

@@ -26,7 +26,10 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-/** This class handles the register request to the server. */
+/**
+ * This class handles the authentication request to the server and handles the response
+ * accordingly.
+ */
 public class AuthenticationHandler implements VolleyResponseListener<String>, CompletionListener {
 
     private final GoogleSignInAccount account;

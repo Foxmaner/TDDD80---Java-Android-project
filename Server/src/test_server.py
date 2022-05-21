@@ -68,7 +68,7 @@ def test_add_post_2(client):
     assert add_post_req2.status_code == 200
 
 
-def test_add_friend_1(client):
+def test_follow(client):
     c = client[0]
     token = get_token(client)
     # We need the token
@@ -84,18 +84,17 @@ def test_like_post(client):
     token = get_token(client)
     # We need the token
 
-    # Checks if two users are friends
     like_req = c.post(address + "/post/like/1", headers={"Authorization": "Bearer " + token})
     assert like_req.status_code == 200
 
 
-def test_see_friends(client):
+def test_see_followers(client):
     c = client[0]
     token = get_token(client)
     # We need the token
 
     # Checks if two users are friends
-    are_friends_req = c.get(address + "/friends/-1", headers={"Authorization": "Bearer " + token})
+    are_friends_req = c.get(address + "/followers/-1", headers={"Authorization": "Bearer " + token})
     assert are_friends_req.status_code == 200
 
 

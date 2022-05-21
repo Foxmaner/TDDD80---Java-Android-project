@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-
 import com.example.strinder.backend_related.tables.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.storage.FirebaseStorage;
@@ -13,11 +12,14 @@ import com.google.firebase.storage.UploadTask;
 
 import java.io.ByteArrayOutputStream;
 
+/** This class handles all the communication with Firebase, which we use to store uploaded images.
+ */
 public class FirebaseServices {
 
     private static FirebaseServices instance = null;
     private StorageReference storageRef;
 
+    /** Initializes a FirebaseServices object. */
     private FirebaseServices() {
 
     }
@@ -30,6 +32,10 @@ public class FirebaseServices {
         return instance;
     }
 
+    /** Initialize the instance and sign into Firebase anonymously.
+     *
+     * @param activity - an {@link Activity Activity} object.
+     */
     public void initialize(final Activity activity) {
         // Use the application default credentials
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -42,6 +48,14 @@ public class FirebaseServices {
         });
     }
 
+    /** Saves an image in the database. It is named after the user's username and the image data
+     * is passed as a {@link Bitmap Bitmap} object.
+     * @param bitmap - the {@link Bitmap Bitmap} data.
+     * @param user - the {@link User User} object.
+     * @param listener - a {@link FirebaseCompletionListener FirebaseCompletionListener} that
+     *                 allows us to execute code after the method. This is mainly needed because
+     *                 the method runs on a separate thread.
+     */
     public void saveImage(final Bitmap bitmap, final User user,
                           final FirebaseCompletionListener listener) {
         Thread thread = new Thread(() -> {

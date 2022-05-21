@@ -23,12 +23,10 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
-
-
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link HomeFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class is a subclass of {@link Fragment Fragment}.
+ * This class displays all the {@link com.example.strinder.backend_related.tables.Post Post}
+ * available in the database ordered by time of posting.
  */
 public class HomeFragment extends Fragment implements VolleyResponseListener<String> {
 
@@ -36,21 +34,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
     private RecyclerView recyclerView;
     private User user;
     private int postLocation;
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     * @return A new instance of fragment HomeFragment.
-     */
-    public static HomeFragment newInstance(final User user, final int location) {
-        HomeFragment fragment = new HomeFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("account",user);
-        bundle.putInt("postLocation",location);
-        fragment.setArguments(bundle);
-        return fragment;
-    }
+    private ServerConnection connection;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,7 +42,6 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         Bundle bundle = getArguments();
 
         if(bundle != null) {
-            System.out.println("READING");
             user =  bundle.getParcelable("account");
             postLocation = bundle.getInt("postLocation");
         }
@@ -71,7 +54,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
         if(user != null && getContext() != null) {
 
-            ServerConnection connection = new ServerConnection(this.getContext());
+            connection = new ServerConnection(this.getContext());
             recyclerView = v.findViewById(R.id.homeFeedRecycleView);
             recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
             swipeContainer = v.findViewById(R.id.homeSwipeContainer);
@@ -92,19 +75,29 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
         return v;
     }
 
-
+    /** Sets the {@link androidx.recyclerview.widget.RecyclerView RecyclerView} options. This
+     * includes setting the {@link PostAdapter PostAdapter}.
+     * @param adapter - the {@link PostAdapter PostAdapter} object.
+     */
     private void setRecyclerViewOptions(final PostAdapter adapter) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
     }
+
+    /** Fetches the latest {@link com.example.strinder.backend_related.tables.Post Post} objects
+     *  from the database. Ordered by time.
+     *
+     * @param connection - the {@link ServerConnection ServerConnection} object which is used to
+     *                   send a request to the backend.
+     */
     public void fetchData(final ServerConnection connection) {
-        System.out.println("FETCHING DATA");
         connection.sendStringJsonRequest("/posts/latest/-1",
             new JSONObject(),
             Request.Method.GET, user.getAccessToken(), this);
     }
 
+    @Override
     public void onResponse(String response) {
         Gson gson = new Gson();
         FetchedPosts fetchedPosts = gson.fromJson(response,
@@ -118,6 +111,7 @@ public class HomeFragment extends Fragment implements VolleyResponseListener<Str
 
     @Override
     public void onError(VolleyError error) {
+        connection.maybeDoRefresh(error,user);
         Toast.makeText(getContext(),"Failed to load posts. Try refreshing.",
                 Toast.LENGTH_SHORT).show();
     }

@@ -42,9 +42,10 @@ import org.json.JSONObject;
 import java.io.IOException;
 
 /**
+ * This class is a subclass of {@link Fragment Fragment}.
  * This Fragment handles the process of adding posts/activities to the logged in user's account.
- * Use the {@link AddActivityFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * In order to add a {@link Post Post} object to the logged in User's account and the database, a
+ * GPS connection is required.
  */
 public class AddActivityFragment extends Fragment implements LocationListener {
 
@@ -58,32 +59,24 @@ public class AddActivityFragment extends Fragment implements LocationListener {
     private TextView locationText;
     private Geocoder geocoder;
 
-    public AddActivityFragment() {
-        // Required empty public constructor
-    }
-
-
-    public static AddActivityFragment newInstance(final User user) {
-        AddActivityFragment fragment = new AddActivityFragment();
-        Bundle bundle = new Bundle();
-        bundle.putParcelable("account",user);
-        fragment.setArguments(bundle);
-
-        return fragment;
-    }
-
     //We have to suppress, Android Studio keeps telling us
-    // we don't ask for permission in Manifest - but we do.
-    @SuppressLint("MissingPermission")
+    //we don't ask for permission in Manifest - but we do.
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         if(getActivity() != null) {
 
+            Bundle bundle = getArguments();
+
+            if(bundle != null) {
+                user = bundle.getParcelable("account");
+            }
+
             locationManager = (LocationManager) getActivity().
                     getSystemService(Context.LOCATION_SERVICE);
 
+            connection = new ServerConnection(getContext());
             requestPermissions();
 
             geocoder = new Geocoder(getActivity());
@@ -98,20 +91,11 @@ public class AddActivityFragment extends Fragment implements LocationListener {
         View view;
         view =  inflater.inflate(R.layout.fragment_add_activity, container, false);
 
-
-        connection = new ServerConnection(getContext());
-
-        Bundle bundle = getArguments();
-
-        if(bundle != null) {
-            user =  bundle.getParcelable("account");
-
-            setFields(view);
-
-        }
+        setFields(view);
 
         return view;
     }
+
     /** Is executed when the user presses the "Save Post" button.
      * @param view - the View object.
      * */
@@ -177,31 +161,35 @@ public class AddActivityFragment extends Fragment implements LocationListener {
                                         public void onResponse(String response) {
                                             TrainingSession session = gson.fromJson(response,
                                                     TrainingSession.class);
+
                                             post.setTrainingSession(session);
 
-                                            //FIXME Fix this later on? Make a listener or something.
                                             LoggedInActivity activity = (LoggedInActivity)
                                                     getActivity();
 
                                             if(activity != null) {
-                                                activity.jumpToHome("Your Post Was Successfully" +
-                                                        " Added!");
+                                                activity.jumpToHome("Your Post Was" +
+                                                        " Successfully Added!",user);
                                             }
                                         }
 
                                         @Override
                                         public void onError(VolleyError error) {
-                                            Log.e("Adding activity", error.toString());
+                                            connection.maybeDoRefresh(error,user);
+                                            Log.e("Failed to add training session to activity",
+                                                    error.toString());
+
                                             user.getPosts().remove(post);
-                                            Toast.makeText(getContext(),"Failed to add activity" +
-                                                            "stats to the post.",
-                                                    Toast.LENGTH_SHORT).show();
+
+                                            handleError(post);
+
                                         }
                                     });
                         }
 
                         @Override
                         public void onError(VolleyError error) {
+                            connection.maybeDoRefresh(error,user);
                             Log.e("Adding Post", error.toString());
                             Toast.makeText(getContext(),"Failed To Add Post",
                                     Toast.LENGTH_SHORT).show();
@@ -216,7 +204,40 @@ public class AddActivityFragment extends Fragment implements LocationListener {
             Toast.makeText(getContext(),"The form is not formatted correctly, please alter" +
                     " the fields and try again!",Toast.LENGTH_SHORT).show();
         }
+    }
 
+    /** This method is executed when the request to set a session for a {@link Post Post} object
+     * fails.
+     * @param post - the {@link Post Post} object.
+     */
+    private void handleError(final Post post) {
+
+        //We need to remove the Post we created.
+        connection.sendStringJsonRequest("/del/post/"+
+                        post.getId(),new JSONObject(),
+                Request.Method.DELETE,
+                user.getAccessToken(),
+                new VolleyResponseListener<String>() {
+
+                    @Override
+                    public void onResponse(String response) {
+                        Log.i("Internal Server Error",
+                                "Failed to add exercise data -> " +
+                                        "had to remove the entire post.");
+
+                        Toast.makeText(getContext(),"Internal Server Error." +
+                                " Failed to set exercise data", Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        Log.i("Internal Server Error",
+                                "Failed to add exercise data but failed to delete post");
+                        Toast.makeText(getContext(),"Internal Server Error, Remove Created Post" +
+                                "Manually",Toast.LENGTH_LONG).show();
+                    }
+                }
+        );
     }
 
     /** Returns if the data is correctly formatted or not
@@ -240,7 +261,7 @@ public class AddActivityFragment extends Fragment implements LocationListener {
         return !postTitle.isEmpty() && !postCaption.isEmpty() && !postActivity.isEmpty()
                 && !postDistance.isEmpty() && !postDistanceUnit.isEmpty() && !postSpeed.isEmpty()
                 && !postSpeedUnit.isEmpty() && !postElapsedTime.isEmpty() &&
-                postElapsedTime.matches("^\\d{2}:\\d{2}$");
+                postElapsedTime.matches("^[0-9][0-9]:[0-5][0-9]$");
     }
 
 
@@ -286,7 +307,8 @@ public class AddActivityFragment extends Fragment implements LocationListener {
         if (hasPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             Log.i("GPS Resume", "Resume call");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 450,
+            //GPS_PROVIDER or NETWORK_PROVIDER
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 450,
                     1, this);
         }
     }
@@ -327,9 +349,10 @@ public class AddActivityFragment extends Fragment implements LocationListener {
 
     }
 
-    /** Sets all the fields.
+    /** Sets all the {@link View View} fields and settings related to them.
      *
-     * @param view - the view given as a parameter in onCreateView(...)
+     * @param view - the {@link View View} object given in
+     * {@link AddActivityFragment#onCreateView(LayoutInflater, ViewGroup, Bundle)}
      */
     private void setFields(final View view) {
         //Get the fields.

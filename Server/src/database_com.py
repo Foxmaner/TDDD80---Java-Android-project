@@ -1,5 +1,4 @@
 import os
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext import hybrid
@@ -9,12 +8,13 @@ app = Flask(__name__)
 
 # Connection
 if 'NAMESPACE' in os.environ and os.environ['NAMESPACE'] == 'heroku':
-    db_uri = os.environ.get('DATABASE_URL').replace("postgres://", "postgresql://", 1)
-    address = "https://strinder.herokuapp.com/"
+    # For heroku
+    db_uri = os.environ.get('DB_URL')
+    address = "https://strinder-android.herokuapp.com/"
     debug_flag = False
 
 else:
-    # when running locally: use sqlite
+    # When running locally: use sqlite
     address = "http://localhost:8080"
     db_path = os.path.join(os.path.dirname(__file__), 'app.db')
     db_uri = 'sqlite:///{}'.format(db_path)
@@ -31,14 +31,16 @@ db = SQLAlchemy(app)
 
 # Tables
 
-friend_to_friend = db.Table('friendship',
+follow_to_follow = db.Table('friendship',
                             db.Column('user_id', db.Integer, db.ForeignKey('User.id'), primary_key=True),
-                            db.Column('friend_id', db.Integer, db.ForeignKey('User.id'), primary_key=True)
+                            db.Column('follow_id', db.Integer, db.ForeignKey('User.id'), primary_key=True)
                             )
 
 liked_posts_table = db.Table("liked_posts",
-                             db.Column("user_id", db.Integer, db.ForeignKey("User.id"), primary_key=True),
-                             db.Column("post_id", db.Integer, db.ForeignKey("Post.id"), primary_key=True))
+                             db.Column("user_id", db.Integer, db.ForeignKey("User.id"),
+                                       primary_key=True),
+                             db.Column("post_id", db.Integer, db.ForeignKey("Post.id", ondelete="cascade"),
+                                       primary_key=True))
 
 
 class User(db.Model):
@@ -55,12 +57,12 @@ class User(db.Model):
     photo_url = db.Column(db.String(200), nullable=True)
 
     # Relations
-    friends = db.relationship("User", secondary=friend_to_friend, primaryjoin=id == friend_to_friend.c.user_id,
-                              secondaryjoin=id == friend_to_friend.c.friend_id)
+    follows = db.relationship("User", secondary=follow_to_follow, primaryjoin=id == follow_to_follow.c.user_id,
+                              secondaryjoin=id == follow_to_follow.c.follow_id)
 
     posts = db.relationship("Post", backref="user", lazy=True)
     # We don't really need a many to many here at the moment, but maybe if development continues.
-    liked_posts = db.relationship("Post", secondary=liked_posts_table, back_populates="likes")
+    liked_posts = db.relationship("Post", secondary=liked_posts_table, back_populates="likes", passive_deletes=True)
 
     def to_dict(self):
         formatted = None
@@ -70,20 +72,30 @@ class User(db.Model):
         return {"id": self.id, "firstName": self.first_name, "lastName": self.last_name,
                 "gender": self.gender, "birthday": formatted, "biography": self.biography, "email": self.email,
                 "photoUrl": self.photo_url, "username": self.username,
-                "friends": [friend.to_dict_friends() for friend in self.friends],
+                "follows": [follow.to_dict_follows() for follow in self.follows],
                 "posts": [post.to_dict() for post in self.posts]}
 
-    def to_dict_friends(self):
+    def to_dict_follows(self):
         return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name,
                 "photoUrl": self.photo_url}
 
-    # Here the self.id is enough, because it is unique. Just in case we added two more clauses.
+    # Here the self.id is enough, because it is unique. Just "in case" we added two more clauses.
     def __eq__(self, other):
         return self.id == other.id and self.username == other.username and self.email == other.email
 
     @hybrid.hybrid_property
     def full_name(self):
-        return self.first_name + " " + self.last_name
+        """This returns the user's fullname in lowercase."""
+        f_name = self.first_name
+        l_name = self.last_name
+
+        if f_name is not None:
+            f_name = func.lower(f_name)
+
+        if l_name is not None:
+            l_name = func.lower(l_name)
+
+        return f_name + " " + l_name
 
 
 class Post(db.Model):
@@ -96,10 +108,12 @@ class Post(db.Model):
     longitude = db.Column(db.Float, nullable=False)
     latitude = db.Column(db.Float, nullable=False)
     # Here we need a relationship! We need to know which user liked what post.
-    likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts")
+    likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts",
+                            cascade="all, delete", passive_deletes=True)
 
-    comments = db.relationship("Comment", backref="post", lazy=True)
-    training_session = db.relationship("TrainingSession", uselist=False, backref="post")
+    comments = db.relationship("Comment", backref="post", cascade="all, delete, delete-orphan")
+    training_session = db.relationship("TrainingSession", uselist=False, backref="post", cascade="all, delete, "
+                                                                                                 "delete-orphan")
 
     def to_dict(self):
         session = None
@@ -107,7 +121,7 @@ class Post(db.Model):
             session = self.training_session.to_dict()
 
         return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption,
-                "likes": [user.to_dict_friends() for user in self.likes], "comments": [comment.to_dict() for
+                "likes": [user.to_dict_follows() for user in self.likes], "comments": [comment.to_dict() for
                                                                                        comment in self.comments],
                 "trainingSession": session, "date": self.date_time, "latitude": self.latitude,
                 "longitude": self.longitude}
@@ -116,8 +130,8 @@ class Post(db.Model):
 class TrainingSession(db.Model):
     __tablename__ = "Training_session"
     id = db.Column(db.Integer, unique=True, primary_key=True, autoincrement=True)
-    time = db.Column(db.DateTime, nullable=False)
-    post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
+    time = db.Column(db.String(5), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("Post.id", ondelete="cascade"), nullable=False)
     speed_unit = db.Column(db.String(40), nullable=False)
     speed = db.Column(db.Float, nullable=False)
     distance = db.Column(db.Float, nullable=False)
@@ -125,8 +139,7 @@ class TrainingSession(db.Model):
     exercise = db.Column(db.String(40), nullable=False)
 
     def to_dict(self):
-        return {"id": self.id, "postId": self.post_id, "elapsedTime": "{:02d}:{:02d}".format(self.time.hour,
-                                                                                             self.time.minute),
+        return {"id": self.id, "postId": self.post_id, "elapsedTime": self.time,
                 "speedUnit": self.speed_unit, "speed": self.speed, "distance": self.distance,
                 "distanceUnit": self.distance_unit, "exercise": self.exercise}
 
@@ -134,7 +147,7 @@ class TrainingSession(db.Model):
 class Comment(db.Model):
     __tablename__ = "Comment"
     id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("Post.id",  ondelete="cascade"), nullable=False)
     text = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
 
@@ -142,6 +155,7 @@ class Comment(db.Model):
         return {"id": self.id, "postId": self.post_id, "text": self.text, "userId": self.user_id}
 
 
+# This contains used tokens
 class TokenBlocklist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(36), nullable=False, index=True)

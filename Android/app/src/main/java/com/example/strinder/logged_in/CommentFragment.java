@@ -35,9 +35,9 @@ import org.json.JSONObject;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link CommentFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class is a subclass of {@link Fragment Fragment}.
+ * This class displays all the different {@link Comment Comment} objects for a specific
+ * {@link Post Post } object.
  */
 public class CommentFragment extends Fragment {
 
@@ -49,26 +49,6 @@ public class CommentFragment extends Fragment {
     private TextView amountOfComments;
     private SwipeRefreshLayout swipeRefreshLayout;
 
-    public CommentFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment CommentFragment.
-     */
-    public static CommentFragment newInstance(final User user, final Post post,
-                                              final int location) {
-        CommentFragment fragment = new CommentFragment();
-        Bundle args = new Bundle();
-        args.putParcelable("account",user);
-        args.putParcelable("post",post);
-        args.putInt("location",location);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,7 +90,8 @@ public class CommentFragment extends Fragment {
                 JSONObject jsonObject = new JSONObject();
                 try {
                     jsonObject.put("text", text);
-                } catch (JSONException e) {
+                }
+                catch (JSONException e) {
                     e.printStackTrace();
                     return;
                 }
@@ -131,6 +112,7 @@ public class CommentFragment extends Fragment {
 
                             @Override
                             public void onError(VolleyError error) {
+                                connection.maybeDoRefresh(error,user);
                                 Log.e("Add Comment Error", error.toString());
                                 Toast.makeText(getContext(), "Failed to add your comment! " +
                                                 "Please try again!",
@@ -154,7 +136,7 @@ public class CommentFragment extends Fragment {
                     bundle.putParcelable("account",user);
                     bundle.putInt("location",location);
 
-                    NavHostFragment.findNavController(this).navigate(R.id.homeScreen);
+                    NavHostFragment.findNavController(this).navigate(R.id.homeScreen,bundle);
                 }
             );
 
@@ -173,7 +155,10 @@ public class CommentFragment extends Fragment {
         return v;
     }
 
-
+    /** This fetches all the comments for a specific {@link Post Post} object from the database.
+     *
+     * @param post - the {@link Post Post} object that the comments will be fetched from.
+     */
     private void fetchComments(final Post post) {
         //Send connection
         connection.sendStringJsonRequest("/comments/" + post.getId(), new JSONObject(),
@@ -197,13 +182,11 @@ public class CommentFragment extends Fragment {
 
                         amountOfComments.setText(String.format("There are currently %s" +
                                 " comments on this post.",size));
-
-
                     }
-
 
                     @Override
                     public void onError(VolleyError error) {
+                        connection.maybeDoRefresh(error,user);
                         Log.e("Error Fetching Comments", "Failed to fetch" +
                                 " comments for post " + post.getId());
 

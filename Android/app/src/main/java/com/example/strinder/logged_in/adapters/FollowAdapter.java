@@ -29,6 +29,11 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+/** This class extends the {@link androidx.recyclerview.widget.RecyclerView.Adapter
+ * RecyclerView.Adapter} class and is used to customize a RecyclerView for a {@link List<User>
+ * List<User>}. The class allows us to handle button presses and different kinds of
+ * data on each any every user.
+ */
 public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
     private final List<User> users;
@@ -36,8 +41,15 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
     private final ServerConnection connection;
     private final User user;
 
-
-    public FollowAdapter(final Context context, List<User> users, final User user) {
+    /** Initialize a FollowAdapter object.
+     *
+     * @param context - a {@link Context context} object.
+     * @param users - a {@link List<User> List<User>} object. These are the users that
+     *                 will be displayed in the {@link RecyclerView RecyclerView}
+     * @param user - the logged-in {@link User User} object.
+     *
+     */
+    public FollowAdapter(@NonNull final Context context, List<User> users, final User user) {
         this.context = context;
         this.users = users;
         this.connection = new ServerConnection(context);
@@ -58,17 +70,15 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
         if(users.size() > position) {
             User currentUser = users.get(position);
-                holder.getFriendName().setText(String.format("%s %s", currentUser.getFirstName(),
+                holder.getFollowName().setText(String.format("%s %s", currentUser.getFirstName(),
                         currentUser.getLastName()));
 
-                holder.getFriendBiography().setText(currentUser.getBiography());
-                System.out.println(currentUser.getPhotoUrl());
+                holder.getFollowBiography().setText(currentUser.getBiography());
+
                 if (currentUser.getPhotoUrl() != null) {
                     //This ensures that the image always is set to the newly uploaded one. Picasso ignores (by default) identical URLs.
-                    if (context != null) {
-                        Picasso.with(context.getApplicationContext()).
-                                invalidate(currentUser.getPhotoUrl());
-                    }
+                    Picasso.with(context.getApplicationContext()).
+                            invalidate(currentUser.getPhotoUrl());
 
                     Picasso.with(context).load(currentUser.getPhotoUrl())
                             .memoryPolicy(MemoryPolicy.NO_CACHE)
@@ -80,13 +90,13 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
                 updateButtonUI(holder,currentUser);
 
-                holder.getAddFriendButton().setOnClickListener(view -> {
+                holder.getFollowButton().setOnClickListener(view -> {
 
                     if(user.getFriends().contains(currentUser)) {
-                        removeFriend(holder,currentUser);
+                        unFollowUser(holder,currentUser);
                     }
                     else {
-                        addFriend(holder,currentUser);
+                        followUser(holder,currentUser);
                     }
                 });
 
@@ -102,19 +112,27 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
         return users.size();
     }
 
+    /** Updates the {@link android.widget.ImageButton ImageButton} depending on if you already
+     * follow the selected {@link User User} or not.
+     * @param holder - the {@link FollowViewHolder FollowViewHolder} object.
+     * @param currentUser - the selected {@link User User} object.
+     */
     private void updateButtonUI(final FollowViewHolder holder, final User currentUser) {
-        if(context != null) {
-            if (user.getFriends().contains(currentUser)) {
-                DrawableCompat.setTint(holder.getAddFriendButton().getDrawable(),
-                        context.getColor(R.color.selected));
-            }
-            else {
-                DrawableCompat.setTint(holder.getAddFriendButton().getDrawable(),
-                        context.getColor(R.color.papaya));
-            }
+        if (user.getFriends().contains(currentUser)) {
+            DrawableCompat.setTint(holder.getFollowButton().getDrawable(),
+                    context.getColor(R.color.selected));
+        }
+        else {
+            DrawableCompat.setTint(holder.getFollowButton().getDrawable(),
+                    context.getColor(R.color.papaya));
         }
     }
-    private void addFriend(final FollowViewHolder holder, final User currentUser){
+
+    /** Follows a selected User.
+     * @param holder - the {@link FollowViewHolder FollowViewHolder} object.
+     * @param currentUser - the selected {@link User User} object that is to be followed.
+     */
+    private void followUser(final FollowViewHolder holder, final User currentUser){
         ServerConnection connection = new ServerConnection(context);
 
         connection.sendStringJsonRequest("/follow/" + currentUser.getId(),
@@ -124,7 +142,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
                     public void onResponse(String response) {
                         Gson gson = new Gson();
                         User follow = gson.fromJson(response,User.class);
-                        user.addFriend(follow);
+                        user.follow(follow);
 
                         updateButtonUI(holder,currentUser);
                         Log.i("Add Success",
@@ -135,6 +153,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
                     @Override
                     public void onError(VolleyError error) {
+                        connection.maybeDoRefresh(error,user);
                         Log.e("Add Fail", "Failed to add user to follow list");
                         Toast.makeText(context,"Failed to add user. Please try again.",
                                 Toast.LENGTH_SHORT).show();
@@ -142,13 +161,17 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
                 });
     }
 
-    private void removeFriend(final FollowViewHolder holder, final User currentUser) {
+    /** Unfollows a selected User.
+     * @param holder - the {@link FollowViewHolder FollowViewHolder} object.
+     * @param currentUser - the selected {@link User User} object that is to be unfollowed.
+     */
+    private void unFollowUser(final FollowViewHolder holder, final User currentUser) {
         connection.sendStringJsonRequest("/follow/remove/" + currentUser.getId(),
                 new JSONObject(),
                 Request.Method.POST, user.getAccessToken(), new VolleyResponseListener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        user.removeFriend(currentUser);
+                        user.unfollow(currentUser);
 
                         updateButtonUI(holder,currentUser);
                         Log.i("Remove Success",
@@ -159,6 +182,7 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
                     @Override
                     public void onError(VolleyError error) {
+                        connection.maybeDoRefresh(error,user);
                         Log.e("Remove Fail", "Failed to remove user from your follow list");
                         Toast.makeText(context,"Failed to remove user. Please try again.",
                                 Toast.LENGTH_SHORT).show();
@@ -168,32 +192,57 @@ public class FollowAdapter extends RecyclerView.Adapter<FollowViewHolder> {
 
 }
 
+/** This class is used within the {@link com.example.strinder.logged_in.adapters.FollowAdapter
+ * FollowAdapter} class. In this class we find and define all the different {@link View View}
+ * objects.
+ */
 class FollowViewHolder extends RecyclerView.ViewHolder {
     private final ImageView profileImage;
-    private final TextView friendName,friendBiography;
-    private final ImageButton addFriendButton;
+    private final TextView followName, followBiography;
+    private final ImageButton followButton;
 
+    /** Initialize a FollowViewHolder object.
+     *
+     * @param itemView - a {@link View View} object that lets us find the children {@link View View}
+     *                   objects.
+     */
     public FollowViewHolder(@NonNull View itemView) {
         super(itemView);
         this.profileImage = itemView.findViewById(R.id.friendImage);
-        this.friendName = itemView.findViewById(R.id.userCardName);
-        this.friendBiography = itemView.findViewById(R.id.userCardBio);
-        this.addFriendButton = itemView.findViewById(R.id.addFriendButton);
+        this.followName = itemView.findViewById(R.id.userCardName);
+        this.followBiography = itemView.findViewById(R.id.userCardBio);
+        this.followButton = itemView.findViewById(R.id.addFriendButton);
     }
 
+    /** Returns the profile image.
+     *
+     * @return a {@link ImageView ImageView} object.
+     */
     public ImageView getProfileImage() {
         return profileImage;
     }
 
-    public TextView getFriendName() {
-        return friendName;
+    /** Returns the User's name.
+     *
+     * @return a {@link TextView TextView} object.
+     */
+    public TextView getFollowName() {
+        return followName;
     }
 
-    public TextView getFriendBiography() {
-        return friendBiography;
+    /** Returns the User's biography.
+     *
+     * @return a {@link TextView TextView} object.
+     */
+    public TextView getFollowBiography() {
+        return followBiography;
     }
 
-    public ImageButton getAddFriendButton() {
-        return addFriendButton;
+    /** Returns the {@link ImageButton ImageButton} object that is used to follow / unfollow .
+     *
+     * @return a {@link ImageButton ImageView} object.
+     */
+    public ImageButton getFollowButton() {
+        return followButton;
     }
 }

@@ -1,12 +1,16 @@
 package com.example.strinder.backend_related.database;
 
 import android.content.Context;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
+import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.example.strinder.backend_related.tables.User;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.nio.charset.StandardCharsets;
@@ -17,24 +21,24 @@ import java.util.Map;
 public class ServerConnection {
 
     private final RequestQueue requestQueue;
-
-
+    private final Context context;
+    private static final int ACCESS_TOKEN_MISSING = 401;
     /**
      * Initializes a ServerConnection for a specific Context.
      *
      * @param context - the context in which the connection will operate from.
      */
     public ServerConnection(final Context context) {
-        if(context != null)
-            requestQueue = Volley.newRequestQueue(context);
-        else
-            requestQueue = null;
 
+        if(context != null) {
+            this.context = context;
+            requestQueue = Volley.newRequestQueue(context);
+        }
+        else
+            throw new IllegalArgumentException("Context is null in ServerConnection instance.");
     }
 
-
-    private static final String BASE_URL = "http://10.0.2.2:5000"; //"https://strinder.herokuapp.com";
-
+    private static final String BASE_URL = "https://strinder-android.herokuapp.com"; //Emulator: 10.0.2.2:5000
 
     /**
      * Send a StringRequest with a bound JsonObject.
@@ -65,7 +69,8 @@ public class ServerConnection {
         String jsonString = json.toString();
 
         if(requestQueue != null) {
-            StringRequest request = new StringRequest(method, url, (volleyResponseListener::onResponse), volleyResponseListener::onError) {
+            StringRequest request = new StringRequest(method, url,
+            (volleyResponseListener::onResponse), volleyResponseListener::onError) {
                 @Override
                 public Map<String, String> getHeaders() {
                     Map<String, String> params = new HashMap<>();
@@ -88,6 +93,45 @@ public class ServerConnection {
         }
 
 
+    }
+    /** Sends a request to the server, requesting a new access token.
+     * @param user - the logged in User object, which allows the method to retrieve the
+     *            refresh token
+     */
+    public void refresh(final User user) {
+        sendStringJsonRequest("/refresh", new JSONObject(), Request.Method.POST,
+                user.getRefreshToken(),
+                new VolleyResponseListener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject object = new JSONObject(response);
+                            user.setAccessToken((String)object.get("access_token"));
+                        }
+                        catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(context, "Retrieved New Access Token From Server",
+                                Toast.LENGTH_LONG).show();
+                    }
+
+                    @Override
+                    public void onError(VolleyError error) {
+                        Toast.makeText(context,"Failed To Retrieve Access Token From Server",
+                                Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
+
+    /** Executes {@link #refresh(User) refresh} method if the status code of the error
+     * equals 401.
+     * @param error - the VolleyError.
+     * @param user - the logged in User object.
+     */
+    public void maybeDoRefresh(final VolleyError error, final User user) {
+        if(error.networkResponse.statusCode == ACCESS_TOKEN_MISSING) {
+           refresh(user);
+        }
     }
 
 

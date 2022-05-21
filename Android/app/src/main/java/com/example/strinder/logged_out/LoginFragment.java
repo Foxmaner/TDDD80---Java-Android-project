@@ -27,30 +27,14 @@ import com.google.android.gms.common.api.Scope;
 import com.google.android.gms.tasks.Task;
 
 /**
+ * The class is a subclass of {@link Fragment}.
  * This fragment contains the layout for logging in through Google's API and all the backend
  * code that is needed to make sure that the client's account is verified.
- * A simple {@link Fragment} subclass.
- * Use the {@link LoginFragment#newInstance} factory method to
- * create an instance of this fragment.
  */
 public class LoginFragment extends Fragment implements View.OnClickListener{
 
     private GoogleSignInClient mGoogleSignInClient;
     private ActivityResultLauncher<Intent> activityResultLauncher;
-
-    public LoginFragment() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment LoginFragment.
-     */
-    public static LoginFragment newInstance() {
-        return new LoginFragment();
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -92,13 +76,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
             //This device is new. The user will have to login through the Google Sign In API.
             signInButton.setOnClickListener(this);
-            activityResultLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+            activityResultLauncher = registerForActivityResult(
+                    new ActivityResultContracts.StartActivityForResult(),
                     result -> {
                         if (result.getResultCode() == RESULT_OK && result.getData() != null) {
                             Log.i("Google Sign In", "Received RESULT_OK");
                             // The Task returned from this call is always completed.
 
-                            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(result.getData());
+                            Task<GoogleSignInAccount> task = GoogleSignIn.
+                                    getSignedInAccountFromIntent(result.getData());
+
                             handleSignInResult(task);
                         }
                         else {
@@ -106,14 +93,14 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
                                     Toast.LENGTH_SHORT).show();
                         }
                     });
-
-
         }
 
         return v;
     }
 
-    @Override
+    /** This is called when the user pressed the GoogleSignInButton and will execute the {@link
+     * LoginFragment#signIn()} method.
+     */
     public void onClick(View v) {
         /*
             This is called when the user pressed the GoogleSignInButton and will open the
@@ -128,16 +115,16 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
 
     }
 
-    /** Launches the Google Sign In page. */
+    /** This method launches the Google Sign In page. */
     private void signIn() {
         Intent signInIntent = mGoogleSignInClient.getSignInIntent();
 
         activityResultLauncher.launch(signInIntent);
     }
 
-    /** Handles the result from the Google Sign In page through a ActivityResultLauncher
+    /** Handles the result from the GoogleSignIn process.
      *
-     * @param completedTask - a GoogleSignInAccount task.
+     * @param completedTask - a {@link Task<GoogleSignInAccount> Task<GoogleSignInAccount>} object.
      */
     private void handleSignInResult(Task<GoogleSignInAccount> completedTask) {
         try {
@@ -151,21 +138,21 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         }
     }
 
-    /** This is called when the user is verified. Within this method we contact our server to
-     * check if the account exists or not. If the account already exists (status code 409),
-     * we try to login to that specific account with the given details.
-     * @param account - the logged in GoogleSignInAccount that contains all the information we need.
+    /** This is called when the user is verified. The method sends a request to the backend with
+     * a specific token that Google has given us. The backend then either accepts or rejects our
+     * request. This request is handled inside the
+     * {@link AuthenticationHandler AuthenticationHandler}
+     *
+     * @param account - the logged in {@link GoogleSignInAccount GoogleSignInAccount} that
+     *                  contains all the information we need.
      */
     private void login(final GoogleSignInAccount account) {
         Log.i("Google Sign In", "Logged in. Authentication with backend in process...");
-        //Något tillkallar detta när internet inte finns. Vilket gör att activity = null.
-        //Detta leder till crash
+
         if(this.getActivity() != null){
             AuthenticationHandler authenticationHandler = new AuthenticationHandler(account,
                     this.getActivity());
             authenticationHandler.tryAuthentication();
-        }else{
-            System.out.println("activity i login = null");
         }
 
 

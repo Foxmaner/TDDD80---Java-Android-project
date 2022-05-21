@@ -11,6 +11,12 @@ from database_com import db_uri, address, User, db, app
 # HOW TO RUN:
 # coverage run -m pytest test_server.py
 # coverage report -m
+# Might have to do python3 -m <rest here>
+
+"""
+NOTE: There can be a conflict with the @app.before_first_request annotation
+in server.py. If so, comment it out.
+"""
 
 
 # IMPORTANT NOTE: Save your database before this, because this drops the database.
@@ -62,7 +68,7 @@ def test_add_post_2(client):
     assert add_post_req2.status_code == 200
 
 
-def test_add_friend_1(client):
+def test_follow(client):
     c = client[0]
     token = get_token(client)
     # We need the token
@@ -78,18 +84,17 @@ def test_like_post(client):
     token = get_token(client)
     # We need the token
 
-    # Checks if two users are friends
     like_req = c.post(address + "/post/like/1", headers={"Authorization": "Bearer " + token})
     assert like_req.status_code == 200
 
 
-def test_see_friends(client):
+def test_see_followers(client):
     c = client[0]
     token = get_token(client)
     # We need the token
 
     # Checks if two users are friends
-    are_friends_req = c.get(address + "/friends/-1", headers={"Authorization": "Bearer " + token})
+    are_friends_req = c.get(address + "/followers/-1", headers={"Authorization": "Bearer " + token})
     assert are_friends_req.status_code == 200
 
 
@@ -126,29 +131,6 @@ def test_see_all_comments_1(client):
 
 
 # --- Deletes --- #
-
-
-def test_del_user_1(client):
-    c = client[0]
-    token = get_token(client)
-    # We need the token
-
-    # Remove a user with user_id:1
-
-    remove = c.delete(address + "/del/usr", headers={"Authorization": "Bearer " + token})
-    assert remove.status_code == 200
-
-
-def test_del_user_again(client):
-    c = client[0]
-    token = get_token(client)
-    # We need the token
-
-    # Remove a user with user_id:1
-
-    remove = c.delete(address + "/del/usr", headers={"Authorization": "Bearer " + token})
-    assert remove.status_code == 400
-
 
 def test_del_post_1(client):
     c = client[0]
@@ -195,15 +177,18 @@ def test_del_comment_again(client):
 
 
 # ---- HELP METHODS ----#
-
-
 def get_token(client):
+    """Returns the access token. """
     return client[1]["accessToken"]
 
 
 def authenticate():
+    """
+    This method authenticates a user. This is necessary in testing, as the
+    app used GoogleSignIn - which I can't do through testing. This function basically
+    generates an access token for a test user.
+    """
 
-    print("Authenticate...")
     test_user = User.query.filter_by(email="test@test.se").first()
 
     if test_user is None:
@@ -215,6 +200,7 @@ def authenticate():
         db.session.add(test_user)
         db.session.commit()
 
+    # Create the access token
     token = create_access_token(identity=test_user.id)
     data = test_user.to_dict()
     data["accessToken"] = token

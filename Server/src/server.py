@@ -1,20 +1,21 @@
 import os
+import re
 import traceback
 from datetime import timedelta, datetime, timezone
 
 from flask import jsonify, request
-from flask_bcrypt import Bcrypt
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt, JWTManager
-from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import (
+    JWTManager, jwt_required, create_access_token,
+    create_refresh_token,
+    get_jwt_identity, get_jwt
+)
 from google.auth.transport import requests
 from google.oauth2 import id_token
 from sqlalchemy import desc
 
 from database_com import app, db, User, Post, Comment, TokenBlocklist, TrainingSession
 
-bcrypt = Bcrypt(app)
-
-ACCESS_EXPIRES = timedelta(minutes=30)
+ACCESS_EXPIRES = timedelta(minutes=15)
 app.config["JWT_SECRET_KEY"] = os.environ.get("JWT_SECRET_KEY")
 app.config["JWT_ACCESS_TOKEN_EXPIRES"] = ACCESS_EXPIRES
 jwt = JWTManager(app)
@@ -31,12 +32,35 @@ def check_if_token_revoked(_, jwt_payload: dict) -> bool:
 
 # ----- POST ----- #
 
+# The jwt_refresh_token_required decorator insures a valid refresh
+# token is present in the request before calling this endpoint. We
+# can use the get_jwt_identity() function to get the identity of
+# the refresh token, and use the create_access_token() function again
+# to make a new access token for this identity.
+
+# Motivation for this route: We did not want to create a new access token for every request to the server.
+@app.route("/refresh", methods=['POST'])
+@jwt_required(refresh=True)
+def refresh():
+    """Refreshes the access token if the function is sent a valid refresh token."""
+    ret = {
+        'access_token': create_access_token(identity=get_jwt_identity())
+    }
+
+    return jsonify(ret), 200
+
+
 @app.route("/authenticate", methods=["POST"])
 def authenticate():
+    """
+    Authenticate a user to the backend. Takes an id token from the client and checks if
+    the signature is valid. If valid, we get access to some data from Google which we use to check if
+    there exists an account with that id, or if we need to register the user. The return value of this
+    function is the user values and a refresh- and access-token.
+    """
     post_input = request.get_json()
     token = post_input["idToken"]
     web_id = os.environ.get('WEB_KEY')
-
 
     try:
         google_request = requests.Request()
@@ -77,8 +101,11 @@ def authenticate():
                 db.session.commit()
 
             token = create_access_token(identity=user.id)
+            refresh_token = create_refresh_token(identity=user.id)
+
             data = user.to_dict()
             data["accessToken"] = token
+            data["refreshToken"] = refresh_token
             return data, 200
 
         else:
@@ -93,7 +120,7 @@ def authenticate():
 @app.route("/post/add", methods=["POST"])
 @jwt_required()
 def add_post():
-    """This function adds a post to a user. """
+    """This function adds a post to the logged-in user."""
     # Convert parameter to int
     try:
         user_id = get_jwt_identity()
@@ -116,6 +143,7 @@ def add_post():
 
         # Save the post to the user and commit changes to database.
         query.posts.append(post)
+
         db.session.commit()
 
         return jsonify(post.to_dict()), 200
@@ -127,11 +155,21 @@ def add_post():
 @app.route("/session/set", methods=["POST"])
 @jwt_required()
 def set_session():
+    """
+    Sets the training session for a specific post.
+    What post is given through the json file.
+    """
     post_input = request.get_json()
     try:
         user_id = get_jwt_identity()
-        # Get the hour and minutes: HH:MM (e.g 16:56)
-        time = datetime.strptime(post_input["time"], "%H:%M")
+
+        # Check the time format. It has to match 99:59 etc.
+        elapsed_time = post_input["time"]
+        pattern = re.compile("^[0-9][0-9]:[0-5][0-9]$")
+        if pattern.match(elapsed_time) is None:
+            return "", 400
+
+        time = elapsed_time
         post_id = post_input["postId"]
         speed_unit = post_input["speedUnit"]
         speed = post_input["speed"]
@@ -148,29 +186,19 @@ def set_session():
         training = TrainingSession(time=time, post_id=post_id, speed_unit=speed_unit,
                                    speed=speed, distance=distance, distance_unit=distance_unit, exercise=exercise)
         # Update the training_session attribute.
-        if post.training_session is None:
-            post.training_session = training
-        else:
-            # Could not replace the session as such: training_session = training.
-            post.training_session.speed = training.speed
-            post.training_session.post_id = training.post_id
-            post.training_session.time = training.time
-            post.training_session.exercise = training.exercise
-            post.training_session.speed_unit = training.speed_unit
-            post.training_session.distance_unit = training.distance_unit
-            post.training_session.distance = training.distance
+        post.training_session = training
 
         db.session.commit()
 
         return jsonify(training.to_dict()), 200
 
-    else:
-        return "", 400
+    return "", 400
 
 
 @app.route("/user/logout", methods=["POST"])
 @jwt_required()
 def logout():
+    """Logs out the user and adds the access token to a 'block list'."""
     try:
         jti = get_jwt()["jti"]
         now = datetime.now(timezone.utc)
@@ -184,6 +212,7 @@ def logout():
 @app.route("/user/set_data", methods=["POST"])
 @jwt_required()
 def set_data():
+    """Sets the user data for the logged-in user. Some fields can not be changed, such as the email."""
     json_data = request.get_json()
     if json_data is None:
         return "", 400
@@ -191,7 +220,7 @@ def set_data():
     # Get the json data, if it is not available - return error code 400.
     try:
         # Try to convert the dictionary to variables. If it fails,then return error code 400.
-        id = get_jwt_identity()
+        user_id = get_jwt_identity()
         firstname = json_data["first_name"]
         lastname = json_data["last_name"]
         birthday = json_data["birthday"]
@@ -201,7 +230,7 @@ def set_data():
     except KeyError:
         return "", 400
 
-    user = User.query.filter_by(id=id).first()
+    user = User.query.filter_by(id=user_id).first()
 
     if user is not None:
         if firstname is not None:
@@ -224,30 +253,33 @@ def set_data():
     return "", 400
 
 
-@app.route("/follow/<friend_id>", methods=["POST"])
+@app.route("/follow/<follow_id>", methods=["POST"])
 @jwt_required()
-def add_friend(friend_id):
-    """Befriends two existing users. """
+def follow(follow_id):
+    """
+    Allows the logged-in user to follow a specific user.
+    The id for this user is specified in the url.
+    """
 
     # Try to convert to integer.
     try:
-        friend_id = int(friend_id)
+        follow_id = int(follow_id)
         user_id = get_jwt_identity()
 
     except(ValueError, TypeError):
         return "", 400
 
     # Query the users.
-    friend = User.query.filter_by(id=friend_id).first()
+    follower = User.query.filter_by(id=follow_id).first()
     user = User.query.filter_by(id=user_id).first()
 
-    if user is not None and friend is not None and user != friend and friend not in user.friends:
-        user.friends.append(friend)
+    if user is not None and follower is not None and user != follower and follower not in user.follows:
+        user.follows.append(follower)
 
         db.session.commit()
 
-        # Return the user we added as a friend.
-        return jsonify(friend.to_dict()), 200
+        # Return the user we followed
+        return jsonify(follower.to_dict()), 200
 
     return "", 400
 
@@ -255,7 +287,7 @@ def add_friend(friend_id):
 @app.route("/comments/add/<post_id>", methods=["POST"])
 @jwt_required()
 def add_comment(post_id):
-    """Adds a comment to a post. """
+    """Adds a comment to a post. The post id is specified in the url. """
     # Try to convert to integer.
     try:
         post_id = int(post_id)
@@ -283,6 +315,9 @@ def add_comment(post_id):
 @app.route("/post/like/<post_id>", methods=["POST"])
 @jwt_required()
 def like(post_id):
+    """
+    Like / remove like from a specific post depending on if you have liked it or not.
+    The post id is given in the url."""
     try:
         post_id = int(post_id)
         user_id = int(get_jwt_identity())
@@ -299,25 +334,29 @@ def like(post_id):
             post.likes.append(user)
 
         db.session.commit()
-        data = [user.to_dict_friends() for user in post.likes]
+        data = [user.to_dict_follows() for user in post.likes]
         return jsonify(data), 200
     else:
         return "", 400
 
 
-@app.route("/follow/remove/<friend_id>", methods=["POST"])
+@app.route("/follow/remove/<follow_id>", methods=["POST"])
 @jwt_required()
-def remove_friend(friend_id):
+def unfollow(follow_id):
+    """
+    Allows the user to unfollow a specific user.
+    The id for this user is given in the url.
+    """
     try:
-        friend_id = int(friend_id)
+        follow_id = int(follow_id)
     except (ValueError, TypeError):
         return "", 400
 
-    friend = User.query.filter_by(id=friend_id).first()
+    follower = User.query.filter_by(id=follow_id).first()
     user = User.query.filter_by(id=get_jwt_identity()).first()
 
-    if friend is not None and user is not None and friend in user.friends:
-        user.friends.remove(friend)
+    if follower is not None and user is not None and follower in user.follows:
+        user.follows.remove(follower)
 
         db.session.commit()
         return "", 200
@@ -329,6 +368,7 @@ def remove_friend(friend_id):
 @app.route("/post/get_likes/<post_id>", methods=["GET"])
 @jwt_required()
 def get_likes(post_id):
+    """Returns all the likes for a specific post. The post id is given in the url."""
     try:
         post_id = int(post_id)
     except(ValueError, TypeError):
@@ -337,30 +377,16 @@ def get_likes(post_id):
     post = Post.query.filter_by(id=post_id).first()
 
     if post is not None:
-        data = [user.to_dict_friends() for user in post.likes]
+        data = [user.to_dict_follows() for user in post.likes]
         return jsonify(data), 200
     else:
         return "", 400
 
 
-@app.route("/user/get_data/<user_id>", methods=["GET"])
-@jwt_required()
-def get_data(user_id):
-    # No try/catch needed here
-
-    user = User.query.filter_by(id=user_id).first()
-
-    if user is not None:
-        data = user.to_dict()
-
-        return jsonify(data), 200
-
-    return "", 400
-
-
-@app.route("/user/get_user/<user_id>")
+@app.route("/user/get_user/<user_id>", methods=["GET"])
 @jwt_required()
 def get_user(user_id):
+    """Returns the user data for a specific user. The id for this user is given in the url."""
     try:
         user_id = int(user_id)
     except (TypeError, ValueError):
@@ -369,9 +395,9 @@ def get_user(user_id):
     user = User.query.filter_by(id=user_id).first()
 
     if user is not None:
-        return user.to_dict(), 200
-    else:
-        return "", 400
+        return jsonify(user.to_dict()), 200
+
+    return "", 400
 
 
 @app.route("/user/get_users/<full_name>")
@@ -379,18 +405,19 @@ def get_user(user_id):
 def get_users_by_name(full_name):
     """
     Returns all the users that matches the given name, except
-    the logged-in user."""
+    the logged-in user. The function does not care about lower or upper case letters.
+    """
     try:
         full_name = str(full_name)
     except (ValueError, TypeError):
         return "", 400
 
-    users = User.query.filter(User.full_name.like("%" + full_name + "%"),
+    users = User.query.filter(User.full_name.like("%" + full_name.lower() + "%"),
                               User.id != get_jwt_identity()).all()
 
     if users is not None:
         # Convert User objects to dictionary.
-        users = [user.to_dict_friends() for user in users]
+        users = [user.to_dict_follows() for user in users]
 
         return jsonify(users), 200
 
@@ -400,7 +427,7 @@ def get_users_by_name(full_name):
 @app.route("/posts/latest/<nr_of_posts>", methods=["GET"])
 @jwt_required()
 def get_posts(nr_of_posts):
-    """Fetch selected nr of posts. -1 = ALL"""
+    """Fetch selected nr of posts ordered by latest. -1 = ALL. The amount is given in the url."""
 
     try:
         nr_of_posts = int(nr_of_posts)
@@ -421,7 +448,7 @@ def get_posts(nr_of_posts):
     new_posts = []
 
     current_user = User.query.filter_by(id=get_jwt_identity()).first()
-    # This code can probably be achieved through SQL code.
+    # This code can probably be achieved more efficiently through SQL code.
     # Only get the posts that are from users that you follow.
     for post in posts:
 
@@ -429,7 +456,7 @@ def get_posts(nr_of_posts):
 
         if post_user.id != get_jwt_identity():
 
-            for user in current_user.friends:
+            for user in current_user.follows:
                 if user.id == post["userId"]:
                     new_posts.append(post)
                     users.append(user)
@@ -437,7 +464,7 @@ def get_posts(nr_of_posts):
             new_posts.append(post)
             users.append(post_user)
 
-    data = {"posts": new_posts, "users": [user.to_dict_friends() for user in users]}
+    data = {"posts": new_posts, "users": [user.to_dict_follows() for user in users]}
     return data, 200
 
 
@@ -461,13 +488,14 @@ def get_comments(post_id):
         return "", 400
 
 
-@app.route("/friends/<nr_of_friends>", methods=["GET"])
+# This is not used in our code - therefore untested! It is included in the unit tests.
+@app.route("/followers/<nr_of_follows>", methods=["GET"])
 @jwt_required()
-def get_friends(nr_of_friends):
-    """Fetch selected nr of friends. -1 = ALL."""
+def get_followers(nr_of_follows):
+    """Fetch selected nr of follows. -1 = ALL. The amount is given in the url."""
     try:
         user_id = int(get_jwt_identity())
-        nr_of_friends = int(nr_of_friends)
+        nr_of_follows = int(nr_of_follows)
 
     except(ValueError, TypeError):
         return "", 400
@@ -476,38 +504,27 @@ def get_friends(nr_of_friends):
 
     if user is not None:
 
-        if nr_of_friends == -1:
-            friends = [friend.to_dict() for friend in user.friends]
+        if nr_of_follows == -1:
+            follows = [follower.to_dict() for follower in user.follows]
 
-        elif nr_of_friends >= 0:
-            friends = [friend.to_dict() for friend in user.friends[:nr_of_friends]]
+        elif nr_of_follows >= 0:
+            follows = [follower.to_dict() for follower in user.follows[:nr_of_follows]]
         else:
             return "", 400
     else:
         return "", 400
 
-    return jsonify(friends), 200
-
-
-@app.route('/del/usr', methods=["DELETE"])
-@jwt_required()
-def remove_user():
-    user = User.query.filter_by(id=get_jwt_identity())
-
-    if user.first() is not None and user.first().id == get_jwt_identity():
-        user.delete()
-        db.session.commit()
-        return "", 200
-    else:
-        return "", 400
+    return jsonify(follows), 200
 
 
 @app.route('/del/post/<post_id>', methods=["DELETE"])
 @jwt_required()
 def remove_post(post_id):
+    """Remove a post that is created by the currently logged-in user. The post id is given in the url. """
     post = Post.query.filter_by(id=post_id)
 
     if post.first() is not None and post.first().user_id == get_jwt_identity():
+        post.likes = []
         post.delete()
         db.session.commit()
         return "", 200
@@ -518,6 +535,7 @@ def remove_post(post_id):
 @app.route('/del/comment/<comment_id>', methods=["DELETE"])
 @jwt_required()
 def remove_comment(comment_id):
+    """Remove a comment that is created by the currently logged-in user. The comment id is given in the url."""
     comment = Comment.query.filter_by(id=comment_id)
 
     if comment.first() is not None and comment.first().user_id == get_jwt_identity():
@@ -531,8 +549,14 @@ def remove_comment(comment_id):
 if __name__ == "__main__":
     app.debug = True
     app.port = int(os.environ.get("PORT", 8080))
-    # Initialize database
-    db.drop_all()
+    # Initialize database (Not run on heroku)
     db.create_all()
     db.session.commit()
     app.run()
+
+
+# This runs before the first ever request and is NECESSARY in order for the heroku server to run correctly!
+@app.before_first_request
+def init():
+    db.create_all()
+    db.session.commit()

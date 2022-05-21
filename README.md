@@ -18,7 +18,7 @@ When you have these keys, they will have the following format:
     
     X-Y.apps.googleusercontent.com where X and Y are random Strings.
     
-When you open the project in **Android Studio**, you need to go to the **values** folder.
+When you open the project in **Android Studio** (the Android folder), you need to go to the **values** folder. 
 The values folder path is *Android/app/src/main/res/values*. 
 
 Right click the values folder, choose **New**, then click on **Values Resource File**. Name this file **tokens.xml**

@@ -50,8 +50,12 @@ public class LogoutHandler implements VolleyResponseListener<String> {
     public void onResponse(String response) {
         Log.i("Successfully disconnected from server",
                 "User is logged out,switching intent.");
+        Toast.makeText(activity,"Successfully logged out.",
+                Toast.LENGTH_SHORT).show();
 
         //If successful (code = 200), go back to main page.
+        //TODO There is a bug here that occurs if you spam the navigation button a
+        //TODO bunch of times and try to log out. Reason: Parcel size is too big.
         Intent myIntent = new Intent(activity, LoggedOutActivity.class);
         activity.startActivity(myIntent);
     }

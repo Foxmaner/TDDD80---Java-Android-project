@@ -39,7 +39,7 @@ def check_if_token_revoked(_, jwt_payload: dict) -> bool:
 @app.route("/refresh", methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():
-
+    """Refreshes the access token if the function is sent a valid refresh token."""
     ret = {
         'access_token': create_access_token(identity=get_jwt_identity())
     }
@@ -49,6 +49,12 @@ def refresh():
 
 @app.route("/authenticate", methods=["POST"])
 def authenticate():
+    """
+    Authenticate a user to the backend. Takes an id token from the client and checks if
+    the signature is valid. If valid, we get access to some data from Google which we use to check if
+    there exists an account with that id, or if we need to register the user. The return value of this
+    function is the user values and a refresh- and access-token.
+    """
     post_input = request.get_json()
     token = post_input["idToken"]
     web_id = os.environ.get('WEB_KEY')
@@ -111,7 +117,7 @@ def authenticate():
 @app.route("/post/add", methods=["POST"])
 @jwt_required()
 def add_post():
-    """This function adds a post to a user. """
+    """This function adds a post to the logged-in user."""
     # Convert parameter to int
     try:
         user_id = get_jwt_identity()
@@ -146,6 +152,10 @@ def add_post():
 @app.route("/session/set", methods=["POST"])
 @jwt_required()
 def set_session():
+    """
+    Sets the training session for a specific post.
+    What post is given through the json file.
+    """
     post_input = request.get_json()
     try:
         user_id = get_jwt_identity()
@@ -179,6 +189,7 @@ def set_session():
 @app.route("/user/logout", methods=["POST"])
 @jwt_required()
 def logout():
+    """Logs out the user and adds the access token to a 'block list'."""
     try:
         jti = get_jwt()["jti"]
         now = datetime.now(timezone.utc)
@@ -192,6 +203,7 @@ def logout():
 @app.route("/user/set_data", methods=["POST"])
 @jwt_required()
 def set_data():
+    """Sets the user data for the logged-in user. Some fields can not be changed, such as the email."""
     json_data = request.get_json()
     if json_data is None:
         return "", 400
@@ -199,7 +211,7 @@ def set_data():
     # Get the json data, if it is not available - return error code 400.
     try:
         # Try to convert the dictionary to variables. If it fails,then return error code 400.
-        id = get_jwt_identity()
+        user_id = get_jwt_identity()
         firstname = json_data["first_name"]
         lastname = json_data["last_name"]
         birthday = json_data["birthday"]
@@ -209,7 +221,7 @@ def set_data():
     except KeyError:
         return "", 400
 
-    user = User.query.filter_by(id=id).first()
+    user = User.query.filter_by(id=user_id).first()
 
     if user is not None:
         if firstname is not None:
@@ -232,14 +244,17 @@ def set_data():
     return "", 400
 
 
-@app.route("/follow/<friend_id>", methods=["POST"])
+@app.route("/follow/<follow_id>", methods=["POST"])
 @jwt_required()
-def add_friend(friend_id):
-    """Befriends two existing users. """
+def follow(follow_id):
+    """
+    Allows the logged-in user to follow a specific user.
+    The id for this user is specified in the url.
+    """
 
     # Try to convert to integer.
     try:
-        friend_id = int(friend_id)
+        friend_id = int(follow_id)
         user_id = get_jwt_identity()
 
     except(ValueError, TypeError):
@@ -263,7 +278,7 @@ def add_friend(friend_id):
 @app.route("/comments/add/<post_id>", methods=["POST"])
 @jwt_required()
 def add_comment(post_id):
-    """Adds a comment to a post. """
+    """Adds a comment to a post. The post id is specified in the url. """
     # Try to convert to integer.
     try:
         post_id = int(post_id)
@@ -291,6 +306,9 @@ def add_comment(post_id):
 @app.route("/post/like/<post_id>", methods=["POST"])
 @jwt_required()
 def like(post_id):
+    """
+    Like / remove like from a specific post depending on if you have liked it or not.
+    The post id is given in the url."""
     try:
         post_id = int(post_id)
         user_id = int(get_jwt_identity())
@@ -313,11 +331,15 @@ def like(post_id):
         return "", 400
 
 
-@app.route("/follow/remove/<friend_id>", methods=["POST"])
+@app.route("/follow/remove/<follow_id>", methods=["POST"])
 @jwt_required()
-def remove_friend(friend_id):
+def unfollow(follow_id):
+    """
+    Allows the user to unfollow a specific user.
+    The id for this user is given in the url.
+    """
     try:
-        friend_id = int(friend_id)
+        friend_id = int(follow_id)
     except (ValueError, TypeError):
         return "", 400
 
@@ -337,6 +359,7 @@ def remove_friend(friend_id):
 @app.route("/post/get_likes/<post_id>", methods=["GET"])
 @jwt_required()
 def get_likes(post_id):
+    """Returns all the likes for a specific post. The post id is given in the url."""
     try:
         post_id = int(post_id)
     except(ValueError, TypeError):
@@ -351,24 +374,10 @@ def get_likes(post_id):
         return "", 400
 
 
-@app.route("/user/get_data/<user_id>", methods=["GET"])
-@jwt_required()
-def get_data(user_id):
-    # No try/catch needed here
-
-    user = User.query.filter_by(id=user_id).first()
-
-    if user is not None:
-        data = user.to_dict()
-
-        return jsonify(data), 200
-
-    return "", 400
-
-
-@app.route("/user/get_user/<user_id>")
+@app.route("/user/get_user/<user_id>", methods=["GET"])
 @jwt_required()
 def get_user(user_id):
+    """Returns the user data for a specific user. The id for this user is given in the url."""
     try:
         user_id = int(user_id)
     except (TypeError, ValueError):
@@ -377,9 +386,9 @@ def get_user(user_id):
     user = User.query.filter_by(id=user_id).first()
 
     if user is not None:
-        return user.to_dict(), 200
-    else:
-        return "", 400
+        return jsonify(user.to_dict()), 200
+
+    return "", 400
 
 
 @app.route("/user/get_users/<full_name>")
@@ -387,13 +396,14 @@ def get_user(user_id):
 def get_users_by_name(full_name):
     """
     Returns all the users that matches the given name, except
-    the logged-in user."""
+    the logged-in user. The function does not care about lower or upper case letters.
+    """
     try:
         full_name = str(full_name)
     except (ValueError, TypeError):
         return "", 400
 
-    users = User.query.filter(User.full_name.like("%" + full_name + "%"),
+    users = User.query.filter(User.full_name.like("%" + full_name.lower() + "%"),
                               User.id != get_jwt_identity()).all()
 
     if users is not None:
@@ -408,7 +418,7 @@ def get_users_by_name(full_name):
 @app.route("/posts/latest/<nr_of_posts>", methods=["GET"])
 @jwt_required()
 def get_posts(nr_of_posts):
-    """Fetch selected nr of posts. -1 = ALL"""
+    """Fetch selected nr of posts ordered by latest. -1 = ALL"""
 
     try:
         nr_of_posts = int(nr_of_posts)
@@ -469,9 +479,10 @@ def get_comments(post_id):
         return "", 400
 
 
-@app.route("/friends/<nr_of_friends>", methods=["GET"])
+# This is not used in our code - therefore untested! It is included in the unit tests.
+@app.route("/followers/<nr_of_friends>", methods=["GET"])
 @jwt_required()
-def get_friends(nr_of_friends):
+def get_followers(nr_of_friends):
     """Fetch selected nr of friends. -1 = ALL."""
     try:
         user_id = int(get_jwt_identity())
@@ -497,22 +508,10 @@ def get_friends(nr_of_friends):
     return jsonify(friends), 200
 
 
-@app.route('/del/usr', methods=["DELETE"])
-@jwt_required()
-def remove_user():
-    user = User.query.filter_by(id=get_jwt_identity()).first()
-
-    if user is not None and user.id == get_jwt_identity():
-        db.session.delete(user)
-        db.session.commit()
-        return "", 200
-    else:
-        return "", 400
-
-
 @app.route('/del/post/<post_id>', methods=["DELETE"])
 @jwt_required()
 def remove_post(post_id):
+    """Remove a post that is created by the currently logged-in user. The post id is given in the url. """
     post = Post.query.filter_by(id=post_id)
 
     if post.first() is not None and post.first().user_id == get_jwt_identity():
@@ -527,6 +526,7 @@ def remove_post(post_id):
 @app.route('/del/comment/<comment_id>', methods=["DELETE"])
 @jwt_required()
 def remove_comment(comment_id):
+    """Remove a comment that is created by the currently logged-in user. The comment id is given in the url."""
     comment = Comment.query.filter_by(id=comment_id)
 
     if comment.first() is not None and comment.first().user_id == get_jwt_identity():
@@ -540,11 +540,13 @@ def remove_comment(comment_id):
 if __name__ == "__main__":
     app.debug = True
     app.port = int(os.environ.get("PORT", 8080))
-    # Initialize database
-    # db.create_all()
-    # db.session.commit()
+    # Initialize database (Not run on heroku)
+    db.create_all()
+    db.session.commit()
     app.run()
 
+
+# This runs before the first ever request and is NECESSARY in order for the heroku server to run correctly!
 @app.before_first_request
 def init():
     db.create_all()

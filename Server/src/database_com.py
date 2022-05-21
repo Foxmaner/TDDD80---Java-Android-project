@@ -1,5 +1,4 @@
 import os
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext import hybrid
@@ -9,12 +8,13 @@ app = Flask(__name__)
 
 # Connection
 if 'NAMESPACE' in os.environ and os.environ['NAMESPACE'] == 'heroku':
+    # For heroku
     db_uri = os.environ.get('DB_URL')
     address = "https://strinder-android.herokuapp.com/"
     debug_flag = False
 
 else:
-    # when running locally: use sqlite
+    # When running locally: use sqlite
     address = "http://localhost:8080"
     db_path = os.path.join(os.path.dirname(__file__), 'app.db')
     db_uri = 'sqlite:///{}'.format(db_path)
@@ -83,7 +83,16 @@ class User(db.Model):
 
     @hybrid.hybrid_property
     def full_name(self):
-        return self.first_name + " " + self.last_name
+        f_name = self.first_name
+        l_name = self.last_name
+
+        if f_name is not None:
+            f_name = func.lower(f_name)
+
+        if l_name is not None:
+            l_name = func.lower(l_name)
+
+        return f_name + " " + l_name
 
 
 class Post(db.Model):
@@ -144,6 +153,7 @@ class Comment(db.Model):
         return {"id": self.id, "postId": self.post_id, "text": self.text, "userId": self.user_id}
 
 
+# This contains used tokens
 class TokenBlocklist(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     jti = db.Column(db.String(36), nullable=False, index=True)

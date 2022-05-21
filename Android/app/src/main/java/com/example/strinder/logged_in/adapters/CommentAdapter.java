@@ -54,7 +54,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
         if(comments.size() > position) {
             Comment currentComment = comments.get(position);
 
-            connection.sendStringJsonRequest("/user/get_data/" + currentComment.getUserId(),
+            connection.sendStringJsonRequest("/user/get_user/" + currentComment.getUserId(),
                     new JSONObject(), Request.Method.GET, user.getAccessToken(),
                     new VolleyResponseListener<String>() {
                         @Override

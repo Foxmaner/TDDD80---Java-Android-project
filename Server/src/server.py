@@ -254,23 +254,23 @@ def follow(follow_id):
 
     # Try to convert to integer.
     try:
-        friend_id = int(follow_id)
+        follow_id = int(follow_id)
         user_id = get_jwt_identity()
 
     except(ValueError, TypeError):
         return "", 400
 
     # Query the users.
-    friend = User.query.filter_by(id=friend_id).first()
+    follower = User.query.filter_by(id=follow_id).first()
     user = User.query.filter_by(id=user_id).first()
 
-    if user is not None and friend is not None and user != friend and friend not in user.friends:
-        user.friends.append(friend)
+    if user is not None and follower is not None and user != follower and follower not in user.follows:
+        user.follows.append(follower)
 
         db.session.commit()
 
-        # Return the user we added as a friend.
-        return jsonify(friend.to_dict()), 200
+        # Return the user we followed
+        return jsonify(follower.to_dict()), 200
 
     return "", 400
 
@@ -325,7 +325,7 @@ def like(post_id):
             post.likes.append(user)
 
         db.session.commit()
-        data = [user.to_dict_friends() for user in post.likes]
+        data = [user.to_dict_follows() for user in post.likes]
         return jsonify(data), 200
     else:
         return "", 400
@@ -339,15 +339,15 @@ def unfollow(follow_id):
     The id for this user is given in the url.
     """
     try:
-        friend_id = int(follow_id)
+        follow_id = int(follow_id)
     except (ValueError, TypeError):
         return "", 400
 
-    friend = User.query.filter_by(id=friend_id).first()
+    follower = User.query.filter_by(id=follow_id).first()
     user = User.query.filter_by(id=get_jwt_identity()).first()
 
-    if friend is not None and user is not None and friend in user.friends:
-        user.friends.remove(friend)
+    if follower is not None and user is not None and follower in user.follows:
+        user.follows.remove(follower)
 
         db.session.commit()
         return "", 200
@@ -368,7 +368,7 @@ def get_likes(post_id):
     post = Post.query.filter_by(id=post_id).first()
 
     if post is not None:
-        data = [user.to_dict_friends() for user in post.likes]
+        data = [user.to_dict_follows() for user in post.likes]
         return jsonify(data), 200
     else:
         return "", 400
@@ -408,7 +408,7 @@ def get_users_by_name(full_name):
 
     if users is not None:
         # Convert User objects to dictionary.
-        users = [user.to_dict_friends() for user in users]
+        users = [user.to_dict_follows() for user in users]
 
         return jsonify(users), 200
 
@@ -447,7 +447,7 @@ def get_posts(nr_of_posts):
 
         if post_user.id != get_jwt_identity():
 
-            for user in current_user.friends:
+            for user in current_user.follows:
                 if user.id == post["userId"]:
                     new_posts.append(post)
                     users.append(user)
@@ -455,7 +455,7 @@ def get_posts(nr_of_posts):
             new_posts.append(post)
             users.append(post_user)
 
-    data = {"posts": new_posts, "users": [user.to_dict_friends() for user in users]}
+    data = {"posts": new_posts, "users": [user.to_dict_follows() for user in users]}
     return data, 200
 
 
@@ -480,13 +480,13 @@ def get_comments(post_id):
 
 
 # This is not used in our code - therefore untested! It is included in the unit tests.
-@app.route("/followers/<nr_of_friends>", methods=["GET"])
+@app.route("/followers/<nr_of_follows>", methods=["GET"])
 @jwt_required()
-def get_followers(nr_of_friends):
-    """Fetch selected nr of friends. -1 = ALL."""
+def get_followers(nr_of_follows):
+    """Fetch selected nr of follows. -1 = ALL."""
     try:
         user_id = int(get_jwt_identity())
-        nr_of_friends = int(nr_of_friends)
+        nr_of_follows = int(nr_of_follows)
 
     except(ValueError, TypeError):
         return "", 400
@@ -495,17 +495,17 @@ def get_followers(nr_of_friends):
 
     if user is not None:
 
-        if nr_of_friends == -1:
-            friends = [friend.to_dict() for friend in user.friends]
+        if nr_of_follows == -1:
+            follows = [follower.to_dict() for follower in user.follows]
 
-        elif nr_of_friends >= 0:
-            friends = [friend.to_dict() for friend in user.friends[:nr_of_friends]]
+        elif nr_of_follows >= 0:
+            follows = [follower.to_dict() for follower in user.follows[:nr_of_follows]]
         else:
             return "", 400
     else:
         return "", 400
 
-    return jsonify(friends), 200
+    return jsonify(follows), 200
 
 
 @app.route('/del/post/<post_id>', methods=["DELETE"])

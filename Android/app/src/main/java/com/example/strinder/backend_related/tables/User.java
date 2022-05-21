@@ -21,7 +21,7 @@ public class User implements Parcelable {
     private String firstName;
     private String lastName;
     private final String email;
-    private final ArrayList<User> friends;
+    private final ArrayList<User> follows;
     private final ArrayList<Post> posts;
     private final String username;
     private String birthday;
@@ -43,8 +43,8 @@ public class User implements Parcelable {
         this.photoUrl = parcel.readString();
         this.id = parcel.readInt();
 
-        friends = new ArrayList<>();
-        parcel.readList(friends,User.class.getClassLoader());
+        follows = new ArrayList<>();
+        parcel.readList(follows,User.class.getClassLoader());
         posts = new ArrayList<>();
         parcel.readList(posts,Post.class.getClassLoader());
 
@@ -93,7 +93,7 @@ public class User implements Parcelable {
     }
 
     public List<User> getFriends() {
-        return friends;
+        return follows;
     }
 
     public List<Post> getPosts() {
@@ -164,11 +164,11 @@ public class User implements Parcelable {
     }
 
     public void addFriend(final User user) {
-        friends.add(user);
+        follows.add(user);
     }
 
     public void removeFriend(final User user) {
-        friends.remove(user);
+        follows.remove(user);
     }
 
     @Override
@@ -187,7 +187,7 @@ public class User implements Parcelable {
         parcel.writeString(biography);
         parcel.writeString(photoUrl);
         parcel.writeInt(id);
-        parcel.writeList(friends);
+        parcel.writeList(follows);
         parcel.writeList(posts);
         parcel.writeString(accessToken);
         parcel.writeString(refreshToken);

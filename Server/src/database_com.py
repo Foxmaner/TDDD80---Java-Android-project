@@ -31,9 +31,9 @@ db = SQLAlchemy(app)
 
 # Tables
 
-friend_to_friend = db.Table('friendship',
+follow_to_follow = db.Table('friendship',
                             db.Column('user_id', db.Integer, db.ForeignKey('User.id'), primary_key=True),
-                            db.Column('friend_id', db.Integer, db.ForeignKey('User.id'), primary_key=True)
+                            db.Column('follow_id', db.Integer, db.ForeignKey('User.id'), primary_key=True)
                             )
 
 liked_posts_table = db.Table("liked_posts",
@@ -55,8 +55,8 @@ class User(db.Model):
     photo_url = db.Column(db.String(200), nullable=True)
 
     # Relations
-    friends = db.relationship("User", secondary=friend_to_friend, primaryjoin=id == friend_to_friend.c.user_id,
-                              secondaryjoin=id == friend_to_friend.c.friend_id)
+    follows = db.relationship("User", secondary=follow_to_follow, primaryjoin=id == follow_to_follow.c.user_id,
+                              secondaryjoin=id == follow_to_follow.c.follow_id)
 
     posts = db.relationship("Post", backref="user", lazy=True)
     # We don't really need a many to many here at the moment, but maybe if development continues.
@@ -70,10 +70,10 @@ class User(db.Model):
         return {"id": self.id, "firstName": self.first_name, "lastName": self.last_name,
                 "gender": self.gender, "birthday": formatted, "biography": self.biography, "email": self.email,
                 "photoUrl": self.photo_url, "username": self.username,
-                "friends": [friend.to_dict_friends() for friend in self.friends],
+                "follows": [follow.to_dict_follows() for follow in self.follows],
                 "posts": [post.to_dict() for post in self.posts]}
 
-    def to_dict_friends(self):
+    def to_dict_follows(self):
         return {"id": self.id, "username": self.username, "firstName": self.first_name, "lastName": self.last_name,
                 "photoUrl": self.photo_url}
 
@@ -118,7 +118,7 @@ class Post(db.Model):
             session = self.training_session.to_dict()
 
         return {"id": self.id, "userId": self.user_id, "title": self.title, "caption": self.caption,
-                "likes": [user.to_dict_friends() for user in self.likes], "comments": [comment.to_dict() for
+                "likes": [user.to_dict_follows() for user in self.likes], "comments": [comment.to_dict() for
                                                                                        comment in self.comments],
                 "trainingSession": session, "date": self.date_time, "latitude": self.latitude,
                 "longitude": self.longitude}

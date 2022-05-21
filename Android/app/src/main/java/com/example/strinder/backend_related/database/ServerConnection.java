@@ -39,7 +39,7 @@ public class ServerConnection {
             throw new IllegalArgumentException("Context is null in ServerConnection instance.");
     }
 
-    private static final String BASE_URL = "http://10.0.2.2:5000"; //"https://strinder-android.herokuapp.com"; //Emulator: 10.0.2.2:5000
+    private static final String BASE_URL = "https://strinder-android.herokuapp.com"; //Emulator: 10.0.2.2:5000
 
     /**
      * Send a StringRequest with a bound JsonObject.

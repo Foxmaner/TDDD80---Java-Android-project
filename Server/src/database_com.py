@@ -37,8 +37,10 @@ follow_to_follow = db.Table('friendship',
                             )
 
 liked_posts_table = db.Table("liked_posts",
-                             db.Column("user_id", db.Integer, db.ForeignKey("User.id"), primary_key=True),
-                             db.Column("post_id", db.Integer, db.ForeignKey("Post.id"), primary_key=True))
+                             db.Column("user_id", db.Integer, db.ForeignKey("User.id"),
+                                       primary_key=True),
+                             db.Column("post_id", db.Integer, db.ForeignKey("Post.id", ondelete="cascade"),
+                                       primary_key=True))
 
 
 class User(db.Model):
@@ -60,7 +62,7 @@ class User(db.Model):
 
     posts = db.relationship("Post", backref="user", lazy=True)
     # We don't really need a many to many here at the moment, but maybe if development continues.
-    liked_posts = db.relationship("Post", secondary=liked_posts_table, back_populates="likes")
+    liked_posts = db.relationship("Post", secondary=liked_posts_table, back_populates="likes", passive_deletes=True)
 
     def to_dict(self):
         formatted = None
@@ -106,9 +108,9 @@ class Post(db.Model):
     latitude = db.Column(db.Float, nullable=False)
     # Here we need a relationship! We need to know which user liked what post.
     likes = db.relationship("User", secondary=liked_posts_table, back_populates="liked_posts",
-                            cascade="all, delete")
+                            cascade="all, delete", passive_deletes=True)
 
-    comments = db.relationship("Comment", backref="post", lazy=True, cascade="all, delete-orphan")
+    comments = db.relationship("Comment", backref="post", cascade="all, delete, delete-orphan")
     training_session = db.relationship("TrainingSession", uselist=False, backref="post", cascade="all, delete, "
                                                                                                  "delete-orphan")
 
@@ -145,7 +147,7 @@ class TrainingSession(db.Model):
 class Comment(db.Model):
     __tablename__ = "Comment"
     id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey("Post.id"), nullable=False)
+    post_id = db.Column(db.Integer, db.ForeignKey("Post.id",  ondelete="cascade"), nullable=False)
     text = db.Column(db.String(100), nullable=False)
     user_id = db.Column(db.Integer, nullable=False)
 

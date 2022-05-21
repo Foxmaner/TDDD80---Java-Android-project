@@ -36,6 +36,8 @@ def check_if_token_revoked(_, jwt_payload: dict) -> bool:
 # can use the get_jwt_identity() function to get the identity of
 # the refresh token, and use the create_access_token() function again
 # to make a new access token for this identity.
+
+# Motivation for this route: We did not want to create a new access token for every request to the server.
 @app.route("/refresh", methods=['POST'])
 @jwt_required(refresh=True)
 def refresh():

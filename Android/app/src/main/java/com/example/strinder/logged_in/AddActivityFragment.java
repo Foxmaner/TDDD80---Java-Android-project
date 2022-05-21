@@ -289,7 +289,8 @@ public class AddActivityFragment extends Fragment implements LocationListener {
         if (hasPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION)) {
             Log.i("GPS Resume", "Resume call");
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 450,
+            //GPS_PROVIDER or NETWORK_PROVIDER
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 450,
                     1, this);
         }
     }

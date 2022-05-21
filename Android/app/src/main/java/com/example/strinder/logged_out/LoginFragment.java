@@ -158,8 +158,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
      */
     private void login(final GoogleSignInAccount account) {
         Log.i("Google Sign In", "Logged in. Authentication with backend in process...");
-        //Något tillkallar detta när internet inte finns. Vilket gör att activity = null.
-        //Detta leder till crash
+
         if(this.getActivity() != null){
             AuthenticationHandler authenticationHandler = new AuthenticationHandler(account,
                     this.getActivity());

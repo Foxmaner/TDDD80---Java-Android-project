@@ -27,6 +27,11 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+/** This class extends the {@link androidx.recyclerview.widget.RecyclerView.Adapter
+ * RecyclerView.Adapter} class and is used to customize a RecyclerView for a {@link List<Comment>
+ * List<Comment>}. The class allows us to handle button presses and different kinds of
+ * data on each any every comment.
+ */
 public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
 
     private final List<Comment> comments;
@@ -34,6 +39,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
     private final ServerConnection connection;
     private final User user;
 
+    /** Initialize a CommentAdapter object.
+     *
+     * @param context - a {@link Context context} object.
+     * @param comments - a {@link List<Comment> List<Comment>} object. These are the comments that
+     *                 will be displayed in the {@link RecyclerView RecyclerView}.
+     * @param user - the logged-in {@link User User} object.
+     *
+     */
     public CommentAdapter(final Context context, List<Comment> comments, final User user) {
         this.context = context;
         this.comments = comments;
@@ -52,6 +65,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
     @Override
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         if(comments.size() > position) {
+            //Get the Comment object that we are at right now in the list.
             Comment currentComment = comments.get(position);
 
             connection.sendStringJsonRequest("/user/get_user/" + currentComment.getUserId(),
@@ -92,7 +106,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
             holder.getDeleteButton().setVisibility(View.VISIBLE);
 
             holder.getDeleteButton().setOnClickListener(view ->
-                    connection.sendStringJsonRequest("/del/comment/" + String.valueOf(this.comments.get(position).getId()),
+                    connection.sendStringJsonRequest("/del/comment/" +
+                                    this.comments.get(position).getId(),
                             new JSONObject(), Request.Method.DELETE, this.user.getAccessToken(),
                             new VolleyResponseListener<String>() {
                                 @Override
@@ -104,19 +119,14 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
                                 @Override
                                 public void onError(VolleyError error) {
                                     connection.maybeDoRefresh(error,user);
-                                    Log.e("Like Post Error", "Error occurred when deleting comment.");
+                                    Log.e("Like Post Error", "Error occurred when " +
+                                            "deleting comment.");
                                     Toast.makeText(context, "Failed to delete post.",
                                             Toast.LENGTH_SHORT).show();
                                 }
 
                             }));
         }
-
-
-
-
-
-
     }
 
     @Override
@@ -125,12 +135,19 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentViewHolder>{
     }
 }
 
-
+/** This class is used within the {@link com.example.strinder.logged_in.adapters.CommentAdapter
+ * CommentAdapter} class. In this class we find and define all the different {@link View View}
+ * objects.
+ */
 class CommentViewHolder extends RecyclerView.ViewHolder {
     private final ImageView profileImage;
     private final TextView commentText, name;
     private final ImageButton deleteButton;
 
+    /** Initialize a CommentViewHolder object
+     * @param itemView - a {@link View View} object that lets us find the children {@link View View}
+     *                 objects.
+     */
     public CommentViewHolder(@NonNull View itemView) {
         super(itemView);
         this.profileImage = itemView.findViewById(R.id.commentCardProfileImage);
@@ -139,18 +156,34 @@ class CommentViewHolder extends RecyclerView.ViewHolder {
         this.deleteButton = itemView.findViewById(R.id.buttonDeleteComment);
     }
 
+    /** Returns the profile image.
+     *
+     * @return a {@link ImageView ImageView} object.
+     */
     public ImageView getProfileImage() {
         return profileImage;
     }
 
+    /** Returns the comment text.
+     *
+     * @return a {@link TextView TextView} object.
+     */
     public TextView getCommentText() {
         return commentText;
     }
 
+    /** Returns the name of the User.
+     *
+     * @return a {@link TextView TextView} object.
+     */
     public TextView getName() {
         return name;
     }
 
+    /** Returns the delete button.
+     *
+     * @return a {@link ImageButton ImageButton} object.
+     */
     public ImageButton getDeleteButton() {
         return deleteButton;
     }

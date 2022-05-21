@@ -16,6 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/** This class is a representation of the database table User.
+ *  When requesting User data, it can be thrown into an instance
+ *  of this class by using {@link com.google.gson.Gson}.
+ */
 public class User implements Parcelable {
 
     private String firstName;
@@ -32,6 +36,11 @@ public class User implements Parcelable {
     private String accessToken;
     private final String refreshToken;
 
+    /** Initialize a User object.
+     *
+     * @param parcel - the Parcel object needed when transferring data between a
+     * {@link androidx.fragment.app.Fragment Fragment} / {@link android.app.Activity Activity}
+     */
     private User(final Parcel parcel) {
         this.firstName = parcel.readString();
         this.lastName = parcel.readString();
@@ -52,59 +61,120 @@ public class User implements Parcelable {
         refreshToken = parcel.readString();
     }
 
+    /** Returns the firstname of the User
+     *
+     * @return the firstname as a {@link String String} object.
+     */
     public String getFirstName() {
         return firstName;
     }
 
+    /** Returns the lastname of the User.
+     *
+     * @return the lastname as a {@link String string} object.
+     */
     public String getLastName() {
         return lastName;
     }
 
+    /** Returns the url of the User's photo.
+     *
+     * @return the url as a {@link String String} object.
+     */
     public String getPhotoUrl() {
         return photoUrl;
     }
 
+    //This method is not removed because we might want to use it if we continue the development.
+    /** Returns the email of the User.
+     *
+     * @return the email as a {@link String String} object.
+     */
     public String getEmail() {
         return email;
     }
 
+    /** Returns the username of the User.
+     *
+     * @return the username as a {@link String String} object.
+     */
     public String getUsername() {
         return username;
     }
 
+    /** Returns the birthday date of the User.
+     *
+     * @return the birthday date as a {@link String String} object.
+     */
     public String getBirthday() {
         return birthday;
     }
 
+    /** Returns the gender of the User.
+     *
+     * @return the gender as a {@link String String} object.
+     */
     public String getGender() {
         return gender;
     }
 
+    /** Returns the access token of the User.
+     *
+     * @return the access token as a {@link String String} object.
+     */
     public String getAccessToken() {
         return accessToken;
     }
 
+    /** Returns the refresh token of the User.
+     *
+     * @return the refresh token as a {@link String String} object.
+     */
     public String getRefreshToken() {
         return refreshToken;
     }
 
+    /** Returns the id of the User.
+     *
+     * @return the id as an integer.
+     */
     public int getId() {
         return id;
     }
 
+    /** Returns a {@link java.util.List<User> List<User>} containing the people that you follow.
+     *
+     * @return a {@link List<User> List} object.
+     */
     public List<User> getFriends() {
         return follows;
     }
 
+    /** Returns a {@link java.util.List<Post> List<User>} containing all your posted
+     * {@link Post posts}.
+     *
+     * @return a {@link List<Post> List} object.
+     */
     public List<Post> getPosts() {
         return posts;
     }
 
+    /** Returns the User's biography.
+     *
+     * @return the biography as a {@link String String object}.
+     */
     public String getBiography() {
         return biography;
     }
 
-
+    /** Uploads the User's 'changeable' data to the database. This includes firstname,lastname,
+     * birthday,gender,biography,photo url and biography.
+     * @param context - a {@link Context Context} object that is needed to create a server
+     *                connection.
+     * @param listener - a {@link VolleyResponseListener<String> VolleyResponseListener<String>}
+     *                 object that allows the developer to catch the error or response when the
+     *                 server has responded.
+     */
     public void uploadData(final Context context,
                            final VolleyResponseListener<String> listener){
 
@@ -135,39 +205,73 @@ public class User implements Parcelable {
 
     }
 
+    /** Sets the User's photo url.
+     * @param photoUrl - the new photo url.
+     */
     public void setPhotoUrl(final String photoUrl) {
         this.photoUrl = photoUrl;
     }
 
+    /** Sets the User's first name.
+     * @param firstName - the new first name.
+     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    /** Sets the User's last name.
+     *
+     * @param lastName - the new last name.
+     */
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
+    /** Sets the User's birthday date.
+     *
+     * @param birthday - the new birthday date.
+     */
     public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
+    /** Sets the User's gender.
+     *
+     * @param gender - the new gender.
+     */
     public void setGender(String gender) {
         this.gender = gender;
     }
 
+    /** Sets the User's biography.
+     *
+     * @param biography - the new biography.
+     */
     public void setBiography(String biography) {
         this.biography = biography;
     }
 
+    /** Sets the access token that is needed to communicate with the backend.
+     *
+     * @param accessToken - the new access token.
+     */
     public void setAccessToken(final String accessToken) {
         this.accessToken = accessToken;
     }
 
-    public void addFriend(final User user) {
+    /** Allows the User to follow another {@link User User} object.
+     *
+     * @param user - a {@link User User} object that the User shall follow.
+      */
+    public void follow(final User user) {
         follows.add(user);
     }
 
-    public void removeFriend(final User user) {
+    /** Allows the User to unfollow another {@link User User} object.
+     *
+     * @param user - a {@link User User} object that the User follows.
+     */
+    public void unfollow(final User user) {
         follows.remove(user);
     }
 
@@ -193,6 +297,9 @@ public class User implements Parcelable {
         parcel.writeString(refreshToken);
     }
 
+    /** This method is used when transferring the object between
+     * {@link androidx.fragment.app.Fragment} / {@link android.app.Activity}
+     */
     public static final Parcelable.Creator<User> CREATOR
             = new Parcelable.Creator<User>() {
         public User createFromParcel(Parcel in) {

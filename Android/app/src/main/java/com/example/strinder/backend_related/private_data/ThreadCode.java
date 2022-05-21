@@ -1,8 +1,13 @@
 package com.example.strinder.backend_related.private_data;
 
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.api.services.people.v1.model.Person;
 
-/** This interface allows the user to send code into GoogleServices.*/
+import java.util.List;
+
+/** This interface allows the user to send code into
+ * {@link GoogleServices#requestPrivateData(GoogleSignInAccount, List, String,
+ * ThreadCode, Object, CompletionListener)}.*/
 @FunctionalInterface
 public interface ThreadCode {
     /** This method will be executed after Google has sent us a successful response. This code

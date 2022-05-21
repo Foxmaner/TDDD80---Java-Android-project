@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.example.strinder.R;
 import com.example.strinder.backend_related.database.ServerConnection;
 import com.example.strinder.backend_related.database.VolleyResponseListener;
+import com.example.strinder.backend_related.tables.Comment;
 import com.example.strinder.backend_related.tables.Post;
 import com.example.strinder.backend_related.tables.TrainingSession;
 import com.example.strinder.backend_related.tables.User;
@@ -39,6 +40,12 @@ import org.json.JSONObject;
 
 import java.util.List;
 
+/** This class extends the {@link androidx.recyclerview.widget.RecyclerView.Adapter
+ * RecyclerView.Adapter} class and is used to customize a RecyclerView for a {@link List<Post>
+ * List<Post>} and the users that posted these posts, which are passed along as a
+ * {@link List<User> List<User>} object. The class allows us to handle button presses and
+ * different kinds of data on each any every post.
+ */
 public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private final Context context;
     private final List<Post> posts;
@@ -47,6 +54,18 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
     private final ServerConnection connection;
     private final Fragment fragment;
 
+    /** Initialize a PostAdapter object.
+     *
+     * @param context - a {@link Context context} object.
+     * @param posts - a {@link List<Post> List<Post>} object. These are the posts that
+     *                 will be displayed in the {@link RecyclerView RecyclerView}
+     * @param users - a {@link List<User> List<User>} object. These are the users that
+     * will be displayed in the {@link RecyclerView RecyclerView}
+     *
+     * @param currentUser - the logged-in {@link User User} object.
+     * @param fragment - the {@link Fragment Fragment} object that this adapter is in. Is necessary
+     *                   for navigation.
+     */
     public PostAdapter(final Context context, final List<Post> posts, final List<User> users,
                        final User currentUser, final Fragment fragment) {
         this.context = context;
@@ -201,6 +220,12 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
         }
     }
 
+    /** Sets the text that displays how many likes a {@link Post Post} has.
+     *
+     * @param holder - the {@link FollowViewHolder FollowViewHolder} object.
+     * @param users - the {@link List<User> List<User>} object that is passed into the
+ *                    {@link PostAdapter PostAdapter}.
+     */
     private void setLikeText(final PostViewHolder holder,
                              final List<User> users) {
         String text;
@@ -223,6 +248,11 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
         holder.getLikes().setText(text);
     }
 
+    /** Fetch the likes for a specific {@link Post Post} object from the database.
+     *
+     * @param post - the {@link Post Post} object that we want to check the likes on.
+     * @param holder - the {@link FollowViewHolder FollowViewHolder} object.
+     */
     private void fetchLikes(final Post post, final PostViewHolder holder) {
 
         connection.sendStringJsonRequest("/post/get_likes/" + post.getId(), new JSONObject(),
@@ -259,7 +289,10 @@ public class PostAdapter extends RecyclerView.Adapter<PostViewHolder> {
 
 }
 
-
+/** This class is used within the {@link com.example.strinder.logged_in.adapters.PostAdapter
+ * PostAdapter} class. In this class we find and define all the different {@link View View}
+ * objects.
+ */
 class PostViewHolder extends RecyclerView.ViewHolder {
     private final TextView postExercise,postNameView,postCaptionView,postTitleView,
             postDistanceValueView, postTimeValueView, postSpeedValueView, postDate,likes;
@@ -268,6 +301,12 @@ class PostViewHolder extends RecyclerView.ViewHolder {
     private final ImageButton commentButton;
     private final MapView mapView;
     private final ImageButton deleteButton;
+
+    /** Initialize a PostViewHolder object.
+     *
+     * @param itemView - a {@link View View} object that lets us find the children {@link View View}
+     *                   objects.
+     */
     public PostViewHolder(@NonNull View itemView) {
         super(itemView);
         postNameView = itemView.findViewById(R.id.postCardName);
@@ -286,59 +325,114 @@ class PostViewHolder extends RecyclerView.ViewHolder {
         deleteButton = itemView.findViewById(R.id.buttonDeletePost);
     }
 
-
+    /** Returns the post's exercise.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getPostExercise() {
         return postExercise;
     }
 
+    /** Returns the post's name.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getPostNameView() {
         return postNameView;
     }
 
+    /** Returns the post's caption.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getPostCaptionView() {
         return postCaptionView;
     }
 
+    /** Returns the post's title.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getPostTitleView() {
         return postTitleView;
     }
 
+    /** Returns the post's distance.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getPostDistanceValueView() {
         return postDistanceValueView;
     }
 
+    /** Returns the post's time.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getPostTimeValueView() {
         return postTimeValueView;
     }
 
+    /** Returns the post's speed.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getPostSpeedValueView() {
         return postSpeedValueView;
     }
 
+    /** Returns the post's date.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getPostDate() {
         return postDate;
     }
 
+    /** Returns the post's likes.
+     *
+     * @return a {@link TextView TextView} object.
+     * */
     public TextView getLikes() {
         return likes;
     }
 
+    /** Returns the post's profile image.
+     *
+     * @return a {@link ImageView ImageView} object.
+     * */
     public ImageView getProfileImage() {
         return profileImage;
     }
 
+    /** Returns the post's like button.
+     *
+     * @return a {@link ImageButton ImageButton} object.
+     * */
     public ImageButton getLikeButton() {
         return likeButton;
     }
 
+    /** Returns the post's comment button.
+     *
+     * @return a {@link ImageButton ImageButton} object.
+     * */
     public ImageButton getCommentButton() {
         return commentButton;
     }
 
+    /** Returns the post's map.
+     *
+     * @return a {@link MapView MapView} object.
+     * */
     public MapView getMapView() {
         return mapView;
     }
 
+    /** Returns the post's delete button.
+     *
+     * @return a {@link ImageButton ImageButton} object.
+     * */
     public ImageButton getDeleteButton() {
         return deleteButton;
     }

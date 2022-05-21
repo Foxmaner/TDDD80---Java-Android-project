@@ -17,7 +17,8 @@ import java.io.IOException;
 import java.util.List;
 
 /** This class handles the connections to Google Services when it comes to their People API.
- * The signing in process is still kept inside the LoginFragment.
+ * The signing in process is still kept inside the
+ * {@link com.example.strinder.logged_out.LoginFragment LoginFragment}.
  */
 public class GoogleServices {
 
@@ -31,11 +32,12 @@ public class GoogleServices {
         this.activity = activity;
     }
 
-    /** Returns a Person object that potentially contains the data requested. This method HAS to be
-     * called within a separate thread.
+    /** Returns a Person object that 'potentially' contains the data requested.
+     * This method HAS to be called within a separate thread.
      * @param account - the GoogleSignInAccount object.
      * @param scopes - a list of valid scopes in String format.
- *                  See: https://developers.google.com/people/v1/how-tos/authorizing
+ *                  See: <a href="https://developers.google.com/people/v1/how-tos/authorizing">
+     *                      Google Documentation</a>
      * @param fields - A field mask to restrict which fields on the person are returned.
      *               Multiple fields can be specified by separating them with commas.
      *               Valid values are: * addresses * ageRanges * biographies * birthdays *
@@ -67,7 +69,8 @@ public class GoogleServices {
                         credential.setSelectedAccount(
                                 new Account(account.getEmail(), "com.google"));
 
-                        PeopleService service = new PeopleService.Builder(httpTransport, jsonFactory, credential)
+                        PeopleService service = new PeopleService.Builder(httpTransport,
+                                jsonFactory, credential)
                                 .setApplicationName(activity.getString(R.string.app_name))
                                 .build();
 
@@ -91,6 +94,7 @@ public class GoogleServices {
 
     }
 
+    //The 'obj' parameter here is not really necessary, however it can be useful in some scenarios.
     /** This method is executed after the thread is completed.
      * @param person - the Person object recieved from the request.
      * @param code - the code that will run, its parameters are the other two parameters.

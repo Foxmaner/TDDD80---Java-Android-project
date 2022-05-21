@@ -94,7 +94,10 @@ public class ServerConnection {
 
 
     }
-
+    /** Sends a request to the server, requesting a new access token.
+     * @param user - the logged in User object, which allows the method to retrieve the
+     *            refresh token
+     */
     public void refresh(final User user) {
         sendStringJsonRequest("/refresh", new JSONObject(), Request.Method.POST,
                 user.getRefreshToken(),
@@ -120,6 +123,11 @@ public class ServerConnection {
                 });
     }
 
+    /** Executes {@link #refresh(User) refresh} method if the status code of the error
+     * equals 401.
+     * @param error - the VolleyError.
+     * @param user - the logged in User object.
+     */
     public void maybeDoRefresh(final VolleyError error, final User user) {
         if(error.networkResponse.statusCode == ACCESS_TOKEN_MISSING) {
            refresh(user);

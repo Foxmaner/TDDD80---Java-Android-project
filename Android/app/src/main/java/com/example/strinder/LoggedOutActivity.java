@@ -7,7 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.auth.api.identity.BeginSignInRequest;
 
 /**
- * This activity class handles all the {@link androidx.fragment.app.Fragment Fragment} objects
+ * This class is a subclass of {@link AppCompatActivity AppCompatActivity}.
+ * This class handles all the {@link androidx.fragment.app.Fragment Fragment} objects
  * that are available for users that are not logged in to the server.
  * */
 public class LoggedOutActivity extends AppCompatActivity {

@@ -98,7 +98,9 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         return v;
     }
 
-    @Override
+    /** This is called when the user pressed the GoogleSignInButton and will execute the {@link
+     * LoginFragment#signIn()} method.
+     */
     public void onClick(View v) {
         /*
             This is called when the user pressed the GoogleSignInButton and will open the
@@ -120,7 +122,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener{
         activityResultLauncher.launch(signInIntent);
     }
 
-    /** Handles the result from the Google Sign In page through a ActivityResultLauncher
+    /** Handles the result from the GoogleSignIn process.
      *
      * @param completedTask - a {@link Task<GoogleSignInAccount> Task<GoogleSignInAccount>} object.
      */

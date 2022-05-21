@@ -83,6 +83,8 @@ The gradle dependencies should be as follows:
 
 Make sure that your *build.gradle* file contains these implementations if you have build issues.
 
+NOTE: The Heroku server has to be online, otherwise you will be prompted an error!
+
 ## APK File
 We have generated an .apk file for the project which can be found [here](https://www.mediafire.com/file/qx43q20spwn0yxq/strinder-apk.zip/file)
 

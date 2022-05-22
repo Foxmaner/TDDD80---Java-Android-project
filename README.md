@@ -17,8 +17,8 @@ Because of this, you need to contact us in order for us to give you access to th
 In order for us to create a client id key for you, we need your **Android Studio** environment SHA-1 fingerprint. You can do this by following the following instructions:
  - Open Android Studio
  - On the right side of Android Studio, you should see a **Gradle** tab. Click it.
- - You should now see a new tab. Under the title "Gradle", there is a button with an elephant on it. When hovering, it should say "Execute Gradle Task".
- - In the new window, run the command "gradle signInReport".
+ - You should now see a new tab. Under the title "Gradle", there is a button with an elephant on it. When hovering, it should say "Execute Gradle Task". Click it.
+ - In the new window, run the command "gradle signInReport". 
 
 You should now, in the console, receive a SHA-1 key. This is **vital** in order for us to create a key.
 

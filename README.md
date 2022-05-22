@@ -35,10 +35,11 @@ Create two `<string>` tags as above.
 Replace *WEB_CLIENT_ID* with the web client key that you have received, and do the same with 
 *CLIENT_ID*, but with the client id key of course.
 
-Because we use Google Maps you need a maps api key in the **local.properties**.
+Because we use Google Maps you need a maps api key in the **local.properties** file.
 
 Add the following file to the **local.properties** file, which is located inside the Android folder.
-	MAPS_API_KEY=THE_KEY
+
+    MAPS_API_KEY=THE_KEY
 
 Replace **THE_KEY** with the key that we have given you.
 

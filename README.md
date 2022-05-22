@@ -14,6 +14,14 @@ You might think that you can clone the repository and just run the program, howe
 
 Because of this, you need to contact us in order for us to give you access to the project inside **Android Studio**. You also need our web client id key and maps api key, which we will give to you with the client id key.
 
+In order for us to create a client id key for you, we need your **Android Studio** environment SHA-1 fingerprint. You can do this by following the following instructions:
+ - Open Android Studio
+ - On the right side of Android Studio, you should see a **Gradle** tab. Click it.
+ - You should now see a new tab. Under the title "Gradle", there is a button with an elephant on it. When hovering, it should say "Execute Gradle Task".
+ - In the new window, run the command "gradle signInReport".
+
+You should now, in the console, receive a SHA-1 key. This is **vital** in order for us to create a key.
+
 When you have these keys, they will have the following format:
     
     X-Y.apps.googleusercontent.com where X and Y are random Strings.
@@ -30,6 +38,7 @@ Right click the values folder, choose **New**, then click on **Values Resource F
       <string name="client_id">CLIENT_KEY_HERE</string>  
       
     </resources>
+
 Create two `<string>` tags as above.
  
 Replace *WEB_CLIENT_ID* with the web client key that you have received, and do the same with 

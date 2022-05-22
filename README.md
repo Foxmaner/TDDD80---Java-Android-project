@@ -4,7 +4,7 @@
 Developed by Liam Andersson and Eskil Brännerud.
 ## How To Build
 
-The project is connected to a remote server hosted on Heroku, uses Google Sign In (which requires an app in Google Cloud) and a Firebase app.
+The project is connected to a remote server hosted on Heroku, uses Google Sign In (which requires an app in Google Cloud), Firebase app and Google Maps.
 
 In order to clone the repository, execute the following **git** command:
 
@@ -12,7 +12,7 @@ In order to clone the repository, execute the following **git** command:
 
 You might think that you can clone the repository and just run the program, however it is not quite that easy. We have a locked development environment in our Google Cloud - which basically means that all developers require a key.
 
-Because of this, you need to contact us in order for us to give you access to the project inside **Android Studio**. You also need our web client id key, which we will give to you with the client id key.
+Because of this, you need to contact us in order for us to give you access to the project inside **Android Studio**. You also need our web client id key and maps api key, which we will give to you with the client id key.
 
 When you have these keys, they will have the following format:
     
@@ -34,6 +34,13 @@ Create two `<string>` tags as above.
  
 Replace *WEB_CLIENT_ID* with the web client key that you have received, and do the same with 
 *CLIENT_ID*, but with the client id key of course.
+
+Because we use Google Maps you need a maps api key in the **local.properties**.
+
+Add the following file to the **local.properties** file, which is located inside the Android folder.
+	MAPS_API_KEY=THE_KEY
+
+Replace **THE_KEY** with the key that we have given you.
 
 Now you should be able to build and run the project in **Android Studio**. 
 
@@ -82,6 +89,8 @@ The gradle dependencies should be as follows:
 
 
 Make sure that your *build.gradle* file contains these implementations if you have build issues.
+If some classes are not found, try clearing the cache as such:
+Click **File**,  then **Invalidate Caches**. This will probably solve the issue you are facing.
 
 NOTE: The Heroku server has to be online, otherwise you will be prompted an error!
 

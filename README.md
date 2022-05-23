@@ -2,6 +2,17 @@
 ![Android image](https://lh3.googleusercontent.com/GTmuiIZrppouc6hhdWiocybtRx1Tpbl52eYw4l-nAqHtHd4BpSMEqe-vGv7ZFiaHhG_l4v2m5Fdhapxw9aFLf28ErztHEv5WYIz5fA)
 
 Developed by Liam Andersson and Eskil Brännerud.
+
+## Description
+
+Our app is made for athletes, were one is able to upload posts, describing how the exercise felt or went and provide stats. Other users that follow you can then 
+like and comment your posts. If you wish to edit you account information, you can go to your profile and upload a new photo, or go to settings and change e.g your name.
+If you want to follow someone you know, simply search their name in the friends tab and follow them. All the posts are displayed in the home tab. In order to create an account,
+you need a Google account.
+
+We had initially planned to make the app with a friends system, more advanced posts and notifications. However, development time ran out and we did not have time to finish it all.
+Instead, we focused on fixing bugs and making small adjustments to the codebase.
+
 ## How To Build
 
 The project is connected to a remote server hosted on Heroku, uses Google Sign In (which requires an app in Google Cloud), Firebase app and Google Maps.
@@ -17,8 +28,8 @@ Because of this, you need to contact us in order for us to give you access to th
 In order for us to create a client id key for you, we need your **Android Studio** environment SHA-1 fingerprint. You can do this by following the following instructions:
  - Open Android Studio
  - On the right side of Android Studio, you should see a **Gradle** tab. Click it.
- - You should now see a new tab. Under the title "Gradle", there is a button with an elephant on it. When hovering, it should say "Execute Gradle Task". Click it.
- - In the new window, run the command "gradle signInReport". 
+ - You should now see a new tab. Under the title "Gradle", there is a button with an elephant on it. When hovering, it should say "Execute Gradle Task".
+ - In the new window, run the command "gradle signInReport".
 
 You should now, in the console, receive a SHA-1 key. This is **vital** in order for us to create a key.
 

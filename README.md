@@ -5,7 +5,7 @@ Developed by Liam Andersson and Eskil Brännerud.
 
 ## Description
 
-Our app is made for athletes, were one is able to upload posts, describing how the exercise felt or went and provide stats. Other users that follow you can then 
+Our app is made for athletes, where one is able to upload posts, describing how the exercise felt or went and provide stats for the exercise. Other users that follow you can then 
 like and comment your posts. If you wish to edit you account information, you can go to your profile and upload a new photo, or go to settings and change e.g your name.
 If you want to follow someone you know, simply search their name in the friends tab and follow them. All the posts are displayed in the home tab. In order to create an account,
 you need a Google account.
